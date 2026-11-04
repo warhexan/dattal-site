@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dattal Privacy Policy</title>
+<meta name="description" content="Privacy policy for the Dattal worldbuilding app for macOS. Dattal collects no personal data.">
+<link rel="icon" href="/assets/favicon-64.png" sizes="64x64" type="image/png">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #070b14;
+    --paper: #0d1322;
+    --ink: #e9edf6;
+    --muted: #8f99b3;
+    --rule: rgba(255,255,255,0.09);
+    --accent: #bcd4ff;
+    --accent-soft: rgba(82,122,230,0.16);
+  }
+  * { box-sizing: border-box; }
+  #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  main { position: relative; z-index: 1; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-image: radial-gradient(900px 500px at 70% -10%, rgba(82,122,230,0.18), transparent 60%); background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 44rem; margin: 0 auto; padding: 48px 16px 80px;
+  }
+  header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .brand img { width: 28px; height: 28px; border-radius: 6px; }
+  nav.lang { display: flex; gap: 6px; }
+  nav.lang button {
+    font: inherit; font-size: 14px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--paper); color: var(--muted);
+  }
+  nav.lang button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-weight: 600; }
+  nav.lang button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  article { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 32px 28px; margin-top: 16px; }
+  h1 { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 600; font-size: 2rem; line-height: 1.2; margin: 0 0 4px; text-wrap: balance; }
+  h2 { font-size: 1.15rem; margin: 2em 0 0.5em; padding-top: 1.2em; border-top: 1px solid var(--rule); }
+  h2:first-of-type { border-top: 0; padding-top: 0; }
+  p, li { max-width: 65ch; }
+  .meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 1.5em; }
+  .summary { background: var(--accent-soft); border-radius: 10px; padding: 14px 18px; margin: 1.2em 0; }
+  .summary p { margin: 0; }
+  ul { padding-left: 1.2em; }
+  li + li { margin-top: 0.35em; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+  footer { color: var(--muted); font-size: 0.9rem; margin-top: 24px; text-align: center; }
+  html[data-lang="en"] article[lang="sk"], html[data-lang="sk"] article[lang="en"] { display: none; }
+  @media (max-width: 520px) { article { padding: 24px 18px; } dl { grid-template-columns: 1fr; gap: 2px; } dt { margin-top: 10px; } }
+  @media (prefers-reduced-motion: no-preference) { nav.lang button { transition: background 0.15s; } }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+  <header>
+    <a class="brand" href="/"><img src="/assets/icon-512.png" alt="" width="28" height="28">Dattal</a>
+    <nav class="lang" aria-label="Language / Jazyk">
+      <button type="button" data-set-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-set-lang="sk" aria-pressed="false">Slovensky</button>
+    </nav>
+  </header>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <article lang="en" id="en">
+    <h1>Dattal Privacy Policy</h1>
+    <p class="meta">Effective date: 18 October 2026 · Applies to Dattal for macOS, version 1.0 and later</p>
+
+    <div class="summary">
+      <p><strong>In short:</strong> Dattal does not collect, store, or transmit any personal data. There are no accounts, no analytics, no tracking, no advertising, and no servers of ours. Your data stays in files on your Mac, under your control.</p>
+    </div>
+
+    <h2>1. Who we are</h2>
+    <p>Dattal is published by <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slovakia, company ID (IČO) 36490253, VAT ID SK2021771620 (“we”). For the purposes of the EU General Data Protection Regulation (GDPR) we would be the data controller for any personal data we process. In practice, as explained below, Dattal is designed so that we process none.</p>
+    <p>Contact: <a href="mailto:support@dattal.app">support@dattal.app</a></p>
+
+    <h2>2. What Dattal does with your data</h2>
+    <p>Dattal is a worldbuilding database. Everything you create (units, attributes, relationships, timelines, maps, images, fonts, notes) is written into a <code>.datt</code> document that you save wherever you choose. Dattal:</p>
+    <ul>
+      <li>never uploads your documents or any part of them;</li>
+      <li>never records which files you open or what you type;</li>
+      <li>contains no analytics, telemetry, crash-reporting service, advertising SDK, or third-party code that talks to the internet;</li>
+      <li>opens no network connections of its own. The only network traffic related to Dattal is Apple's own App Store infrastructure (see section 4).</li>
+    </ul>
+    <p>If you store a <code>.datt</code> file in iCloud Drive, Dropbox, or another synced folder, that provider handles the file under its own terms. Dattal does not know or care where the file lives.</p>
+
+    <h2>3. Password-protected documents and exports</h2>
+    <p>You can protect a document, or an HTML export, with a password. The content is then encrypted on your Mac with standard algorithms built into macOS (ChaCha20-Poly1305 or AES-GCM, keys derived with PBKDF2-SHA256). The password is never stored and never leaves your Mac. <strong>If you forget it, neither you nor we can recover the content.</strong></p>
+    <p>Exports (HTML, PDF, DOCX, JSON) are generated locally. You decide whether and where to publish them. Exports include icons from the open-source Lucide set; the license is included with the exported files.</p>
+
+    <h2>4. Purchases: Dattal Pro</h2>
+    <p>Dattal is free to download. The one-time in-app purchase “Dattal Pro” is processed entirely by Apple through the App Store (StoreKit). We never receive your name, e-mail address, payment details, or Apple ID. Dattal checks the purchase status on your device using Apple's signed transaction records and can restore it on your other Macs signed in with the same Apple account. Apple's handling of your data is described in <a href="https://www.apple.com/legal/privacy/">Apple's Privacy Policy</a>.</p>
+
+    <h2>5. Free trial</h2>
+    <p>Before purchasing, you can use the full app for a limited number of <em>active days</em>. To count them, Dattal stores a small list of dates in its preferences and in its Application Support folder on your Mac. The list carries an integrity signature computed from your Mac's hardware identifier so that it cannot be copied between computers. The identifier itself is used only locally for that calculation; it is not stored in readable form and is never transmitted anywhere.</p>
+
+    <h2>6. Diagnostics (crashes and hangs)</h2>
+    <p>If Dattal freezes or quits unexpectedly, it writes a diagnostic report to a local folder (<code>~/Library/Logs/Dattal</code>, inside the app's sandbox container). A report contains the app version, macOS version, Mac model, and technical stack traces. It never contains your document contents, file names, or anything you typed.</p>
+    <p><strong>Nothing is sent automatically.</strong> On the next launch Dattal tells you that a report exists and offers to open a pre-filled e-mail to us, which you can review before sending. You can also view or delete the reports at any time in Settings › General › Diagnostics, and turn the prompt off.</p>
+    <p>Separately, macOS itself may share anonymised crash logs with Apple and, through App Store Connect, with us, but only if you have enabled “Share with App Developers” in your Mac's Analytics settings. That is Apple's service and governed by Apple's policy.</p>
+
+    <h2>7. If you contact us</h2>
+    <p>When you e-mail us (support questions, a diagnostic report), we receive your e-mail address and whatever you include. We use it only to answer you and to fix the problem. Legal basis: our legitimate interest in supporting the app and, for diagnostic reports, your consent given by sending them. We keep such e-mails for up to 24 months and do not share them with anyone except service providers that host our mailbox.</p>
+
+    <h2>8. Your rights</h2>
+    <p>Because we hold no data about users of the app, there is normally nothing for us to access, correct, export, or erase. For data in e-mails you have sent us, you have all GDPR rights: access, rectification, erasure, restriction, portability, and objection. Write to <a href="mailto:support@dattal.app">support@dattal.app</a>. You can also complain to the Slovak supervisory authority, <a href="https://dataprotection.gov.sk/">Úrad na ochranu osobných údajov Slovenskej republiky</a>, or to the authority in your own country.</p>
+    <p>To delete everything Dattal has on your Mac, delete your <code>.datt</code> files and the app. Removing the app also removes its sandbox container with preferences and diagnostic reports.</p>
+
+    <h2>9. Children</h2>
+    <p>Dattal can be used by children too. It contains no inappropriate content, no advertising, no chat or sharing features, and no links to outside services. As described above, it collects no personal data from anyone, children included. The only purchase is handled by Apple, where parents can require approval through Ask to Buy and Screen Time.</p>
+
+    <h2>10. Changes to this policy</h2>
+    <p>If a future version of Dattal adds a feature that involves processing personal data (for example an optional sync service), we will update this policy <em>before</em> the feature ships, state the change in the app's release notes, and ask for your consent in the app where the law requires it.</p>
+
+    <dl>
+      <dt>Publisher</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovakia · IČO 36490253</dd>
+      <dt>Contact</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Version</dt><dd>1.0, 18 October 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== SLOVENSKY ===================== -->
+  <article lang="sk" id="sk">
+    <h1>Zásady ochrany súkromia aplikácie Dattal</h1>
+    <p class="meta">Účinné od: 18. októbra 2026 · Platí pre Dattal pre macOS, verziu 1.0 a novšie</p>
+
+    <div class="summary">
+      <p><strong>Stručne:</strong> Dattal nezbiera, neukladá ani neodosiela žiadne osobné údaje. Nie sú tu žiadne účty, analytika, sledovanie, reklama ani naše servery. Vaše dáta ostávajú v súboroch na vašom Macu, pod vašou kontrolou.</p>
+    </div>
+
+    <h2>1. Kto sme</h2>
+    <p>Aplikáciu Dattal vydáva <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slovenská republika, IČO 36490253, IČ DPH SK2021771620 („my“). Na účely nariadenia GDPR by sme boli prevádzkovateľom akýchkoľvek osobných údajov, ktoré spracúvame. Ako vysvetľujeme nižšie, Dattal je navrhnutý tak, aby sme nespracúvali žiadne.</p>
+    <p>Kontakt: <a href="mailto:support@dattal.app">support@dattal.app</a></p>
+
+    <h2>2. Čo Dattal robí s vašimi údajmi</h2>
+    <p>Dattal je databáza na tvorbu fiktívnych svetov. Všetko, čo vytvoríte (jednotky, atribúty, vzťahy, časové osi, mapy, obrázky, písma, poznámky), sa zapisuje do dokumentu <code>.datt</code>, ktorý si uložíte, kam chcete. Dattal:</p>
+    <ul>
+      <li>nikdy nenahráva vaše dokumenty ani ich časti;</li>
+      <li>nezaznamenáva, ktoré súbory otvárate ani čo píšete;</li>
+      <li>neobsahuje analytiku, telemetriu, službu na hlásenie pádov, reklamné SDK ani kód tretích strán, ktorý komunikuje s internetom;</li>
+      <li>sám neotvára žiadne sieťové spojenia. Jediná sieťová komunikácia súvisiaca s Dattalom je infraštruktúra App Store spoločnosti Apple (pozri bod 4).</li>
+    </ul>
+    <p>Ak súbor <code>.datt</code> uložíte do iCloud Drive, Dropboxu alebo iného synchronizovaného priečinka, s daným súborom nakladá príslušný poskytovateľ podľa vlastných podmienok. Dattal nevie a nepotrebuje vedieť, kde súbor leží.</p>
+
+    <h2>3. Dokumenty a exporty chránené heslom</h2>
+    <p>Dokument alebo HTML export môžete chrániť heslom. Obsah sa potom na vašom Macu zašifruje štandardnými algoritmami zabudovanými v macOS (ChaCha20-Poly1305 alebo AES-GCM, kľúče odvodené cez PBKDF2-SHA256). Heslo sa nikam neukladá a nikdy neopúšťa váš Mac. <strong>Ak ho zabudnete, obsah neobnovíte vy ani my.</strong></p>
+    <p>Exporty (HTML, PDF, DOCX, JSON) vznikajú lokálne. Vy rozhodujete, či a kde ich zverejníte. Exporty obsahujú ikony z otvorenej sady Lucide; licencia je priložená k exportovaným súborom.</p>
+
+    <h2>4. Nákupy: Dattal Pro</h2>
+    <p>Dattal je zadarmo na stiahnutie. Jednorazový nákup „Dattal Pro“ v aplikácii spracúva výlučne Apple cez App Store (StoreKit). Nikdy nedostaneme vaše meno, e-mail, platobné údaje ani Apple ID. Dattal overuje stav nákupu na vašom zariadení pomocou podpísaných záznamov o transakciách od Apple a vie ho obnoviť na vašich ďalších Macoch prihlásených tým istým účtom Apple. Nakladanie s údajmi zo strany Apple opisujú <a href="https://www.apple.com/legal/privacy/">zásady ochrany súkromia Apple</a>.</p>
+
+    <h2>5. Skúšobná doba</h2>
+    <p>Pred nákupom môžete plnú aplikáciu používať obmedzený počet <em>aktívnych dní</em>. Na ich počítanie si Dattal ukladá krátky zoznam dátumov do svojich predvolieb a do priečinka Application Support na vašom Macu. Zoznam nesie kontrolný podpis vypočítaný z hardvérového identifikátora vášho Macu, aby sa nedal kopírovať medzi počítačmi. Samotný identifikátor sa používa iba lokálne na tento výpočet; neukladá sa v čitateľnej podobe a nikam sa neodosiela.</p>
+
+    <h2>6. Diagnostika (pády a zamrznutia)</h2>
+    <p>Ak Dattal zamrzne alebo sa neočakávane ukončí, zapíše diagnostickú správu do lokálneho priečinka (<code>~/Library/Logs/Dattal</code> v sandboxovom kontajneri aplikácie). Správa obsahuje verziu aplikácie, verziu macOS, model Macu a technické výpisy zásobníka. Nikdy neobsahuje obsah vašich dokumentov, názvy súborov ani nič, čo ste napísali.</p>
+    <p><strong>Nič sa neodosiela automaticky.</strong> Pri ďalšom spustení vám Dattal oznámi, že správa existuje, a ponúkne otvorenie predvyplneného e-mailu pre nás, ktorý si pred odoslaním môžete prezrieť. Správy si môžete kedykoľvek zobraziť alebo vymazať v Nastaveniach › Všeobecné › Diagnostika a výzvu vypnúť.</p>
+    <p>Nezávisle od toho môže samotný macOS zdieľať anonymizované záznamy o pádoch s Apple a cez App Store Connect aj s nami, ale iba ak ste v nastaveniach Analytiky svojho Macu povolili „Zdieľať s vývojármi aplikácií“. Ide o službu Apple, ktorá sa riadi zásadami Apple.</p>
+
+    <h2>7. Ak nás kontaktujete</h2>
+    <p>Keď nám napíšete e-mail (otázka na podporu, diagnostická správa), dostaneme vašu e-mailovú adresu a to, čo priložíte. Použijeme to iba na odpoveď a na opravu problému. Právny základ: náš oprávnený záujem na podpore aplikácie a pri diagnostických správach váš súhlas vyjadrený ich odoslaním. Takéto e-maily uchovávame najviac 24 mesiacov a nezdieľame ich s nikým okrem poskytovateľov, ktorí prevádzkujú našu e-mailovú schránku.</p>
+
+    <h2>8. Vaše práva</h2>
+    <p>Keďže o používateľoch aplikácie nevedieme žiadne údaje, spravidla nie je k čomu poskytnúť prístup, čo opraviť, exportovať ani vymazať. Pri údajoch v e-mailoch, ktoré ste nám poslali, máte všetky práva podľa GDPR: prístup, opravu, vymazanie, obmedzenie, prenosnosť a námietku. Napíšte na <a href="mailto:support@dattal.app">support@dattal.app</a>. Sťažnosť môžete podať aj <a href="https://dataprotection.gov.sk/">Úradu na ochranu osobných údajov Slovenskej republiky</a> alebo dozornému orgánu vo vašej krajine.</p>
+    <p>Ak chcete odstrániť všetko, čo Dattal má na vašom Macu, vymažte svoje súbory <code>.datt</code> a aplikáciu. Odstránením aplikácie sa odstráni aj jej sandboxový kontajner s predvoľbami a diagnostickými správami.</p>
+
+    <h2>9. Deti</h2>
+    <p>Dattal môžu používať aj deti. Neobsahuje nevhodný obsah, reklamu, chat ani zdieľanie a neodkazuje na vonkajšie služby. Ako je opísané vyššie, nezbiera osobné údaje od nikoho, deti nevynímajúc. Jediný nákup spracúva Apple, kde rodičia môžu vyžadovať schválenie cez funkcie Požiadať o kúpu a Čas pred obrazovkou.</p>
+
+    <h2>10. Zmeny týchto zásad</h2>
+    <p>Ak budúca verzia Dattalu pridá funkciu, ktorá zahŕňa spracúvanie osobných údajov (napríklad voliteľnú synchronizáciu), tieto zásady aktualizujeme <em>pred</em> jej vydaním, zmenu uvedieme v poznámkach k vydaniu a tam, kde to zákon vyžaduje, si v aplikácii vyžiadame váš súhlas.</p>
+
+    <dl>
+      <dt>Vydavateľ</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovenská republika · IČO 36490253</dd>
+      <dt>Kontakt</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Verzia</dt><dd>1.0, 18. októbra 2026</dd>
+    </dl>
+  </article>
+
+  <footer>© 2026 CHARON, spol. s r.o. · Dattal</footer>
+</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  function setLang(l) {
+    root.setAttribute('data-lang', l);
+    root.setAttribute('lang', l);
+    document.title = l === 'sk' ? 'Zásady ochrany súkromia – Dattal' : 'Dattal Privacy Policy';
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === l));
+    });
+    try { localStorage.setItem('dattal-privacy-lang', l); } catch (e) {}
+  }
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+  });
+  var initial = 'en';
+  var hash = location.hash.replace('#', '');
+  if (hash === 'sk' || hash === 'en') initial = hash;
+  else {
+    try { initial = localStorage.getItem('dattal-privacy-lang') || initial; } catch (e) {}
+    if (initial === 'en' && /^sk/i.test(navigator.language || '')) initial = 'sk';
+  }
+  setLang(initial);
+})();
+</script>
+<script>
+// Nočná obloha: hviezdy rozmiestnené raz podľa veľkosti okna, jemné blikanie
+// (vypnuté pri prefers-reduced-motion). Hustota ~1 hviezda na 9000 px².
+(function () {
+  var canvas = document.getElementById('sky');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stars = [], w = 0, h = 0, dpr = 1;
+  function layout() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.round((w * h) / 9000);
+    stars = [];
+    for (var i = 0; i < n; i++) {
+      var big = Math.random() < 0.08;
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: big ? 1.2 + Math.random() * 1.1 : 0.4 + Math.random() * 0.8,
+        a: 0.25 + Math.random() * 0.6,
+        p: Math.random() * Math.PI * 2,
+        s: 0.4 + Math.random() * 1.2,
+        tint: Math.random() < 0.3
+      });
+    }
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < stars.length; i++) {
+      var st = stars[i];
+      var tw = reduce ? 1 : 0.7 + 0.3 * Math.sin(st.p + t * 0.001 * st.s);
+      ctx.globalAlpha = st.a * tw;
+      ctx.fillStyle = st.tint ? '#bcd4ff' : '#ffffff';
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
+      if (st.r > 1.6) {
+        ctx.globalAlpha = st.a * tw * 0.35;
+        ctx.fillRect(st.x - st.r * 3, st.y - 0.4, st.r * 6, 0.8);
+        ctx.fillRect(st.x - 0.4, st.y - st.r * 3, 0.8, st.r * 6);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { layout(); if (reduce) draw(0); }, 150);
+  });
+  layout();
+  if (reduce) { draw(0); return; }
+  var last = 0;
+  function frame(t) {
+    if (t - last > 90) { draw(t); last = t; }   // ~11 fps stačí na pomalé blikanie
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
