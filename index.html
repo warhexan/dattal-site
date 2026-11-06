@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dattal — worldbuilding database for Mac</title>
-<meta name="description" content="Dattal is a local worldbuilding database for macOS: characters, places, factions and events in one .datt file, with a table, a form, relationship maps, family trees and timelines. No account, no cloud.">
-<meta property="og:title" content="Dattal — your space, your database">
-<meta property="og:description" content="A local worldbuilding database for macOS. Your world is a file on your Mac.">
+<title>Dattal — modular offline database for Mac</title>
+<meta name="description" content="Dattal is a modular offline database for macOS: define your own attributes, fill them in through a table or a form, and get relationship maps, family trees and timelines from the same data. One .datt file on your Mac, no account, no cloud.">
+<meta property="og:title" content="Dattal — your universe, your database">
+<meta property="og:description" content="A modular offline database for macOS. Your data is a file on your Mac.">
 <meta property="og:image" content="https://dattal.app/assets/icon-512.png">
 <link rel="icon" href="/assets/favicon-64.png" sizes="64x64" type="image/png">
 <link rel="apple-touch-icon" href="/assets/icon-512.png">
@@ -58,7 +58,9 @@
   .eyebrow { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice); font-weight: 600; }
 
   /* Language toggle: each bilingual text is a pair of [lang] elements. */
-  html[data-lang="en"] [lang="sk"], html[data-lang="sk"] [lang="en"] { display: none !important; }
+  html[data-lang="en"] [lang]:not([lang="en"]), html[data-lang="sk"] [lang]:not([lang="sk"]),
+  html[data-lang="de"] [lang]:not([lang="de"]), html[data-lang="es"] [lang]:not([lang="es"]),
+  html[data-lang="ru"] [lang]:not([lang="ru"]) { display: none !important; }
 
   /* Nav */
   nav.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
@@ -70,10 +72,14 @@
   .lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; }
   .lang button { font: inherit; font-size: 0.82rem; padding: 4px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
   .lang button[aria-pressed="true"] { background: rgba(188,212,255,0.14); color: var(--text); }
+  @media (max-width: 560px) { .lang button { padding: 4px 8px; font-size: 0.78rem; } }
 
-  /* Hero */
-  .hero { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 40px; align-items: center; padding: 56px 0 40px; }
-  .hero .logo { justify-self: center; width: min(100%, 360px); filter: drop-shadow(0 0 40px rgba(188,212,255,0.25)); }
+  /* Hero: text vľavo, logo-konštelácia ako súčasť oblohy v pozadí vpravo.
+     `height: auto` drží pomer strán pri každej šírke okna (atribút height na
+     obrázku ho inak fixoval a logo sa pri zmene veľkosti okna deformovalo). */
+  /* Konšteláciu (logo) kreslí plátno oblohy priamo z hviezd — viď skript `#sky`. */
+  .hero { position: relative; display: block; padding: 72px 0 56px; min-height: 540px; }
+  .hero .text { position: relative; z-index: 1; max-width: 56%; }
   .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 28px; }
   .badge { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; border-radius: 12px; background: var(--paper); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
   .badge small { display: block; font-weight: 400; font-size: 0.75rem; color: var(--ink-muted); line-height: 1.1; }
@@ -88,7 +94,31 @@
   .sec-head h2 { margin-top: 6px; }
 
   /* Views (mockups) */
-  .views { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .views { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  /* Scéna: celé okná aplikácie v jednom ráme, prepínanie kartami, šípkami, ťahaním. */
+  .tour-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .tour-tabs button { font: inherit; font-size: 0.9rem; color: var(--muted); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; cursor: pointer; transition: color .15s, background .15s, border-color .15s; }
+  .tour-tabs button:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+  .tour-tabs button[aria-selected="true"] { color: var(--night); background: var(--ice); border-color: var(--ice); }
+  .tour-tabs button:focus-visible, .win-rail:focus-visible, .tour-arrow:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .win { position: relative; border-radius: 12px; overflow: hidden; background: #111318; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 110px rgba(82,122,230,0.16); }
+  .win-bar { position: relative; height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 14px; background: #2a1e15; border-bottom: 1px solid rgba(0,0,0,0.35); }
+  .win-bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .win-bar i:nth-child(2) { background: #febc2e; }
+  .win-bar i:nth-child(3) { background: #28c840; }
+  .win-bar span { position: absolute; left: 0; right: 0; text-align: center; font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.55); pointer-events: none; }
+  .win-rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+  .win-rail::-webkit-scrollbar { display: none; }
+  .win-rail img { flex: 0 0 100%; width: 100%; height: auto; display: block; scroll-snap-align: start; }
+  .tour-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: #fff; background: rgba(7,11,20,0.72); border: 1px solid rgba(255,255,255,0.2); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: opacity .15s, background .15s; }
+  .tour-arrow svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .tour-arrow.prev { left: 14px; } .tour-arrow.next { right: 14px; }
+  .tour-arrow:hover { background: rgba(58,95,196,0.9); }
+  .tour-arrow:disabled { opacity: 0; pointer-events: none; }
+  .tour-caps { max-width: 68ch; margin: 18px auto 0; text-align: center; min-height: 3.1em; }
+  .tour-caps p { display: none; margin: 0; color: var(--text); font-size: 1.02rem; }
+  .tour-caps p.on { display: block; }
+  .tour-note { text-align: center; color: var(--muted); font-size: 0.85rem; margin: 8px 0 0; }
   .view { background: var(--night-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px 18px 0; overflow: hidden; display: flex; flex-direction: column; }
   .view p { color: var(--muted); font-size: 0.95rem; margin: 6px 0 16px; }
   .mock { margin-top: auto; border-radius: 10px 10px 0 0; overflow: hidden; }
@@ -110,16 +140,39 @@
 
   /* Features */
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .aud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
   .feat { background: var(--night-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; }
   .feat .ic { width: 36px; height: 36px; border-radius: 9px; background: rgba(82,122,230,0.18); display: grid; place-items: center; margin-bottom: 12px; }
   .feat .ic svg { width: 20px; height: 20px; stroke: var(--ice); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .feat p { color: var(--muted); font-size: 0.93rem; margin: 6px 0 0; }
+  /* Oblúk funkcií: karty stoja na polkruhu (valec), predná je v strede, listuje sa doľava/doprava.
+     Bez JavaScriptu ostáva obyčajná mriežka. */
+  .grid.arc-on { display: block; position: relative; perspective: 1300px; perspective-origin: 50% 42%; overflow: hidden; touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%); }
+  .grid.arc-on:active { cursor: grabbing; }
+  .grid.arc-on:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .arc-on > .feat { position: absolute; top: 14px; left: 50%; width: var(--cw, 300px); margin-left: calc(var(--cw, 300px) / -2); -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    transition: transform .6s cubic-bezier(.22,.8,.24,1), opacity .45s ease, border-color .3s, box-shadow .3s; will-change: transform, opacity; }
+  .arc-on > .feat.front { border-color: rgba(188,212,255,0.45); box-shadow: 0 26px 60px rgba(0,0,0,0.5), 0 0 70px rgba(82,122,230,0.22); }
+  .arc-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 6px; }
+  .arc-nav button.arrow { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--rule); background: var(--night-2); color: var(--text); cursor: pointer; display: grid; place-items: center; }
+  .arc-nav button.arrow svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .arc-nav button.arrow:hover { border-color: var(--accent); background: rgba(82,122,230,0.18); }
+  .arc-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .arc-dots { display: flex; gap: 7px; }
+  .arc-dots button { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: 0; background: rgba(255,255,255,0.22); cursor: pointer; transition: background .2s, transform .2s; }
+  .arc-dots button[aria-current="true"] { background: var(--ice); transform: scale(1.35); }
+  @media (prefers-reduced-motion: reduce) { .arc-on > .feat { transition: none; } }
 
   /* Privacy band */
   .band { display: grid; grid-template-columns: 1fr 1.3fr; gap: 36px; align-items: center; background: var(--paper); color: var(--ink); border-radius: var(--radius); padding: 36px; }
   .band h2 { color: var(--ink); }
   .band p, .band li { color: #3c4457; }
   .band .eyebrow { color: var(--accent-deep); }
+  /* Odkaz na bielom páse: tmavšia modrá (svetlá farba odkazov je určená pre tmavé pozadie). */
+  .band a { color: var(--accent-deep); font-weight: 600; text-decoration-thickness: 1.5px; }
+  .band a:hover { color: var(--ink); }
+  .band a:focus-visible { outline-color: var(--accent-deep); }
   .band ul { padding-left: 1.1em; margin: 14px 0 0; }
   .band li + li { margin-top: 6px; }
   .band .file { width: min(100%, 220px); justify-self: center; filter: drop-shadow(0 18px 30px rgba(27,33,48,0.25)); }
@@ -141,16 +194,18 @@
   footer a:hover { color: var(--text); }
 
   @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; text-align: left; padding-top: 32px; }
-    .hero .logo { order: -1; width: min(60%, 260px); justify-self: start; }
+    /* Voľné miesto nad textom pre súhvezdie; výšku nastaví skript (--const-space),
+       bez skriptu sa súhvezdie nekreslí a ostáva pôvodných 40 px. */
+    .hero { padding-top: var(--const-space, 40px); min-height: 0; }
+    .hero .text { max-width: none; }
     .views { grid-template-columns: 1fr; }
-    .grid { grid-template-columns: 1fr 1fr; }
+    .grid, .aud { grid-template-columns: 1fr 1fr; }
     .band { grid-template-columns: 1fr; padding: 26px; }
     .band .file { width: 150px; justify-self: start; }
   }
   @media (max-width: 560px) {
     nav.top ul { display: none; }
-    .grid, .plans { grid-template-columns: 1fr; }
+    .grid, .aud, .plans { grid-template-columns: 1fr; }
     section { padding: 40px 0; }
   }
 </style>
@@ -161,143 +216,156 @@
   <nav class="top" aria-label="Main">
     <a class="brand" href="/"><img src="/assets/icon-512.png" alt="" width="30" height="30">Dattal</a>
     <ul>
-      <li><a href="#views"><span lang="en">Views</span><span lang="sk">Pohľady</span></a></li>
-      <li><a href="#features"><span lang="en">Features</span><span lang="sk">Funkcie</span></a></li>
-      <li><a href="#privacy"><span lang="en">Privacy</span><span lang="sk">Súkromie</span></a></li>
-      <li><a href="#pricing"><span lang="en">Pricing</span><span lang="sk">Cena</span></a></li>
+      <li><a href="#who"><span lang="en">Who it's for</span><span lang="sk">Pre koho</span><span lang="de">Für wen</span><span lang="es">Para quién</span><span lang="ru">Для кого</span></a></li>
+      <li><a href="#views"><span lang="en">Views</span><span lang="sk">Pohľady</span><span lang="de">Ansichten</span><span lang="es">Vistas</span><span lang="ru">Виды</span></a></li>
+      <li><a href="#features"><span lang="en">Features</span><span lang="sk">Funkcie</span><span lang="de">Funktionen</span><span lang="es">Funciones</span><span lang="ru">Возможности</span></a></li>
+      <li><a href="#privacy"><span lang="en">Privacy</span><span lang="sk">Súkromie</span><span lang="de">Datenschutz</span><span lang="es">Privacidad</span><span lang="ru">Приватность</span></a></li>
+      <li><a href="#pricing"><span lang="en">Pricing</span><span lang="sk">Cena</span><span lang="de">Preis</span><span lang="es">Precio</span><span lang="ru">Цена</span></a></li>
     </ul>
-    <div class="lang" role="group" aria-label="Language / Jazyk">
+    <div class="lang" role="group" aria-label="Language">
       <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-set-lang="sk" aria-pressed="false">SK</button>
+      <button type="button" data-set-lang="de" aria-pressed="false">DE</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">ES</button>
+      <button type="button" data-set-lang="ru" aria-pressed="false">RU</button>
     </div>
   </nav>
 
   <header class="hero">
-    <div>
-      <p class="eyebrow"><span lang="en">Worldbuilding database for macOS</span><span lang="sk">Databáza svetov pre macOS</span></p>
-      <h1><span lang="en">Your space, your database.</span><span lang="sk">Tvoj vesmír, tvoja databáza.</span></h1>
+    <div class="text">
+      <p class="eyebrow"><span lang="en">Modular offline database for macOS</span><span lang="sk">Modulárna offline databáza pre macOS</span><span lang="de">Modulare Offline-Datenbank für macOS</span><span lang="es">Base de datos modular sin conexión para macOS</span><span lang="ru">Модульная офлайн-база данных для macOS</span></p>
+      <h1><span lang="en">Your universe<br>Your database</span><span lang="sk">Tvoj svet<br>Tvoja databáza</span><span lang="de">Dein Universum<br>Deine Datenbank</span><span lang="es">Tu universo<br>Tu base de datos</span><span lang="ru">Твоя вселенная<br>Твоя база данных</span></h1>
       <p class="lead">
-        <span lang="en">Characters, places, factions and events in one file on your Mac. A table, a form, relationship maps, family trees and timelines, all drawn from the same data.</span>
-        <span lang="sk">Postavy, miesta, frakcie a udalosti v jednom súbore na tvojom Macu. Tabuľka, formulár, vzťahové mapy, rodokmene a časové osi, všetko z tých istých dát.</span>
+        <span lang="en">Define the attributes your project needs, fill them in through a table or a form, and let Dattal draw the connections: relationship maps, family trees and timelines from the same data. One file on your Mac.</span>
+        <span lang="sk">Nadefinuj atribúty, ktoré tvoj projekt potrebuje, vyplň ich v tabuľke alebo vo formulári a nechaj Dattal nakresliť súvislosti: vzťahové mapy, rodokmene a časové osi z tých istých dát. Jeden súbor na tvojom Macu.</span><span lang="de">Lege die Attribute fest, die dein Projekt braucht, fülle sie in einer Tabelle oder einem Formular aus und lass Dattal die Zusammenhänge zeichnen: Beziehungskarten, Stammbäume und Zeitleisten aus denselben Daten. Eine Datei auf deinem Mac.</span><span lang="es">Define los atributos que necesita tu proyecto, rellénalos en una tabla o un formulario y deja que Dattal dibuje las conexiones: mapas de relaciones, árboles genealógicos y líneas de tiempo a partir de los mismos datos. Un archivo en tu Mac.</span><span lang="ru">Задай атрибуты, которые нужны твоему проекту, заполни их в таблице или форме, а Dattal сам нарисует связи: карты связей, родословные и временные шкалы из тех же данных. Один файл на твоём Mac.</span>
       </p>
       <div class="cta">
         <span class="badge" aria-disabled="true">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.7.9-.8 0-2-.9-3.2-.9-1.7 0-3.2 1-4.1 2.5-1.8 3-.5 7.6 1.3 10.1.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8 2.2-1.3 3-2.5c1-1.4 1.4-2.8 1.4-2.9-.1 0-2.9-1.1-3-4zM13.9 5.2c.7-.8 1.1-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.5 2.9-1.3z"/></svg>
           <span>
-            <span lang="en">Coming to the Mac App Store</span><span lang="sk">Čoskoro v Mac App Store</span>
-            <small><span lang="en">Free to try · Pro is a one-time purchase</span><span lang="sk">Skúšobná verzia zadarmo · Pro jednorazovo</span></small>
+            <span lang="en">Coming to the Mac App Store</span><span lang="sk">Čoskoro v Mac App Store</span><span lang="de">Bald im Mac App Store</span><span lang="es">Próximamente en el Mac App Store</span><span lang="ru">Скоро в Mac App Store</span>
+            <small><span lang="en">Free to try · Pro is a one-time purchase</span><span lang="sk">Skúšobná verzia zadarmo · Pro jednorazovo</span><span lang="de">Kostenlos testen · Pro als Einmalkauf</span><span lang="es">Prueba gratis · Pro con un único pago</span><span lang="ru">Бесплатная пробная версия · Pro — разовая покупка</span></small>
           </span>
         </span>
-        <span class="req"><span lang="en">Requires macOS 14 or later</span><span lang="sk">Vyžaduje macOS 14 alebo novší</span></span>
+        <span class="req"><span lang="en">Requires macOS 14 or later</span><span lang="sk">Vyžaduje macOS 14 alebo novší</span><span lang="de">Erfordert macOS 14 oder neuer</span><span lang="es">Requiere macOS 14 o posterior</span><span lang="ru">Требуется macOS 14 или новее</span></span>
       </div>
       <ul class="facts">
-        <li><span lang="en">No account</span><span lang="sk">Bez účtu</span></li>
-        <li><span lang="en">No cloud</span><span lang="sk">Bez cloudu</span></li>
-        <li><span lang="en">No data collection</span><span lang="sk">Bez zberu dát</span></li>
-        <li><span lang="en">English · Slovak · German · Spanish · Russian</span><span lang="sk">Angličtina · slovenčina · nemčina · španielčina · ruština</span></li>
+        <li><span lang="en">No account</span><span lang="sk">Bez účtu</span><span lang="de">Kein Konto</span><span lang="es">Sin cuenta</span><span lang="ru">Без аккаунта</span></li>
+        <li><span lang="en">No cloud</span><span lang="sk">Bez cloudu</span><span lang="de">Keine Cloud</span><span lang="es">Sin nube</span><span lang="ru">Без облака</span></li>
+        <li><span lang="en">No data collection</span><span lang="sk">Bez zberu dát</span><span lang="de">Keine Datenerfassung</span><span lang="es">Sin recopilación de datos</span><span lang="ru">Без сбора данных</span></li>
+        <li><span lang="en">English · Slovak · German · Spanish · Russian</span><span lang="sk">Angličtina · slovenčina · nemčina · španielčina · ruština</span><span lang="de">Englisch · Slowakisch · Deutsch · Spanisch · Russisch</span><span lang="es">Inglés · eslovaco · alemán · español · ruso</span><span lang="ru">Английский · словацкий · немецкий · испанский · русский</span></li>
       </ul>
     </div>
-    <img class="logo" src="/assets/logo.png" alt="Dattal logo: a constellation in the shape of a triangle" width="446" height="512">
   </header>
+
+  <section id="who">
+    <div class="sec-head">
+      <p class="eyebrow"><span lang="en">Who it's for</span><span lang="sk">Pre koho je</span><span lang="de">Für wen</span><span lang="es">Para quién es</span><span lang="ru">Для кого</span></p>
+      <h2><span lang="en">Anything you keep track of in hundreds of pieces.</span><span lang="sk">Čokoľvek, čo sleduješ v stovkách kúskov.</span><span lang="de">Alles, was du in Hunderten von Teilen im Blick behältst.</span><span lang="es">Todo lo que sigues en cientos de piezas.</span><span lang="ru">Всё, что ты ведёшь сотнями записей.</span></h2>
+      <p class="lead" style="font-size:1.05rem"><span lang="en">Dattal has no fixed schema. Start from a template or an empty file and shape it to your subject.</span><span lang="sk">Dattal nemá pevnú štruktúru. Začni zo šablóny alebo z prázdneho súboru a prispôsob si ho svojej téme.</span><span lang="de">Dattal hat kein festes Schema. Beginne mit einer Vorlage oder einer leeren Datei und passe sie an dein Thema an.</span><span lang="es">Dattal no tiene un esquema fijo. Empieza con una plantilla o un archivo vacío y adáptalo a tu tema.</span><span lang="ru">В Dattal нет жёсткой схемы. Начни с шаблона или пустого файла и настрой его под свою тему.</span></p>
+    </div>
+    <div class="aud">
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 19V5a1 1 0 0 1 1-1h9l6 6v9a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M14 4v6h6M8 13h8M8 17h5"/></svg></div>
+        <h3><span lang="en">Writers &amp; worldbuilders</span><span lang="sk">Spisovatelia a tvorcovia svetov</span><span lang="de">Autoren &amp; Weltenbauer</span><span lang="es">Escritores y creadores de mundos</span><span lang="ru">Писатели и создатели миров</span></h3>
+        <p><span lang="en">Characters, places, factions, chapters and lore, with maps and timelines that stay consistent as the story grows.</span><span lang="sk">Postavy, miesta, frakcie, kapitoly a lore, s mapami a osami, ktoré ostanú konzistentné, ako príbeh rastie.</span><span lang="de">Figuren, Orte, Fraktionen, Kapitel und Hintergrundwissen, mit Karten und Zeitleisten, die stimmig bleiben, während die Geschichte wächst.</span><span lang="es">Personajes, lugares, facciones, capítulos y trasfondo, con mapas y líneas de tiempo que siguen siendo coherentes a medida que crece la historia.</span><span lang="ru">Персонажи, места, фракции, главы и лор, с картами и временными шкалами, которые остаются согласованными по мере роста истории.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg></div>
+        <h3><span lang="en">Game masters</span><span lang="sk">Páni jaskyne</span><span lang="de">Spielleiter</span><span lang="es">Directores de juego</span><span lang="ru">Мастера игры</span></h3>
+        <p><span lang="en">Campaign NPCs, locations, items and sessions on a timeline, with a relationship map of who owes whom.</span><span lang="sk">NPC postavy kampane, lokácie, predmety a sedenia na osi, so vzťahovou mapou, kto komu čo dlhuje.</span><span lang="de">NSCs der Kampagne, Schauplätze, Gegenstände und Sitzungen auf einer Zeitleiste, mit einer Beziehungskarte, wer wem etwas schuldet.</span><span lang="es">PNJ de la campaña, localizaciones, objetos y sesiones en una línea de tiempo, con un mapa de relaciones de quién debe qué a quién.</span><span lang="ru">НИП кампании, локации, предметы и сессии на временной шкале, с картой связей: кто кому что должен.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg></div>
+        <h3><span lang="en">Students &amp; teachers</span><span lang="sk">Študenti a učitelia</span><span lang="de">Lernende &amp; Lehrende</span><span lang="es">Estudiantes y profesores</span><span lang="ru">Студенты и преподаватели</span></h3>
+        <p><span lang="en">Subjects, notes, assignments with deadlines and exams on a timeline, all in one place and offline.</span><span lang="sk">Predmety, poznámky, úlohy s termínmi a skúšky na časovej osi, všetko na jednom mieste a offline.</span><span lang="de">Fächer, Notizen, Aufgaben mit Fristen und Prüfungen auf einer Zeitleiste, alles an einem Ort und offline.</span><span lang="es">Asignaturas, apuntes, tareas con plazos y exámenes en una línea de tiempo, todo en un solo lugar y sin conexión.</span><span lang="ru">Предметы, конспекты, задания со сроками и экзамены на временной шкале. Всё в одном месте и офлайн.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg></div>
+        <h3><span lang="en">Researchers</span><span lang="sk">Výskumníci</span><span lang="de">Forschende</span><span lang="es">Investigadores</span><span lang="ru">Исследователи</span></h3>
+        <p><span lang="en">Experiments, sources, data files and project notes, linked to each other and exportable as a PDF or an HTML site.</span><span lang="sk">Experimenty, zdroje, dátové súbory a poznámky k projektu, prepojené navzájom a exportovateľné do PDF alebo HTML webu.</span><span lang="de">Experimente, Quellen, Datendateien und Projektnotizen, miteinander verknüpft und als PDF oder HTML-Website exportierbar.</span><span lang="es">Experimentos, fuentes, archivos de datos y notas del proyecto, enlazados entre sí y exportables como PDF o sitio HTML.</span><span lang="ru">Эксперименты, источники, файлы данных и заметки по проекту, связанные между собой и экспортируемые в PDF или HTML-сайт.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M12 7.5V12M12 12l-6 3.5M12 12l6 3.5"/></svg></div>
+        <h3><span lang="en">Family history</span><span lang="sk">Rodinná história</span><span lang="de">Familiengeschichte</span><span lang="es">Historia familiar</span><span lang="ru">История семьи</span></h3>
+        <p><span lang="en">Relatives with dates, places and photos, drawn as a family tree you can zoom and print.</span><span lang="sk">Príbuzní s dátumami, miestami a fotkami, nakreslení ako rodokmeň, ktorý priblížiš a vytlačíš.</span><span lang="de">Verwandte mit Daten, Orten und Fotos, gezeichnet als Stammbaum, den du zoomen und drucken kannst.</span><span lang="es">Familiares con fechas, lugares y fotos, dibujados como un árbol genealógico que puedes ampliar e imprimir.</span><span lang="ru">Родственники с датами, местами и фотографиями в виде родословной, которую можно масштабировать и печатать.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg></div>
+        <h3><span lang="en">Collections &amp; inventories</span><span lang="sk">Zbierky a evidencie</span><span lang="de">Sammlungen &amp; Bestände</span><span lang="es">Colecciones e inventarios</span><span lang="ru">Коллекции и учёт</span></h3>
+        <p><span lang="en">Anything with attributes: books, equipment, recipes, clients. Define the columns once, fill them in fast.</span><span lang="sk">Čokoľvek s atribútmi: knihy, vybavenie, recepty, klienti. Stĺpce nadefinuješ raz, vyplníš rýchlo.</span><span lang="de">Alles mit Attributen: Bücher, Ausrüstung, Rezepte, Kunden. Spalten einmal festlegen, schnell ausfüllen.</span><span lang="es">Cualquier cosa con atributos: libros, equipos, recetas, clientes. Define las columnas una vez y rellénalas rápido.</span><span lang="ru">Всё, у чего есть атрибуты: книги, оборудование, рецепты, клиенты. Один раз задай столбцы и быстро заполняй.</span></p></article>
+    </div>
+  </section>
 
   <section id="views">
     <div class="sec-head">
-      <p class="eyebrow"><span lang="en">One file, several views</span><span lang="sk">Jeden súbor, viac pohľadov</span></p>
-      <h2><span lang="en">Enter it once. See it the way you need.</span><span lang="sk">Zapíš raz. Pozeraj tak, ako práve potrebuješ.</span></h2>
+      <p class="eyebrow"><span lang="en">One file, several views</span><span lang="sk">Jeden súbor, viac pohľadov</span><span lang="de">Eine Datei, mehrere Ansichten</span><span lang="es">Un archivo, varias vistas</span><span lang="ru">Один файл, несколько видов</span></p>
+      <h2><span lang="en">Enter it once. See it the way you need.</span><span lang="sk">Zapíš raz. Pozeraj tak, ako práve potrebuješ.</span><span lang="de">Einmal eingeben. So ansehen, wie du es brauchst.</span><span lang="es">Escríbelo una vez. Míralo como lo necesites.</span><span lang="ru">Введи один раз. Смотри так, как нужно.</span></h2>
     </div>
-    <div class="views">
-      <article class="view">
-        <h3><span lang="en">Table</span><span lang="sk">Tabuľka</span></h3>
-        <p><span lang="en">Every unit is a row, every attribute a column. Sort, filter, reorder and edit in place.</span><span lang="sk">Každá jednotka je riadok, každý atribút stĺpec. Trieď, filtruj, presúvaj a upravuj priamo v bunke.</span></p>
-        <div class="mock paper" aria-hidden="true">
-          <table>
-            <thead><tr><th>Unit</th><th>Born</th><th>Allegiance</th></tr></thead>
-            <tbody>
-              <tr><td>Aeliana Vosk</td><td>1187</td><td><span class="chip">Ember Compact</span></td></tr>
-              <tr><td>Tarrow of Greyfen</td><td class="sel">1203</td><td><span class="chip">Free Marches</span></td></tr>
-              <tr><td>Ysolde Marr</td><td>1171</td><td><span class="chip">Ember Compact</span></td></tr>
-              <tr><td>Brannoc Hale</td><td>1098</td><td><span class="chip">Deepforge</span></td></tr>
-            </tbody>
-          </table>
+    <div class="tour" id="tour">
+      <div class="tour-tabs" role="tablist" aria-label="Sample files">
+        <button type="button" role="tab" aria-selected="true" data-i="0"><span lang="en">Writers</span><span lang="sk">Spisovatelia</span><span lang="de">Autoren</span><span lang="es">Escritores</span><span lang="ru">Писатели</span></button>
+        <button type="button" role="tab" aria-selected="false" data-i="1"><span lang="en">Game masters</span><span lang="sk">Páni jaskyne</span><span lang="de">Spielleiter</span><span lang="es">Directores de juego</span><span lang="ru">Мастера игры</span></button>
+        <button type="button" role="tab" aria-selected="false" data-i="2"><span lang="en">Students</span><span lang="sk">Študenti</span><span lang="de">Lernende</span><span lang="es">Estudiantes</span><span lang="ru">Студенты</span></button>
+        <button type="button" role="tab" aria-selected="false" data-i="3"><span lang="en">Researchers</span><span lang="sk">Výskumníci</span><span lang="de">Forschende</span><span lang="es">Investigadores</span><span lang="ru">Исследователи</span></button>
+        <button type="button" role="tab" aria-selected="false" data-i="4"><span lang="en">Family history</span><span lang="sk">Rodinná história</span><span lang="de">Familiengeschichte</span><span lang="es">Historia familiar</span><span lang="ru">История семьи</span></button>
+        <button type="button" role="tab" aria-selected="false" data-i="5"><span lang="en">Collections</span><span lang="sk">Zbierky</span><span lang="de">Sammlungen</span><span lang="es">Colecciones</span><span lang="ru">Коллекции</span></button>
+      </div>
+      <div class="win">
+        <div class="win-rail" id="tour-rail" tabindex="0" role="region" aria-label="Screens of the app">
+          <img src="/assets/tour/writers.jpg" width="1800" height="927" alt="A place page in a fantasy world with a landscape picture and a preview card shown over a linked name in the text">
+          <img src="/assets/tour/gamemasters.jpg" width="1800" height="927" loading="lazy" alt="A table of campaign locations with pictures, a danger scale, linked factions and descriptions">
+          <img src="/assets/tour/students.jpg" width="1800" height="927" loading="lazy" alt="An organelle page next to an annotated diagram of an animal cell with labelled pins and a preview card">
+          <img src="/assets/tour/researchers.jpg" width="1800" height="927" loading="lazy" alt="A study site page next to a relationship map connecting team members and experiments">
+          <img src="/assets/tour/family.jpg" width="1800" height="927" loading="lazy" alt="A family tree window with portraits over a person's page with a portrait and a life story">
+          <img src="/assets/tour/collections.jpg" width="1800" height="927" loading="lazy" alt="A book page with a cover and a rating next to a vertical timeline of authors' lives">
         </div>
-      </article>
-      <article class="view">
-        <h3><span lang="en">Form</span><span lang="sk">Formulár</span></h3>
-        <p><span lang="en">Lay out a unit like a wiki page: fields, groups, images and long text where you want them.</span><span lang="sk">Rozlož jednotku ako stránku wiki: polia, skupiny, obrázky a dlhý text tam, kde ich chceš.</span></p>
-        <div class="mock paper form" aria-hidden="true">
-          <p class="title">Aeliana Vosk</p>
-          <div class="frow">
-            <div class="field"><b>Race</b><span>Human</span></div>
-            <div class="field"><b>Born</b><span>12 Thaw 1187</span></div>
-          </div>
-          <div class="field"><b>Allegiance</b><span>Ember Compact · Captain of the Ashguard</span></div>
-          <div class="field"><b>Notes</b><span>Raised in Harrowgate. Rival of Tarrow since the siege of…</span></div>
-        </div>
-      </article>
-      <article class="view">
-        <h3><span lang="en">Maps &amp; timelines</span><span lang="sk">Mapy a osi</span></h3>
-        <p><span lang="en">Relationship maps, family trees and timelines with your own calendars, drawn from the values you filled in.</span><span lang="sk">Vzťahové mapy, rodokmene a časové osi s vlastnými kalendármi, kreslené z hodnôt, ktoré si vyplnil.</span></p>
-        <div class="mock dark" aria-hidden="true">
-          <svg viewBox="0 0 320 170" xmlns="http://www.w3.org/2000/svg">
-            <g stroke="#bcd4ff" stroke-opacity="0.55" stroke-width="1.2" fill="none">
-              <path d="M70 60 L160 40 L250 70"/><path d="M160 40 L150 120"/><path d="M70 60 L150 120"/><path d="M250 70 L150 120"/>
-            </g>
-            <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="9" fill="#e9edf6" text-anchor="middle">
-              <circle cx="70" cy="60" r="14" fill="#527ae6"/><text x="70" y="88">Aeliana</text>
-              <circle cx="160" cy="40" r="14" fill="#3a5fc4"/><text x="160" y="24">Ysolde</text>
-              <circle cx="250" cy="70" r="14" fill="#527ae6"/><text x="250" y="98">Tarrow</text>
-              <circle cx="150" cy="120" r="14" fill="#8fb0ff"/><text x="150" y="148">Brannoc</text>
-            </g>
-            <g stroke="#8f99b3" stroke-width="1"><line x1="16" y1="162" x2="304" y2="162"/></g>
-            <g fill="#bcd4ff"><circle cx="60" cy="162" r="3"/><circle cx="140" cy="162" r="3"/><circle cx="215" cy="162" r="3"/><circle cx="282" cy="162" r="3"/></g>
-          </svg>
-        </div>
-      </article>
+        <button type="button" class="tour-arrow prev" id="tour-prev" aria-label="Previous screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="tour-arrow next" id="tour-next" aria-label="Next screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="tour-caps" aria-live="polite">
+        <p data-i="0" class="on"><span lang="en">A place in a fantasy world. Names in the text are links to other units: hover one and its card appears.</span><span lang="sk">Miesto vo fantasy svete. Mená v texte sú odkazy na iné jednotky: prejdi nad ne myšou a ukáže sa ich karta.</span><span lang="de">Ein Ort in einer Fantasywelt. Namen im Text sind Links zu anderen Einheiten: Fahre mit der Maus darüber und ihre Karte erscheint.</span><span lang="es">Un lugar de un mundo de fantasía. Los nombres del texto son enlaces a otras unidades: pasa el cursor por encima y aparece su tarjeta.</span><span lang="ru">Место в фэнтезийном мире. Имена в тексте работают как ссылки на другие единицы: наведи курсор, и появится их карточка.</span></p>
+        <p data-i="1"><span lang="en">The locations of a campaign as a table: a picture, a type, a danger scale and who rules each place.</span><span lang="sk">Lokácie kampane ako tabuľka: obrázok, typ, škála nebezpečenstva a kto ktorému miestu vládne.</span><span lang="de">Die Schauplätze einer Kampagne als Tabelle: ein Bild, ein Typ, eine Gefahrenskala und wer über welchen Ort herrscht.</span><span lang="es">Las localizaciones de una campaña en forma de tabla: una imagen, un tipo, una escala de peligro y quién gobierna cada lugar.</span><span lang="ru">Локации кампании в виде таблицы: изображение, тип, шкала опасности и кто правит каждым местом.</span></p>
+        <p data-i="2"><span lang="en">A cell diagram with pins and zones. Each one opens its organelle, and you decide what the preview card shows.</span><span lang="sk">Schéma bunky so špendlíkmi a zónami. Každá otvára svoju organelu a sám určíš, čo ukáže karta náhľadu.</span><span lang="de">Ein Zelldiagramm mit Pins und Zonen. Jede Markierung öffnet ihr Organell, und du bestimmst, was die Vorschaukarte zeigt.</span><span lang="es">Un diagrama de la célula con chinchetas y zonas. Cada una abre su orgánulo, y tú decides qué muestra la tarjeta de vista previa.</span><span lang="ru">Схема клетки с булавками и зонами. Каждая открывает свою органеллу, а ты решаешь, что показывает карточка предпросмотра.</span></p>
+        <p data-i="3"><span lang="en">A field site next to a map of who leads and who assists on each experiment.</span><span lang="sk">Stanovište v teréne vedľa mapy, kto vedie a kto pomáha pri ktorom pokuse.</span><span lang="de">Ein Untersuchungsstandort neben einer Karte, wer welches Experiment leitet und wer dabei hilft.</span><span lang="es">Un sitio de estudio junto a un mapa de quién dirige y quién ayuda en cada experimento.</span><span lang="ru">Участок исследования рядом с картой: кто ведёт каждый эксперимент и кто помогает.</span></p>
+        <p data-i="4"><span lang="en">A family tree in its own window, over the page of one of the people in it.</span><span lang="sk">Rodokmeň vo vlastnom okne nad stránkou jednej z osôb, ktoré v ňom sú.</span><span lang="de">Ein Stammbaum in einem eigenen Fenster über der Seite einer der Personen darin.</span><span lang="es">Un árbol genealógico en su propia ventana, sobre la página de una de las personas que aparecen en él.</span><span lang="ru">Родословная в отдельном окне поверх страницы одного из её участников.</span></p>
+        <p data-i="5"><span lang="en">A home library: a book with its cover and rating, next to a timeline of the authors' lives.</span><span lang="sk">Domáca knižnica: kniha s obálkou a hodnotením vedľa časovej osi životov autorov.</span><span lang="de">Eine Hausbibliothek: ein Buch mit Umschlag und Bewertung neben einer Zeitleiste der Lebensdaten der Autoren.</span><span lang="es">Una biblioteca doméstica: un libro con su cubierta y valoración, junto a una línea de tiempo de la vida de los autores.</span><span lang="ru">Домашняя библиотека: книга с обложкой и оценкой рядом с временной шкалой жизни авторов.</span></p>
+      </div>
+      <p class="tour-note"><span lang="en">Six sample files, one for each kind of work. Each file carries its own theme.</span><span lang="sk">Šesť ukážkových súborov, jeden pre každý druh práce. Každý súbor si nesie vlastnú tému vzhľadu.</span><span lang="de">Sechs Beispieldateien, eine für jede Art von Arbeit. Jede Datei bringt ihr eigenes Erscheinungsbild mit.</span><span lang="es">Seis archivos de ejemplo, uno para cada tipo de trabajo. Cada archivo lleva su propio tema.</span><span lang="ru">Шесть примеров файлов, по одному на каждый вид работы. У каждого файла своя тема оформления.</span></p>
     </div>
   </section>
 
   <section id="features">
     <div class="sec-head">
-      <p class="eyebrow"><span lang="en">What you get</span><span lang="sk">Čo dostaneš</span></p>
-      <h2><span lang="en">Built for hundreds of characters, not a handful of notes.</span><span lang="sk">Stavané na stovky postáv, nie na pár poznámok.</span></h2>
+      <p class="eyebrow"><span lang="en">What you get</span><span lang="sk">Čo dostaneš</span><span lang="de">Was du bekommst</span><span lang="es">Qué obtienes</span><span lang="ru">Что ты получаешь</span></p>
+      <h2><span lang="en">Built for hundreds of characters, not a handful of notes.</span><span lang="sk">Stavané na stovky postáv, nie na pár poznámok.</span><span lang="de">Gebaut für Hunderte von Figuren, nicht für eine Handvoll Notizen.</span><span lang="es">Hecho para cientos de personajes, no para un puñado de notas.</span><span lang="ru">Создано для сотен персонажей, а не для горстки заметок.</span></h2>
     </div>
-    <div class="grid">
+    <div class="grid" id="feat-arc">
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h16"/><circle cx="8" cy="5" r="1.5" fill="#bcd4ff" stroke="none"/><circle cx="8" cy="12" r="1.5" fill="#bcd4ff" stroke="none"/><circle cx="8" cy="19" r="1.5" fill="#bcd4ff" stroke="none"/></svg></div>
-        <h3><span lang="en">Units in a tree</span><span lang="sk">Jednotky v strome</span></h3>
-        <p><span lang="en">Characters, places, factions, items, events. Anything you define, nested as deep as you like.</span><span lang="sk">Postavy, miesta, frakcie, predmety, udalosti. Čokoľvek si určíš, vnorené tak hlboko, ako chceš.</span></p></article>
+        <h3><span lang="en">Units in a tree</span><span lang="sk">Jednotky v strome</span><span lang="de">Einheiten im Baum</span><span lang="es">Unidades en árbol</span><span lang="ru">Единицы в дереве</span></h3>
+        <p><span lang="en">Characters, places, factions, items, events. Anything you define, nested as deep as you like.</span><span lang="sk">Postavy, miesta, frakcie, predmety, udalosti. Čokoľvek si určíš, vnorené tak hlboko, ako chceš.</span><span lang="de">Figuren, Orte, Fraktionen, Gegenstände, Ereignisse. Alles, was du festlegst, so tief verschachtelt, wie du willst.</span><span lang="es">Personajes, lugares, facciones, objetos, eventos. Lo que tú definas, anidado tan profundo como quieras.</span><span lang="ru">Персонажи, места, фракции, предметы, события. Всё, что задашь, с любой глубиной вложенности.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 4v16"/></svg></div>
-        <h3><span lang="en">Attribute library</span><span lang="sk">Knižnica atribútov</span></h3>
-        <p><span lang="en">Text, numbers, dates, selections, scales, yes/no, images and links to other units.</span><span lang="sk">Text, čísla, dátumy, výbery, stupnice, áno/nie, obrázky a odkazy na iné jednotky.</span></p></article>
+        <h3><span lang="en">Attribute library</span><span lang="sk">Knižnica atribútov</span><span lang="de">Attributbibliothek</span><span lang="es">Biblioteca de atributos</span><span lang="ru">Библиотека атрибутов</span></h3>
+        <p><span lang="en">Text, numbers, dates, selections, scales, yes/no, images and links to other units.</span><span lang="sk">Text, čísla, dátumy, výbery, stupnice, áno/nie, obrázky a odkazy na iné jednotky.</span><span lang="de">Text, Zahlen, Daten, Auswahlen, Skalen, Ja/Nein, Bilder und Links zu anderen Einheiten.</span><span lang="es">Texto, números, fechas, selecciones, escalas, sí/no, imágenes y enlaces a otras unidades.</span><span lang="ru">Текст, числа, даты, выбор из списка, шкалы, да/нет, изображения и ссылки на другие единицы.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="8" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M8 7.5l7.5 1M7.5 8l3.5 7.5M16.5 10l-3.5 5.5"/></svg></div>
-        <h3><span lang="en">Maps and family trees</span><span lang="sk">Mapy a rodokmene</span></h3>
-        <p><span lang="en">Zoomable, draggable, generated from your data instead of drawn by hand.</span><span lang="sk">Približovanie, ťahanie, generované z tvojich dát namiesto ručného kreslenia.</span></p></article>
+        <h3><span lang="en">Maps and family trees</span><span lang="sk">Mapy a rodokmene</span><span lang="de">Karten und Stammbäume</span><span lang="es">Mapas y árboles genealógicos</span><span lang="ru">Карты и родословные</span></h3>
+        <p><span lang="en">Zoomable, draggable, generated from your data instead of drawn by hand.</span><span lang="sk">Približovanie, ťahanie, generované z tvojich dát namiesto ručného kreslenia.</span><span lang="de">Zoombar, verschiebbar, aus deinen Daten erzeugt statt von Hand gezeichnet.</span><span lang="es">Con zoom, arrastrables y generados a partir de tus datos en lugar de dibujados a mano.</span><span lang="ru">Масштабируются, перетаскиваются и строятся из твоих данных, а не рисуются вручную.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M7 12V8M12 12V6M17 12v-3"/><circle cx="7" cy="12" r="1.5" fill="#bcd4ff" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="#bcd4ff" stroke="none"/><circle cx="17" cy="12" r="1.5" fill="#bcd4ff" stroke="none"/></svg></div>
-        <h3><span lang="en">Timelines</span><span lang="sk">Časové osi</span></h3>
-        <p><span lang="en">Events and durations on a zoomable axis, from centuries down to minutes, with several timelines per world.</span><span lang="sk">Udalosti a trvania na približovateľnej osi, od storočí až po minúty, viac osí v jednom svete.</span></p></article>
+        <h3><span lang="en">Timelines</span><span lang="sk">Časové osi</span><span lang="de">Zeitleisten</span><span lang="es">Líneas de tiempo</span><span lang="ru">Временные шкалы</span></h3>
+        <p><span lang="en">Events and durations on a zoomable axis, from centuries down to minutes, with several timelines per world.</span><span lang="sk">Udalosti a trvania na približovateľnej osi, od storočí až po minúty, viac osí v jednom svete.</span><span lang="de">Ereignisse und Zeitspannen auf einer zoombaren Achse, von Jahrhunderten bis zu Minuten, mit mehreren Zeitleisten pro Welt.</span><span lang="es">Eventos y duraciones en un eje con zoom, desde siglos hasta minutos, con varias líneas de tiempo por mundo.</span><span lang="ru">События и длительности на масштабируемой оси, от столетий до минут, несколько шкал в одном мире.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
-        <h3><span lang="en">Custom calendars</span><span lang="sk">Vlastné kalendáre</span></h3>
-        <p><span lang="en">Your own months, days, eras and year lengths. Dates in forms, tables and timelines follow them.</span><span lang="sk">Vlastné mesiace, dni, éry a dĺžky rokov. Dátumy vo formulároch, tabuľkách aj na osiach sa nimi riadia.</span></p></article>
+        <h3><span lang="en">Custom calendars</span><span lang="sk">Vlastné kalendáre</span><span lang="de">Eigene Kalender</span><span lang="es">Calendarios propios</span><span lang="ru">Собственные календари</span></h3>
+        <p><span lang="en">Your own months, days, eras and year lengths. Dates in forms, tables and timelines follow them.</span><span lang="sk">Vlastné mesiace, dni, éry a dĺžky rokov. Dátumy vo formulároch, tabuľkách aj na osiach sa nimi riadia.</span><span lang="de">Eigene Monate, Tage, Epochen und Jahreslängen. Datumsangaben in Formularen, Tabellen und Zeitleisten richten sich danach.</span><span lang="es">Tus propios meses, días, eras y duraciones del año. Las fechas en formularios, tablas y líneas de tiempo los siguen.</span><span lang="ru">Свои месяцы, дни, эры и длина года. Даты в формах, таблицах и на шкалах следуют им.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></div>
-        <h3><span lang="en">Configurable views</span><span lang="sk">Konfigurovateľné náhľady</span></h3>
-        <p><span lang="en">Each field decides where its name sits, how values align, which borders and icons show. Group fields into tabbed windows on the form.</span><span lang="sk">Každé pole rozhoduje, kde má názov, ako sa zarovnajú hodnoty, aké okraje a ikony ukáže. Polia zoskupíš do okien so záložkami.</span></p></article>
+        <h3><span lang="en">Configurable views</span><span lang="sk">Konfigurovateľné náhľady</span><span lang="de">Konfigurierbare Ansichten</span><span lang="es">Vistas configurables</span><span lang="ru">Настраиваемые виды</span></h3>
+        <p><span lang="en">Each field decides where its name sits, how values align, which borders and icons show. Group fields into tabbed windows on the form.</span><span lang="sk">Každé pole rozhoduje, kde má názov, ako sa zarovnajú hodnoty, aké okraje a ikony ukáže. Polia zoskupíš do okien so záložkami.</span><span lang="de">Jedes Feld bestimmt, wo sein Name steht, wie Werte ausgerichtet sind und welche Rahmen und Symbole zu sehen sind. Gruppiere Felder im Formular in Fenstern mit Tabs.</span><span lang="es">Cada campo decide dónde va su nombre, cómo se alinean los valores y qué bordes e iconos se muestran. Agrupa campos en ventanas con pestañas dentro del formulario.</span><span lang="ru">Каждое поле решает, где стоит его название, как выровнены значения и какие рамки и значки видны. Группируй поля в окна с вкладками на форме.</span></p></article>
+      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M12 5v11M12 10h9"/></svg></div>
+        <h3><span lang="en">Custom previews</span><span lang="sk">Vlastné náhľady</span><span lang="de">Eigene Vorschauen</span><span lang="es">Vistas previas propias</span><span lang="ru">Свои предпросмотры</span></h3>
+        <p><span lang="en">Choose which attributes the hover card shows and arrange them in areas. Separately for links, annotations, timelines, maps and family trees.</span><span lang="sk">Vyber, ktoré atribúty ukáže karta pri prejdení myšou, a rozlož ich do oblastí. Zvlášť pre odkazy, anotácie, osi, mapy a rodokmene.</span><span lang="de">Wähle, welche Attribute die Karte beim Überfahren zeigt, und ordne sie in Bereichen an. Getrennt für Links, Anmerkungen, Zeitleisten, Karten und Stammbäume.</span><span lang="es">Elige qué atributos muestra la tarjeta al pasar el cursor y organízalos en áreas. Por separado para enlaces, anotaciones, líneas de tiempo, mapas y árboles genealógicos.</span><span lang="ru">Выбери, какие атрибуты показывает карточка при наведении, и разложи их по областям. Отдельно для ссылок, аннотаций, шкал, карт и родословных.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l2.6-2.6a4 4 0 0 0-5.7-5.7L11.5 6.8"/><path d="M14 10a4 4 0 0 0-5.7 0l-2.6 2.6a4 4 0 0 0 5.7 5.7l1.1-1.1"/></svg></div>
-        <h3><span lang="en">Auto-links in text</span><span lang="sk">Autohyperlinky v texte</span></h3>
-        <p><span lang="en">Mention a character in a description and Dattal offers to link it. Links open the unit and show a preview on hover.</span><span lang="sk">Spomeň postavu v opise a Dattal ponúkne prepojenie. Odkaz otvorí jednotku a pri prejdení myšou ukáže náhľad.</span></p></article>
+        <h3><span lang="en">Auto-links in text</span><span lang="sk">Autohyperlinky v texte</span><span lang="de">Auto-Links im Text</span><span lang="es">Enlaces automáticos en el texto</span><span lang="ru">Автоссылки в тексте</span></h3>
+        <p><span lang="en">Mention a character in a description and Dattal offers to link it. Links open the unit and show a preview on hover.</span><span lang="sk">Spomeň postavu v opise a Dattal ponúkne prepojenie. Odkaz otvorí jednotku a pri prejdení myšou ukáže náhľad.</span><span lang="de">Erwähne eine Figur in einer Beschreibung und Dattal bietet an, sie zu verlinken. Links öffnen die Einheit und zeigen beim Überfahren eine Vorschau.</span><span lang="es">Menciona a un personaje en una descripción y Dattal te ofrece enlazarlo. Los enlaces abren la unidad y muestran una vista previa al pasar el cursor.</span><span lang="ru">Упомяни персонажа в описании, и Dattal предложит сделать ссылку. Ссылки открывают единицу и показывают предпросмотр при наведении.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 15l3-3 3 2 4-4"/><circle cx="8" cy="9" r="1.5" fill="#bcd4ff" stroke="none"/></svg></div>
-        <h3><span lang="en">Annotated images</span><span lang="sk">Anotované obrázky</span></h3>
-        <p><span lang="en">Drop a map or a portrait in and pin notes onto it. Each pin can point to a unit, so a map of your continent becomes navigation.</span><span lang="sk">Vlož mapu alebo portrét a pripni naň poznámky. Každý špendlík môže ukazovať na jednotku, takže mapa kontinentu je zároveň navigácia.</span></p></article>
-      <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M6 4v16M6 8c4 0 6 2 12 2M6 14c4 0 6 2 12 2"/></svg></div>
-        <h3><span lang="en">Branches</span><span lang="sk">Vetvy</span></h3>
-        <p><span lang="en">Keep alternative versions of your world side by side in the same file.</span><span lang="sk">Alternatívne verzie sveta vedľa seba v tom istom súbore.</span></p></article>
+        <h3><span lang="en">Annotated images</span><span lang="sk">Anotované obrázky</span><span lang="de">Annotierte Bilder</span><span lang="es">Imágenes anotadas</span><span lang="ru">Аннотированные изображения</span></h3>
+        <p><span lang="en">Drop a map or a portrait in and pin notes onto it. Each pin can point to a unit, so a map of your continent becomes navigation.</span><span lang="sk">Vlož mapu alebo portrét a pripni naň poznámky. Každý špendlík môže ukazovať na jednotku, takže mapa kontinentu je zároveň navigácia.</span><span lang="de">Füge eine Karte oder ein Porträt ein und hefte Notizen daran. Jeder Pin kann auf eine Einheit zeigen, so wird die Karte deines Kontinents zur Navigation.</span><span lang="es">Añade un mapa o un retrato y fija notas sobre él. Cada chincheta puede apuntar a una unidad, así el mapa de tu continente se convierte en navegación.</span><span lang="ru">Добавь карту или портрет и прикрепи к ним заметки. Каждая булавка может указывать на единицу, так что карта твоего континента становится навигацией.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 4v12M8 12l4 4 4-4"/><path d="M4 20h16"/></svg></div>
-        <h3><span lang="en">Export</span><span lang="sk">Export</span></h3>
-        <p><span lang="en">HTML site, optionally password-locked. PDF book. JSON for backups and migration.</span><span lang="sk">HTML web, voliteľne zamknutý heslom. PDF kniha. JSON na zálohu a prenos.</span></p></article>
+        <h3><span lang="en">Export</span><span lang="sk">Export</span><span lang="de">Export</span><span lang="es">Exportación</span><span lang="ru">Экспорт</span></h3>
+        <p><span lang="en">HTML site, optionally password-locked. PDF book. JSON for backups and migration.</span><span lang="sk">HTML web, voliteľne zamknutý heslom. PDF kniha. JSON na zálohu a prenos.</span><span lang="de">HTML-Website, wahlweise mit Passwort geschützt. PDF-Buch. JSON für Backups und Migration.</span><span lang="es">Sitio HTML, opcionalmente protegido con contraseña. Libro en PDF. JSON para copias de seguridad y migración.</span><span lang="ru">HTML-сайт, при желании под паролем. Книга в PDF. JSON для резервных копий и переноса.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><path d="M12 20V8M8 12l4-4 4 4"/><path d="M4 4h16"/></svg></div>
-        <h3><span lang="en">Import</span><span lang="sk">Import</span></h3>
-        <p><span lang="en">Spreadsheets from Excel or CSV straight into a new branch.</span><span lang="sk">Tabuľky z Excelu alebo CSV rovno do novej vetvy.</span></p></article>
+        <h3><span lang="en">Import</span><span lang="sk">Import</span><span lang="de">Import</span><span lang="es">Importación</span><span lang="ru">Импорт</span></h3>
+        <p><span lang="en">Spreadsheets from Excel or CSV straight into a new branch.</span><span lang="sk">Tabuľky z Excelu alebo CSV rovno do novej vetvy.</span><span lang="de">Tabellen aus Excel oder CSV direkt in einen neuen Zweig.</span><span lang="es">Hojas de cálculo de Excel o CSV directamente a una nueva rama.</span><span lang="ru">Таблицы из Excel или CSV прямо в новую ветку.</span></p></article>
       <article class="feat"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16"/><path d="M8 12h8"/></svg></div>
-        <h3><span lang="en">Your look</span><span lang="sk">Tvoj vzhľad</span></h3>
-        <p><span lang="en">Themes, level markers and fonts, saved with the file so the world looks the same everywhere.</span><span lang="sk">Témy, značky úrovní a písma, uložené so súborom, aby svet vyzeral rovnako všade.</span></p></article>
+        <h3><span lang="en">Your look</span><span lang="sk">Tvoj vzhľad</span><span lang="de">Dein Erscheinungsbild</span><span lang="es">Tu estilo</span><span lang="ru">Твой стиль</span></h3>
+        <p><span lang="en">Themes, level markers and fonts, saved with the file so the world looks the same everywhere.</span><span lang="sk">Témy, značky úrovní a písma, uložené so súborom, aby svet vyzeral rovnako všade.</span><span lang="de">Themes, Ebenenmarker und Schriften, mit der Datei gespeichert, damit die Welt überall gleich aussieht.</span><span lang="es">Temas, marcadores de nivel y tipografías, guardados con el archivo para que el mundo se vea igual en todas partes.</span><span lang="ru">Темы, маркеры уровней и шрифты сохраняются вместе с файлом, чтобы мир везде выглядел одинаково.</span></p></article>
     </div>
   </section>
 
@@ -305,43 +373,43 @@
     <div class="band">
       <img class="file" src="/assets/datt-file.svg" alt="A .datt document icon" width="220" height="280">
       <div>
-        <p class="eyebrow"><span lang="en">Private by design</span><span lang="sk">Súkromie od základu</span></p>
-        <h2><span lang="en">Your world is a file. It stays yours.</span><span lang="sk">Tvoj svet je súbor. A ostáva tvoj.</span></h2>
-        <p><span lang="en">Dattal has no account, no cloud and no analytics. Everything lives in a <code>.datt</code> document on your Mac. Put it in iCloud Drive, Dropbox or on a USB stick, it works the same.</span><span lang="sk">Dattal nemá účet, cloud ani analytiku. Všetko je v dokumente <code>.datt</code> na tvojom Macu. Daj si ho do iCloud Drive, Dropboxu alebo na USB kľúč, funguje rovnako.</span></p>
+        <p class="eyebrow"><span lang="en">Private by design</span><span lang="sk">Súkromie od základu</span><span lang="de">Privat von Grund auf</span><span lang="es">Privado por diseño</span><span lang="ru">Приватность по замыслу</span></p>
+        <h2><span lang="en">Your world is a file. It stays yours.</span><span lang="sk">Tvoj svet je súbor. A ostáva tvoj.</span><span lang="de">Deine Welt ist eine Datei. Sie bleibt deine.</span><span lang="es">Tu mundo es un archivo. Sigue siendo tuyo.</span><span lang="ru">Твой мир хранится в файле. И он остаётся твоим.</span></h2>
+        <p><span lang="en">Dattal has no account, no cloud and no analytics. Everything lives in a <code>.datt</code> document on your Mac. Put it in iCloud Drive, Dropbox or on a USB stick, it works the same.</span><span lang="sk">Dattal nemá účet, cloud ani analytiku. Všetko je v dokumente <code>.datt</code> na tvojom Macu. Daj si ho do iCloud Drive, Dropboxu alebo na USB kľúč, funguje rovnako.</span><span lang="de">Dattal hat kein Konto, keine Cloud und keine Analyse. Alles liegt in einem <code>.datt</code>-Dokument auf deinem Mac. Leg es in iCloud Drive, Dropbox oder auf einen USB-Stick, es funktioniert gleich.</span><span lang="es">Dattal no tiene cuenta, ni nube, ni analíticas. Todo vive en un documento <code>.datt</code> en tu Mac. Ponlo en iCloud Drive, Dropbox o en una memoria USB: funciona igual.</span><span lang="ru">В Dattal нет аккаунта, облака и аналитики. Всё хранится в документе <code>.datt</code> на твоём Mac. Положи его в iCloud Drive, Dropbox или на флешку, работает одинаково.</span></p>
         <ul>
-          <li><span lang="en">Password-protected documents are encrypted on your Mac.</span><span lang="sk">Dokumenty chránené heslom sú šifrované na tvojom Macu.</span></li>
-          <li><span lang="en">The app makes no network connections of its own, apart from the App Store purchase.</span><span lang="sk">Aplikácia sa sama na sieť nepripája, okrem nákupu cez App Store.</span></li>
-          <li><span lang="en">Crash reports stay on your disk unless you choose to e-mail them.</span><span lang="sk">Správy o pádoch ostávajú na tvojom disku, kým ich sám nepošleš e-mailom.</span></li>
+          <li><span lang="en">Password-protected documents are encrypted on your Mac.</span><span lang="sk">Dokumenty chránené heslom sú šifrované na tvojom Macu.</span><span lang="de">Passwortgeschützte Dokumente werden auf deinem Mac verschlüsselt.</span><span lang="es">Los documentos protegidos con contraseña se cifran en tu Mac.</span><span lang="ru">Документы под паролем шифруются на твоём Mac.</span></li>
+          <li><span lang="en">The app makes no network connections of its own, apart from the App Store purchase.</span><span lang="sk">Aplikácia sa sama na sieť nepripája, okrem nákupu cez App Store.</span><span lang="de">Die App baut von sich aus keine Netzwerkverbindungen auf, abgesehen vom Kauf im App Store.</span><span lang="es">La app no establece conexiones de red por su cuenta, salvo la compra en el App Store.</span><span lang="ru">Приложение само не устанавливает сетевых соединений, кроме покупки в App Store.</span></li>
+          <li><span lang="en">Crash reports stay on your disk unless you choose to e-mail them.</span><span lang="sk">Správy o pádoch ostávajú na tvojom disku, kým ich sám nepošleš e-mailom.</span><span lang="de">Absturzberichte bleiben auf deiner Festplatte, sofern du sie nicht per E-Mail sendest.</span><span lang="es">Los informes de fallos se quedan en tu disco, a menos que decidas enviarlos por correo.</span><span lang="ru">Отчёты о сбоях остаются на твоём диске, если ты сам не отправишь их по почте.</span></li>
         </ul>
-        <p style="margin-bottom:0"><a href="/privacy/"><span lang="en">Read the privacy policy</span></a><a href="/privacy/#sk"><span lang="sk">Prečítaj si zásady ochrany súkromia</span></a></p>
+        <p style="margin-bottom:0"><a href="/privacy/"><span lang="en">Read the privacy policy</span></a><a href="/privacy/#sk"><span lang="sk">Prečítaj si zásady ochrany súkromia</span></a><a href="/privacy/#de"><span lang="de">Datenschutzerklärung lesen</span></a><a href="/privacy/#es"><span lang="es">Leer la política de privacidad</span></a><a href="/privacy/#ru"><span lang="ru">Прочитать политику конфиденциальности</span></a></p>
       </div>
     </div>
   </section>
 
   <section id="pricing">
     <div class="sec-head">
-      <p class="eyebrow"><span lang="en">Pricing</span><span lang="sk">Cena</span></p>
-      <h2><span lang="en">Try it for free. Buy it once.</span><span lang="sk">Vyskúšaj zadarmo. Kúp raz.</span></h2>
+      <p class="eyebrow"><span lang="en">Pricing</span><span lang="sk">Cena</span><span lang="de">Preis</span><span lang="es">Precio</span><span lang="ru">Цена</span></p>
+      <h2><span lang="en">Try it for free. Buy it once.</span><span lang="sk">Vyskúšaj zadarmo. Kúp raz.</span><span lang="de">Kostenlos testen. Einmal kaufen.</span><span lang="es">Pruébalo gratis. Cómpralo una vez.</span><span lang="ru">Попробуй бесплатно. Купи один раз.</span></h2>
     </div>
     <div class="plans">
       <article class="plan">
-        <h3><span lang="en">Free trial</span><span lang="sk">Skúšobná verzia</span></h3>
-        <p class="price"><span lang="en">Free</span><span lang="sk">Zadarmo</span></p>
-        <p class="note"><span lang="en">The full app for a limited number of active days. Days you don't open Dattal don't count.</span><span lang="sk">Plná aplikácia na obmedzený počet aktívnych dní. Dni, keď Dattal neotvoríš, sa nepočítajú.</span></p>
+        <h3><span lang="en">Free trial</span><span lang="sk">Skúšobná verzia</span><span lang="de">Kostenlose Testversion</span><span lang="es">Prueba gratuita</span><span lang="ru">Пробная версия</span></h3>
+        <p class="price"><span lang="en">Free</span><span lang="sk">Zadarmo</span><span lang="de">Kostenlos</span><span lang="es">Gratis</span><span lang="ru">Бесплатно</span></p>
+        <p class="note"><span lang="en">The full app for a limited number of active days. Days you don't open Dattal don't count.</span><span lang="sk">Plná aplikácia na obmedzený počet aktívnych dní. Dni, keď Dattal neotvoríš, sa nepočítajú.</span><span lang="de">Die vollständige App für eine begrenzte Zahl aktiver Tage. Tage, an denen du Dattal nicht öffnest, zählen nicht.</span><span lang="es">La app completa durante un número limitado de días activos. Los días en que no abres Dattal no cuentan.</span><span lang="ru">Полная версия приложения на ограниченное число активных дней. Дни, когда ты не открываешь Dattal, не считаются.</span></p>
         <ul>
-          <li><span lang="en">Every feature, no limits on size</span><span lang="sk">Všetky funkcie, bez limitu veľkosti</span></li>
-          <li><span lang="en">After the trial your files stay readable, printable and exportable</span><span lang="sk">Po skončení ostávajú súbory čitateľné, tlačiteľné a exportovateľné</span></li>
-          <li><span lang="en">No card, no sign-up</span><span lang="sk">Bez karty, bez registrácie</span></li>
+          <li><span lang="en">Every feature, no limits on size</span><span lang="sk">Všetky funkcie, bez limitu veľkosti</span><span lang="de">Alle Funktionen, keine Größenbeschränkung</span><span lang="es">Todas las funciones, sin límites de tamaño</span><span lang="ru">Все функции, без ограничений по объёму</span></li>
+          <li><span lang="en">After the trial your files stay readable, printable and exportable</span><span lang="sk">Po skončení ostávajú súbory čitateľné, tlačiteľné a exportovateľné</span><span lang="de">Nach der Testphase bleiben deine Dateien lesbar, druckbar und exportierbar</span><span lang="es">Tras la prueba, tus archivos siguen pudiéndose leer, imprimir y exportar</span><span lang="ru">После пробного периода файлы можно читать, печатать и экспортировать</span></li>
+          <li><span lang="en">No card, no sign-up</span><span lang="sk">Bez karty, bez registrácie</span><span lang="de">Keine Karte, keine Anmeldung</span><span lang="es">Sin tarjeta ni registro</span><span lang="ru">Без карты и регистрации</span></li>
         </ul>
       </article>
       <article class="plan pro">
         <h3>Dattal Pro</h3>
-        <p class="price"><span lang="en">One-time purchase</span><span lang="sk">Jednorazový nákup</span></p>
-        <p class="note"><span lang="en">Unlocks Dattal forever on all your Macs through the App Store. No subscription.</span><span lang="sk">Odomkne Dattal natrvalo na všetkých tvojich Macoch cez App Store. Bez predplatného.</span></p>
+        <p class="price"><span lang="en">One-time purchase</span><span lang="sk">Jednorazový nákup</span><span lang="de">Einmalkauf</span><span lang="es">Pago único</span><span lang="ru">Разовая покупка</span></p>
+        <p class="note"><span lang="en">Unlocks Dattal forever on all your Macs through the App Store. No subscription.</span><span lang="sk">Odomkne Dattal natrvalo na všetkých tvojich Macoch cez App Store. Bez predplatného.</span><span lang="de">Schaltet Dattal dauerhaft auf all deinen Macs über den App Store frei. Kein Abo.</span><span lang="es">Desbloquea Dattal para siempre en todos tus Mac a través del App Store. Sin suscripción.</span><span lang="ru">Открывает Dattal навсегда на всех твоих Mac через App Store. Без подписки.</span></p>
         <ul>
-          <li><span lang="en">Unlimited editing after the trial</span><span lang="sk">Neobmedzené úpravy po skúšobnej verzii</span></li>
-          <li><span lang="en">Restore on any Mac with the same Apple Account</span><span lang="sk">Obnova na každom Macu s rovnakým Apple účtom</span></li>
-          <li><span lang="en">Updates included until the next major version</span><span lang="sk">Aktualizácie v cene až do ďalšej veľkej verzie</span></li>
+          <li><span lang="en">Unlimited editing after the trial</span><span lang="sk">Neobmedzené úpravy po skúšobnej verzii</span><span lang="de">Unbegrenztes Bearbeiten nach der Testphase</span><span lang="es">Edición ilimitada tras la prueba</span><span lang="ru">Редактирование без ограничений после пробного периода</span></li>
+          <li><span lang="en">Restore on any Mac with the same Apple Account</span><span lang="sk">Obnova na každom Macu s rovnakým Apple účtom</span><span lang="de">Wiederherstellen auf jedem Mac mit demselben Apple Account</span><span lang="es">Restaura la compra en cualquier Mac con la misma cuenta de Apple</span><span lang="ru">Восстановление на любом Mac с той же учётной записью Apple</span></li>
+          <li><span lang="en">Updates included until the next major version</span><span lang="sk">Aktualizácie v cene až do ďalšej veľkej verzie</span><span lang="de">Updates bis zur nächsten Hauptversion inklusive</span><span lang="es">Actualizaciones incluidas hasta la siguiente versión mayor</span><span lang="ru">Обновления включены до следующей крупной версии</span></li>
         </ul>
       </article>
     </div>
@@ -351,12 +419,12 @@
     <div class="cols">
       <div>
         <strong style="color:var(--text)">Dattal</strong><br>
-        <span lang="en">Published by</span><span lang="sk">Vydáva</span> CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovakia<br>
+        <span lang="en">Published by</span><span lang="sk">Vydáva</span><span lang="de">Herausgegeben von</span><span lang="es">Publicado por</span><span lang="ru">Издаёт</span> CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovakia<br>
         © 2026 Dattal
       </div>
       <ul>
-        <li><a href="/privacy/"><span lang="en">Privacy policy</span><span lang="sk">Zásady súkromia</span></a></li>
-        <li><a href="mailto:support@dattal.app"><span lang="en">Support</span><span lang="sk">Podpora</span>: support@dattal.app</a></li>
+        <li><a href="/privacy/"><span lang="en">Privacy policy</span><span lang="sk">Zásady súkromia</span><span lang="de">Datenschutzerklärung</span><span lang="es">Política de privacidad</span><span lang="ru">Политика конфиденциальности</span></a></li>
+        <li><a href="mailto:support@dattal.app"><span lang="en">Support</span><span lang="sk">Podpora</span><span lang="de">Support</span><span lang="es">Soporte</span><span lang="ru">Поддержка</span>: support@dattal.app</a></li>
       </ul>
     </div>
   </footer>
@@ -365,22 +433,33 @@
 <script>
 (function () {
   var root = document.documentElement;
+  var LANGS = ['en', 'sk', 'de', 'es', 'ru'];
+  var TITLES = {
+    en: 'Dattal — modular offline database for Mac',
+    sk: 'Dattal — modulárna offline databáza pre Mac',
+    de: 'Dattal — modulare Offline-Datenbank für den Mac',
+    es: 'Dattal — base de datos modular sin conexión para Mac',
+    ru: 'Dattal — модульная офлайн-база данных для Mac'
+  };
   function setLang(l) {
+    if (LANGS.indexOf(l) < 0) l = 'en';
     root.setAttribute('data-lang', l);
     root.setAttribute('lang', l);
-    document.title = l === 'sk' ? 'Dattal — databáza svetov pre Mac' : 'Dattal — worldbuilding database for Mac';
+    document.title = TITLES[l] || TITLES.en;
     document.querySelectorAll('[data-set-lang]').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === l));
     });
     try { localStorage.setItem('dattal-lang', l); } catch (e) {}
+    // Texty majú v každom jazyku inú dĺžku: oblúk funkcií a scéna si prepočítajú rozmery.
+    try { window.dispatchEvent(new Event('resize')); } catch (e) {}
   }
   document.querySelectorAll('[data-set-lang]').forEach(function (b) {
     b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
   });
-  // Základ stránky je angličtina; slovenčina len na výslovné prepnutie (zapamätá sa).
+  // Základ stránky je angličtina; iný jazyk len na výslovné prepnutie (zapamätá sa).
   var initial = 'en';
   var hash = location.hash.replace('#', '');
-  if (hash === 'sk' || hash === 'en') initial = hash;
+  if (LANGS.indexOf(hash) >= 0) initial = hash;
   else { try { initial = localStorage.getItem('dattal-lang') || initial; } catch (e) {} }
   setLang(initial);
 })();
@@ -412,6 +491,129 @@
       });
     }
   }
+  // Konštelácia Dattal: sedem hviezd v tvare loga (súradnice 0–1 z WelcomeLogo),
+  // tri úsečky trojuholníka. Kotví sa k hlavičke v súradniciach dokumentu a posúva sa
+  // so stránkou; na úzkom okne má nad textom vlastné voľné miesto.
+  // Hviezdy na ramenách ležia presne na spojniciach (lineárna interpolácia medzi
+  // vrcholmi), aby neboli mimo čiary.
+  var CONST = [
+    { x: 0.425, y: 0.05, r: 1.00, p: 0.0 },     // vrchol A
+    { x: 0.250, y: 0.475, r: 0.55, p: 1.1 },    // ľavé rameno: A→BL v polovici
+    { x: 0.634, y: 0.440, r: 0.72, p: 2.3 },    // pravé rameno: A→BR pri 0,47
+    { x: 0.425, y: 0.64, r: 0.42, p: 3.4 },     // stred (voľná)
+    { x: 0.075, y: 0.90, r: 0.78, p: 4.2 },     // vľavo dole BL
+    { x: 0.4725, y: 0.89, r: 0.40, p: 5.0 },    // stred dole: BL→BR v polovici
+    { x: 0.870, y: 0.88, r: 1.00, p: 0.7 }      // vpravo dole BR
+  ];
+  var EDGES = [[0, 4], [0, 6], [4, 6]];
+  // Konštelácia je stacionárna ako obloha (neposúva sa so stránkou) a má pevnú
+  // veľkosť 440 × 493 px bez ohľadu na šírku okna (user 2026-11-05). Len na okne
+  // užšom než 900 px sa zmenší a sedí vo voľnom mieste nad textom hlavičky.
+  function constellationBox() {
+    var wrapW = Math.min(w - 40, 1080), left = (w - wrapW) / 2;
+    if (w > 900) {
+      var bw = 440;
+      return { x: left + wrapW - bw - 10, y: 112, w: bw, h: bw * 1.12, dim: 1 };
+    }
+    // Úzke okno (user 2026-11-06): súhvezdie má nad textom vlastné voľné miesto a je
+    // v plnom jase; hlavička si to miesto vyhradí cez --const-space. Pri posúvaní
+    // stránky ostáva na mieste ako obloha a stlmí sa, aby nerušilo text pred ním.
+    var mw = narrowWidth();
+    var fade = Math.min(1, (window.pageYOffset || 0) / (mw * 0.9));
+    return { x: (w - mw) / 2, y: NARROW_TOP, w: mw, h: mw * 1.12, dim: 1 - 0.65 * fade };
+  }
+  var NARROW_TOP = 84;
+  function narrowWidth() { return Math.max(110, Math.min(w * 0.52, 240, h * 0.34)); }
+  function reserveSpace() {
+    var root = document.documentElement;
+    if (w > 900) { root.style.removeProperty('--const-space'); return; }
+    var hero = document.querySelector('.hero');
+    var heroTop = hero ? hero.getBoundingClientRect().top + (window.pageYOffset || 0) : 70;
+    var space = NARROW_TOP + narrowWidth() * 1.12 + 26 - heroTop;
+    root.style.setProperty('--const-space', Math.max(40, Math.round(space)) + 'px');
+  }
+  // Štvorcípa hviezda s prehnutými bokmi (tvar z loga).
+  function starPath(cx, cy, r) {
+    var k = r * 0.16;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - r);
+    ctx.quadraticCurveTo(cx + k, cy - k, cx + r, cy);
+    ctx.quadraticCurveTo(cx + k, cy + k, cx, cy + r);
+    ctx.quadraticCurveTo(cx - k, cy + k, cx - r, cy);
+    ctx.quadraticCurveTo(cx - k, cy - k, cx, cy - r);
+    ctx.closePath();
+  }
+  function drawConstellation(t) {
+    var box = constellationBox();
+    var top = box.y;   // pevne vo výreze okna, rovnako ako hviezdy pozadia
+    var pts = CONST.map(function (c) {
+      var tw = reduce ? 1 : 0.92 + 0.10 * Math.sin(c.p + t * 0.0012);
+      var rot = reduce ? 0 : 0.21 * (0.6 * Math.sin(c.p * 1.7 + t * 0.00043) + 0.4 * Math.sin(c.p * 2.9 - t * 0.00071));
+      // Veľkosť hviezd ~30 % pôvodnej (user 2026-11-05: priveľmi výrazné).
+      return { x: box.x + c.x * box.w, y: top + c.y * box.h, r: (3.4 + 5.6 * c.r) * (box.w / 460), tw: tw, rot: rot };
+    });
+    // Spojnice: tenký pás, ktorého jas sa po dĺžke nepravidelne mení a pomaly
+    // putuje (user 2026-11-05) — každá hrana je 48 krátkych úsekov, priehľadnosť
+    // úseku dáva súčet troch nesúmerateľných sínusoviek polohy a času.
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.globalAlpha = box.dim;
+    // Slabá podkladová žiara.
+    ctx.beginPath();
+    EDGES.forEach(function (e) { ctx.moveTo(pts[e[0]].x, pts[e[0]].y); ctx.lineTo(pts[e[1]].x, pts[e[1]].y); });
+    ctx.strokeStyle = 'rgba(188,212,255,0.06)';
+    ctx.lineWidth = 5;
+    ctx.stroke();
+    // Jedna hladká čiara na hranu: jas po dĺžke dáva lineárny gradient so 64
+    // zastávkami (samostatné úseky mali na spojoch viditeľné hrany).
+    var tt = reduce ? 0 : t;
+    var STOPS = 64;
+    ctx.lineWidth = 1.2;
+    EDGES.forEach(function (e, ei) {
+      var a = pts[e[0]], b = pts[e[1]];
+      var grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+      for (var i = 0; i <= STOPS; i++) {
+        var s = i / STOPS, sm = s + ei * 0.37;
+        var v = 0.5
+          + 0.30 * Math.sin(sm * 9.7 + tt * 0.00065)
+          + 0.22 * Math.sin(sm * 4.3 - tt * 0.00041 + ei)
+          + 0.18 * Math.sin(sm * 17.1 + tt * 0.00097 + 2.1);
+        v = Math.max(0, Math.min(1, v));                // 0 = takmer neviditeľné, 1 = plné
+        var alpha = 0.06 + 0.60 * v * v;                // stred ≈ 0,34
+        grad.addColorStop(s, 'rgba(205,222,255,' + alpha.toFixed(3) + ')');
+      }
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = grad;
+      ctx.stroke();
+    });
+    // Hviezdy: žiara + jadro.
+    pts.forEach(function (p) {
+      var glowR = p.r * 3.2;
+      var g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+      g.addColorStop(0, 'rgba(200,220,255,' + (0.75 * p.tw) + ')');
+      g.addColorStop(0.45, 'rgba(188,212,255,' + (0.22 * p.tw) + ')');
+      g.addColorStop(1, 'rgba(188,212,255,0)');
+      ctx.globalAlpha = box.dim;
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2); ctx.fill();
+      var core = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+      core.addColorStop(0, '#ffffff');
+      core.addColorStop(0.6, 'rgba(232,240,255,' + (0.95 * p.tw) + ')');
+      core.addColorStop(1, 'rgba(188,212,255,' + (0.35 * p.tw) + ')');
+      ctx.fillStyle = core;
+      // Mierne nepravidelné pootáčanie sem a tam (±12°), každá hviezda inak (user 2026-11-05).
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      starPath(0, 0, p.r * p.tw);
+      ctx.fill();
+      ctx.restore();
+    });
+    ctx.restore();
+    ctx.globalAlpha = 1;
+  }
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
     for (var i = 0; i < stars.length; i++) {
@@ -427,20 +629,144 @@
       }
     }
     ctx.globalAlpha = 1;
+    drawConstellation(t);
   }
   var resizeTimer;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { layout(); if (reduce) draw(0); }, 150);
+    resizeTimer = setTimeout(function () { layout(); reserveSpace(); if (reduce) draw(0); }, 150);
   });
   layout();
-  if (reduce) { draw(0); return; }
+  reserveSpace();
+  if (reduce) {
+    draw(0);
+    window.addEventListener('scroll', function () { if (w <= 900) draw(0); }, { passive: true });
+    return;
+  }
   var last = 0;
   function frame(t) {
-    if (t - last > 90) { draw(t); last = t; }   // ~11 fps stačí na pomalé blikanie
+    if (t - last > 60) { draw(t); last = t; }   // ~16 fps stačí na pomalé blikanie a posun
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+})();
+
+// Scéna pohľadov: karty, šípky, klávesy a ťahanie posúvajú ten istý pás (scroll-snap).
+(function () {
+  var rail = document.getElementById('tour-rail');
+  if (!rail) return;
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tour-tabs button'));
+  var caps = Array.prototype.slice.call(document.querySelectorAll('.tour-caps p'));
+  var prev = document.getElementById('tour-prev'), next = document.getElementById('tour-next');
+  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var n = tabs.length, cur = -1;
+  function show(i) {
+    if (i === cur) return;
+    cur = i;
+    tabs.forEach(function (t, k) { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+    caps.forEach(function (c, k) { c.classList.toggle('on', k === i); });
+    prev.disabled = i === 0; next.disabled = i === n - 1;
+  }
+  function go(i, smooth) {
+    i = Math.max(0, Math.min(n - 1, i));
+    rail.scrollTo({ left: i * rail.clientWidth, behavior: smooth && !calm ? 'smooth' : 'auto' });
+    show(i);
+  }
+  rail.addEventListener('scroll', function () {
+    show(Math.max(0, Math.min(n - 1, Math.round(rail.scrollLeft / rail.clientWidth))));
+  }, { passive: true });
+  tabs.forEach(function (t, k) { t.addEventListener('click', function () { go(k, true); }); });
+  prev.addEventListener('click', function () { go(cur - 1, true); });
+  next.addEventListener('click', function () { go(cur + 1, true); });
+  rail.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { go(cur + 1, true); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { go(cur - 1, true); e.preventDefault(); }
+  });
+  window.addEventListener('resize', function () { go(Math.max(0, cur), false); });
+  show(0);
+})();
+
+// Oblúk funkcií: karty na valci (translateZ(-R) rotateY(uhol) translateZ(R)), predná v strede.
+(function () {
+  var arc = document.getElementById('feat-arc');
+  if (!arc || !window.requestAnimationFrame) return;
+  var cards = Array.prototype.slice.call(arc.children);
+  var n = cards.length, cur = 0, STEP = 24, R = 720;
+  if (n < 3) return;
+  arc.classList.add('arc-on');
+  arc.setAttribute('tabindex', '0');
+  arc.setAttribute('role', 'region');
+  arc.setAttribute('aria-roledescription', 'carousel');
+  arc.setAttribute('aria-label', 'Features');
+
+  var nav = document.createElement('div'); nav.className = 'arc-nav';
+  function arrow(label, path) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'arrow'; b.setAttribute('aria-label', label);
+    b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + path + '"/></svg>';
+    return b;
+  }
+  var prev = arrow('Previous feature', 'M15 5l-7 7 7 7'), next = arrow('Next feature', 'M9 5l7 7-7 7');
+  var dots = document.createElement('div'); dots.className = 'arc-dots';
+  var dotEls = cards.map(function (c, i) {
+    var d = document.createElement('button'); d.type = 'button';
+    d.setAttribute('aria-label', 'Feature ' + (i + 1) + ' of ' + n);
+    d.addEventListener('click', function () { go(i); });
+    dots.appendChild(d); return d;
+  });
+  nav.appendChild(prev); nav.appendChild(dots); nav.appendChild(next);
+  arc.parentNode.insertBefore(nav, arc.nextSibling);
+
+  function offset(i) { var d = i - cur; if (d > n / 2) d -= n; if (d < -n / 2) d += n; return d; }
+  function place() {
+    cards.forEach(function (c, i) {
+      var d = offset(i), ad = Math.abs(d), vis = ad <= 2;
+      c.style.transform = 'translateZ(' + (-R) + 'px) rotateY(' + (d * STEP) + 'deg) translateZ(' + R + 'px)';
+      c.style.opacity = vis ? String(1 - ad * 0.3) : '0';
+      c.style.zIndex = String(10 - ad);
+      c.style.pointerEvents = vis ? 'auto' : 'none';
+      c.classList.toggle('front', d === 0);
+      c.setAttribute('aria-hidden', d === 0 ? 'false' : 'true');
+    });
+    dotEls.forEach(function (d, i) { d.setAttribute('aria-current', i === cur ? 'true' : 'false'); });
+  }
+  function layout() {
+    var w = arc.clientWidth;
+    var cw = Math.min(300, Math.round(w * 0.74));
+    arc.style.setProperty('--cw', cw + 'px');
+    R = cw * 2.45;
+    var h = 0;
+    cards.forEach(function (c) { c.style.height = 'auto'; h = Math.max(h, c.offsetHeight); });
+    cards.forEach(function (c) { c.style.height = h + 'px'; });
+    arc.style.height = (h + 46) + 'px';
+    place();
+  }
+  function go(i) { cur = ((i % n) + n) % n; place(); }
+
+  prev.addEventListener('click', function () { go(cur - 1); });
+  next.addEventListener('click', function () { go(cur + 1); });
+  arc.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { go(cur - 1); e.preventDefault(); }
+  });
+  // Ťahanie myšou alebo prstom; klik na bočnú kartu ju posunie dopredu.
+  var startX = null, moved = false;
+  arc.addEventListener('pointerdown', function (e) { startX = e.clientX; moved = false; });
+  arc.addEventListener('pointermove', function (e) { if (startX !== null && Math.abs(e.clientX - startX) > 8) moved = true; });
+  function end(e) {
+    if (startX === null) return;
+    var dx = e.clientX - startX; startX = null;
+    if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1) * (Math.abs(dx) > 260 ? 2 : 1));
+  }
+  arc.addEventListener('pointerup', end);
+  arc.addEventListener('pointercancel', function () { startX = null; });
+  arc.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') end(e); });
+  cards.forEach(function (c, i) {
+    c.addEventListener('click', function () { if (!moved && i !== cur) go(i); });
+  });
+  var t;
+  window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(layout, 120); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+  layout();
 })();
 </script>
 </body>

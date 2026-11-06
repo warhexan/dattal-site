@@ -32,7 +32,7 @@
   header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
   .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: var(--ink); text-decoration: none; }
   .brand img { width: 28px; height: 28px; border-radius: 6px; }
-  nav.lang { display: flex; gap: 6px; }
+  nav.lang { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
   nav.lang button {
     font: inherit; font-size: 14px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
     border: 1px solid var(--rule); background: var(--paper); color: var(--muted);
@@ -55,7 +55,9 @@
   a { color: var(--accent); }
   code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
   footer { color: var(--muted); font-size: 0.9rem; margin-top: 24px; text-align: center; }
-  html[data-lang="en"] article[lang="sk"], html[data-lang="sk"] article[lang="en"] { display: none; }
+  html[data-lang="en"] article:not([lang="en"]), html[data-lang="sk"] article:not([lang="sk"]),
+  html[data-lang="de"] article:not([lang="de"]), html[data-lang="es"] article:not([lang="es"]),
+  html[data-lang="ru"] article:not([lang="ru"]) { display: none; }
   @media (max-width: 520px) { article { padding: 24px 18px; } dl { grid-template-columns: 1fr; gap: 2px; } dt { margin-top: 10px; } }
   @media (prefers-reduced-motion: no-preference) { nav.lang button { transition: background 0.15s; } }
 </style>
@@ -65,9 +67,12 @@
 <main>
   <header>
     <a class="brand" href="/"><img src="/assets/icon-512.png" alt="" width="28" height="28">Dattal</a>
-    <nav class="lang" aria-label="Language / Jazyk">
+    <nav class="lang" aria-label="Language">
       <button type="button" data-set-lang="en" aria-pressed="true">English</button>
       <button type="button" data-set-lang="sk" aria-pressed="false">Slovensky</button>
+      <button type="button" data-set-lang="de" aria-pressed="false">Deutsch</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-set-lang="ru" aria-pressed="false">Русский</button>
     </nav>
   </header>
 
@@ -187,15 +192,201 @@
     </dl>
   </article>
 
+  <!-- ===================== DEUTSCH ===================== -->
+  <article lang="de" id="de">
+    <h1>Datenschutzerklärung von Dattal</h1>
+    <p class="meta">Gültig ab: 18. Oktober 2026 · Gilt für Dattal für macOS, Version 1.0 und neuer</p>
+    <p class="meta">Diese Übersetzung dient zur Information. Maßgeblich sind die englische und die slowakische Fassung.</p>
+
+    <div class="summary">
+      <p><strong>Kurz gesagt:</strong> Dattal erhebt, speichert und überträgt keine personenbezogenen Daten. Es gibt keine Konten, keine Analyse, kein Tracking, keine Werbung und keine Server von uns. Ihre Daten bleiben in Dateien auf Ihrem Mac, unter Ihrer Kontrolle.</p>
+    </div>
+
+    <h2>1. Wer wir sind</h2>
+    <p>Dattal wird herausgegeben von <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slowakei, Unternehmens-ID (IČO) 36490253, USt-IdNr. SK2021771620 („wir“). Im Sinne der Datenschutz-Grundverordnung der EU (DSGVO) wären wir Verantwortlicher für alle personenbezogenen Daten, die wir verarbeiten. In der Praxis ist Dattal, wie unten erläutert, so gebaut, dass wir keine verarbeiten.</p>
+    <p>Kontakt: <a href="mailto:support@dattal.app">support@dattal.app</a></p>
+
+    <h2>2. Was Dattal mit Ihren Daten macht</h2>
+    <p>Dattal ist eine Datenbank für Worldbuilding. Alles, was Sie erstellen (Einheiten, Attribute, Beziehungen, Zeitleisten, Karten, Bilder, Schriften, Notizen), wird in ein <code>.datt</code>-Dokument geschrieben, das Sie an einem Ort Ihrer Wahl speichern. Dattal:</p>
+    <ul>
+      <li>lädt Ihre Dokumente oder Teile davon niemals hoch;</li>
+      <li>zeichnet niemals auf, welche Dateien Sie öffnen oder was Sie eingeben;</li>
+      <li>enthält keine Analyse, keine Telemetrie, keinen Absturzmeldedienst, kein Werbe-SDK und keinen Code von Dritten, der mit dem Internet kommuniziert;</li>
+      <li>baut von sich aus keine Netzwerkverbindungen auf. Der einzige Netzwerkverkehr im Zusammenhang mit Dattal ist die App-Store-Infrastruktur von Apple (siehe Abschnitt 4).</li>
+    </ul>
+    <p>Wenn Sie eine <code>.datt</code>-Datei in iCloud Drive, Dropbox oder einem anderen synchronisierten Ordner ablegen, behandelt der jeweilige Anbieter die Datei nach seinen eigenen Bedingungen. Dattal weiß nicht, wo die Datei liegt, und für die App spielt es keine Rolle.</p>
+
+    <h2>3. Passwortgeschützte Dokumente und Exporte</h2>
+    <p>Sie können ein Dokument oder einen HTML-Export mit einem Passwort schützen. Der Inhalt wird dann auf Ihrem Mac mit Standardalgorithmen verschlüsselt, die in macOS integriert sind (ChaCha20-Poly1305 oder AES-GCM, Schlüsselableitung mit PBKDF2-SHA256). Das Passwort wird nie gespeichert und verlässt Ihren Mac nie. <strong>Wenn Sie es vergessen, können weder Sie noch wir den Inhalt wiederherstellen.</strong></p>
+    <p>Exporte (HTML, PDF, DOCX, JSON) werden lokal erzeugt. Sie entscheiden, ob und wo Sie sie veröffentlichen. Exporte enthalten Symbole aus dem quelloffenen Lucide-Satz; die Lizenz liegt den exportierten Dateien bei.</p>
+
+    <h2>4. Käufe: Dattal Pro</h2>
+    <p>Dattal kann kostenlos geladen werden. Der einmalige In-App-Kauf „Dattal Pro“ wird vollständig von Apple über den App Store (StoreKit) abgewickelt. Wir erhalten weder Ihren Namen noch Ihre E-Mail-Adresse, Zahlungsdaten oder Apple-ID. Dattal prüft den Kaufstatus auf Ihrem Gerät anhand der von Apple signierten Transaktionsdaten und kann den Kauf auf Ihren anderen Macs wiederherstellen, die mit demselben Apple Account angemeldet sind. Wie Apple mit Ihren Daten umgeht, beschreibt die <a href="https://www.apple.com/legal/privacy/">Datenschutzrichtlinie von Apple</a>.</p>
+
+    <h2>5. Kostenlose Testphase</h2>
+    <p>Vor dem Kauf können Sie die vollständige App für eine begrenzte Zahl <em>aktiver Tage</em> nutzen. Um sie zu zählen, speichert Dattal eine kleine Liste von Datumsangaben in seinen Einstellungen und in seinem Ordner „Application Support“ auf Ihrem Mac. Die Liste trägt eine Integritätssignatur, die aus der Hardwarekennung Ihres Mac berechnet wird, damit sie nicht zwischen Computern kopiert werden kann. Die Kennung selbst wird nur lokal für diese Berechnung verwendet; sie wird nicht in lesbarer Form gespeichert und nirgendwohin übertragen.</p>
+
+    <h2>6. Diagnose (Abstürze und Hänger)</h2>
+    <p>Wenn Dattal einfriert oder unerwartet beendet wird, schreibt die App einen Diagnosebericht in einen lokalen Ordner (<code>~/Library/Logs/Dattal</code>, im Sandbox-Container der App). Ein Bericht enthält die App-Version, die macOS-Version, das Mac-Modell und technische Stacktraces. Er enthält niemals Inhalte Ihrer Dokumente, Dateinamen oder etwas, das Sie eingegeben haben.</p>
+    <p><strong>Nichts wird automatisch gesendet.</strong> Beim nächsten Start teilt Dattal Ihnen mit, dass ein Bericht vorliegt, und bietet an, eine vorausgefüllte E-Mail an uns zu öffnen, die Sie vor dem Senden prüfen können. Sie können die Berichte außerdem jederzeit unter Einstellungen › Allgemein › Diagnose ansehen oder löschen und den Hinweis abschalten.</p>
+    <p>Unabhängig davon kann macOS selbst anonymisierte Absturzprotokolle mit Apple und über App Store Connect mit uns teilen, jedoch nur, wenn Sie in den Analyse-Einstellungen Ihres Mac „Mit App-Entwicklern teilen“ aktiviert haben. Das ist ein Dienst von Apple und unterliegt den Richtlinien von Apple.</p>
+
+    <h2>7. Wenn Sie uns kontaktieren</h2>
+    <p>Wenn Sie uns eine E-Mail schreiben (Supportfragen, ein Diagnosebericht), erhalten wir Ihre E-Mail-Adresse und alles, was Sie mitsenden. Wir verwenden dies nur, um Ihnen zu antworten und das Problem zu beheben. Rechtsgrundlage: unser berechtigtes Interesse an der Betreuung der App und, bei Diagnoseberichten, Ihre Einwilligung, die Sie mit dem Senden erteilen. Wir bewahren solche E-Mails bis zu 24 Monate auf und geben sie an niemanden weiter, außer an Dienstleister, die unser Postfach hosten.</p>
+
+    <h2>8. Ihre Rechte</h2>
+    <p>Da wir keine Daten über Nutzer der App besitzen, gibt es in der Regel nichts, worauf wir zugreifen oder was wir berichtigen, exportieren oder löschen könnten. Für Daten in E-Mails, die Sie uns gesendet haben, stehen Ihnen alle Rechte nach der DSGVO zu: Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Schreiben Sie an <a href="mailto:support@dattal.app">support@dattal.app</a>. Sie können sich auch bei der slowakischen Aufsichtsbehörde, <a href="https://dataprotection.gov.sk/">Úrad na ochranu osobných údajov Slovenskej republiky</a>, oder bei der Behörde in Ihrem eigenen Land beschweren.</p>
+    <p>Um alles zu löschen, was Dattal auf Ihrem Mac abgelegt hat, löschen Sie Ihre <code>.datt</code>-Dateien und die App. Mit dem Entfernen der App wird auch ihr Sandbox-Container mit Einstellungen und Diagnoseberichten entfernt.</p>
+
+    <h2>9. Kinder</h2>
+    <p>Dattal kann auch von Kindern verwendet werden. Die App enthält keine ungeeigneten Inhalte, keine Werbung, keine Chat- oder Teilen-Funktionen und keine Links zu externen Diensten. Wie oben beschrieben, erhebt sie von niemandem personenbezogene Daten, auch nicht von Kindern. Der einzige Kauf wird von Apple abgewickelt; dort können Eltern über „Kaufanfrage“ und „Bildschirmzeit“ eine Genehmigung verlangen.</p>
+
+    <h2>10. Änderungen dieser Erklärung</h2>
+    <p>Wenn eine künftige Version von Dattal eine Funktion erhält, bei der personenbezogene Daten verarbeitet werden (zum Beispiel ein optionaler Synchronisierungsdienst), aktualisieren wir diese Erklärung, <em>bevor</em> die Funktion ausgeliefert wird, nennen die Änderung in den Versionshinweisen der App und holen in der App Ihre Einwilligung ein, wo das Gesetz es verlangt.</p>
+
+    <dl>
+      <dt>Herausgeber</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slowakei · IČO 36490253</dd>
+      <dt>Kontakt</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Version</dt><dd>1.0, 18. Oktober 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== ESPAÑOL ===================== -->
+  <article lang="es" id="es">
+    <h1>Política de privacidad de Dattal</h1>
+    <p class="meta">Fecha de entrada en vigor: 18 de octubre de 2026 · Se aplica a Dattal para macOS, versión 1.0 y posteriores</p>
+    <p class="meta">Esta traducción se ofrece a título informativo. Las versiones que prevalecen son la inglesa y la eslovaca.</p>
+
+    <div class="summary">
+      <p><strong>En resumen:</strong> Dattal no recopila, almacena ni transmite ningún dato personal. No hay cuentas, analíticas, seguimiento, publicidad ni servidores nuestros. Sus datos permanecen en archivos de su Mac, bajo su control.</p>
+    </div>
+
+    <h2>1. Quiénes somos</h2>
+    <p>Dattal es una publicación de <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Eslovaquia, número de identificación de empresa (IČO) 36490253, NIF-IVA SK2021771620 («nosotros»). A efectos del Reglamento General de Protección de Datos de la UE (RGPD), seríamos el responsable del tratamiento de cualquier dato personal que tratemos. En la práctica, como se explica más abajo, Dattal está diseñado para que no tratemos ninguno.</p>
+    <p>Contacto: <a href="mailto:support@dattal.app">support@dattal.app</a></p>
+
+    <h2>2. Qué hace Dattal con sus datos</h2>
+    <p>Dattal es una base de datos para la creación de mundos. Todo lo que usted crea (unidades, atributos, relaciones, líneas de tiempo, mapas, imágenes, tipografías, notas) se escribe en un documento <code>.datt</code> que usted guarda donde quiera. Dattal:</p>
+    <ul>
+      <li>nunca sube sus documentos ni ninguna parte de ellos;</li>
+      <li>nunca registra qué archivos abre ni qué escribe;</li>
+      <li>no contiene analíticas, telemetría, servicio de informes de fallos, SDK de publicidad ni código de terceros que se comunique con internet;</li>
+      <li>no abre conexiones de red por su cuenta. El único tráfico de red relacionado con Dattal es el de la infraestructura del App Store de Apple (véase la sección 4).</li>
+    </ul>
+    <p>Si guarda un archivo <code>.datt</code> en iCloud Drive, Dropbox u otra carpeta sincronizada, ese proveedor gestiona el archivo conforme a sus propias condiciones. Dattal no sabe dónde está el archivo y para la app es indiferente.</p>
+
+    <h2>3. Documentos y exportaciones protegidos con contraseña</h2>
+    <p>Puede proteger un documento, o una exportación HTML, con una contraseña. El contenido se cifra entonces en su Mac con algoritmos estándar integrados en macOS (ChaCha20-Poly1305 o AES-GCM, claves derivadas con PBKDF2-SHA256). La contraseña nunca se almacena y nunca sale de su Mac. <strong>Si la olvida, ni usted ni nosotros podremos recuperar el contenido.</strong></p>
+    <p>Las exportaciones (HTML, PDF, DOCX, JSON) se generan localmente. Usted decide si las publica y dónde. Las exportaciones incluyen iconos del conjunto de código abierto Lucide; la licencia se incluye con los archivos exportados.</p>
+
+    <h2>4. Compras: Dattal Pro</h2>
+    <p>Dattal se descarga gratis. La compra única dentro de la app «Dattal Pro» la procesa íntegramente Apple a través del App Store (StoreKit). Nunca recibimos su nombre, dirección de correo electrónico, datos de pago ni Apple ID. Dattal comprueba el estado de la compra en su dispositivo mediante los registros de transacciones firmados por Apple y puede restaurarla en sus otros Mac que hayan iniciado sesión con la misma cuenta de Apple. El tratamiento de sus datos por parte de Apple se describe en la <a href="https://www.apple.com/legal/privacy/">Política de privacidad de Apple</a>.</p>
+
+    <h2>5. Prueba gratuita</h2>
+    <p>Antes de comprar, puede usar la app completa durante un número limitado de <em>días activos</em>. Para contarlos, Dattal guarda una pequeña lista de fechas en sus preferencias y en su carpeta Application Support de su Mac. La lista lleva una firma de integridad calculada a partir del identificador de hardware de su Mac para que no pueda copiarse entre ordenadores. El identificador en sí solo se usa localmente para ese cálculo; no se almacena en forma legible y nunca se transmite a ningún sitio.</p>
+
+    <h2>6. Diagnóstico (fallos y bloqueos)</h2>
+    <p>Si Dattal se bloquea o se cierra inesperadamente, escribe un informe de diagnóstico en una carpeta local (<code>~/Library/Logs/Dattal</code>, dentro del contenedor de la zona protegida de la app). Un informe contiene la versión de la app, la versión de macOS, el modelo de Mac y trazas técnicas de la pila. Nunca contiene el contenido de sus documentos, nombres de archivo ni nada que haya escrito.</p>
+    <p><strong>No se envía nada automáticamente.</strong> En el siguiente inicio, Dattal le indica que existe un informe y le ofrece abrir un correo electrónico ya rellenado dirigido a nosotros, que puede revisar antes de enviarlo. También puede ver o eliminar los informes en cualquier momento en Ajustes › General › Diagnóstico, y desactivar el aviso.</p>
+    <p>Aparte de esto, el propio macOS puede compartir registros de fallos anonimizados con Apple y, a través de App Store Connect, con nosotros, pero solo si ha activado «Compartir con desarrolladores de apps» en los ajustes de Análisis de su Mac. Ese es un servicio de Apple y se rige por la política de Apple.</p>
+
+    <h2>7. Si se pone en contacto con nosotros</h2>
+    <p>Cuando nos escribe por correo electrónico (preguntas de soporte, un informe de diagnóstico), recibimos su dirección de correo y lo que usted incluya. Lo usamos únicamente para responderle y solucionar el problema. Base jurídica: nuestro interés legítimo en dar soporte a la app y, en el caso de los informes de diagnóstico, su consentimiento, otorgado al enviarlos. Conservamos esos correos durante un máximo de 24 meses y no los compartimos con nadie, salvo con los proveedores de servicios que alojan nuestro buzón.</p>
+
+    <h2>8. Sus derechos</h2>
+    <p>Como no tenemos datos sobre los usuarios de la app, normalmente no hay nada a lo que podamos acceder, ni que podamos rectificar, exportar o suprimir. Respecto a los datos de los correos que nos haya enviado, tiene todos los derechos del RGPD: acceso, rectificación, supresión, limitación del tratamiento, portabilidad y oposición. Escriba a <a href="mailto:support@dattal.app">support@dattal.app</a>. También puede presentar una reclamación ante la autoridad de control eslovaca, <a href="https://dataprotection.gov.sk/">Úrad na ochranu osobných údajov Slovenskej republiky</a>, o ante la autoridad de su propio país.</p>
+    <p>Para eliminar todo lo que Dattal tiene en su Mac, elimine sus archivos <code>.datt</code> y la app. Al quitar la app también se elimina su contenedor de zona protegida, con las preferencias y los informes de diagnóstico.</p>
+
+    <h2>9. Menores</h2>
+    <p>Dattal también puede ser utilizado por menores. No contiene contenido inapropiado, publicidad, funciones de chat o de compartir, ni enlaces a servicios externos. Como se ha descrito, no recopila datos personales de nadie, tampoco de menores. La única compra la gestiona Apple, donde los padres pueden exigir aprobación mediante «Solicitar la compra» y «Tiempo de uso».</p>
+
+    <h2>10. Cambios en esta política</h2>
+    <p>Si una versión futura de Dattal añade una función que implique el tratamiento de datos personales (por ejemplo, un servicio de sincronización opcional), actualizaremos esta política <em>antes</em> de publicar la función, indicaremos el cambio en las notas de la versión de la app y solicitaremos su consentimiento en la app cuando la ley lo exija.</p>
+
+    <dl>
+      <dt>Editor</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Eslovaquia · IČO 36490253</dd>
+      <dt>Contacto</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Versión</dt><dd>1.0, 18 de octubre de 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== РУССКИЙ ===================== -->
+  <article lang="ru" id="ru">
+    <h1>Политика конфиденциальности Dattal</h1>
+    <p class="meta">Дата вступления в силу: 18 октября 2026 г. · Относится к Dattal для macOS версии 1.0 и новее</p>
+    <p class="meta">Этот перевод приведён для удобства. Определяющими являются английская и словацкая версии.</p>
+
+    <div class="summary">
+      <p><strong>Коротко:</strong> Dattal не собирает, не хранит и не передаёт никаких персональных данных. Нет учётных записей, аналитики, отслеживания, рекламы и наших серверов. Ваши данные остаются в файлах на вашем Mac, под вашим контролем.</p>
+    </div>
+
+    <h2>1. Кто мы</h2>
+    <p>Dattal издаёт компания <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Словакия, идентификационный номер компании (IČO) 36490253, номер плательщика НДС SK2021771620 («мы»). Для целей Общего регламента ЕС по защите данных (GDPR) мы были бы контролёром любых персональных данных, которые обрабатываем. На практике, как объясняется ниже, Dattal устроен так, что мы не обрабатываем никаких.</p>
+    <p>Контакт: <a href="mailto:support@dattal.app">support@dattal.app</a></p>
+
+    <h2>2. Что Dattal делает с вашими данными</h2>
+    <p>Dattal представляет собой базу данных для создания миров. Всё, что вы создаёте (единицы, атрибуты, связи, временные шкалы, карты, изображения, шрифты, заметки), записывается в документ <code>.datt</code>, который вы сохраняете там, где сочтёте нужным. Dattal:</p>
+    <ul>
+      <li>никогда не загружает ваши документы или их части куда-либо;</li>
+      <li>никогда не записывает, какие файлы вы открываете и что вводите;</li>
+      <li>не содержит аналитики, телеметрии, сервиса отчётов о сбоях, рекламных SDK и стороннего кода, обращающегося к интернету;</li>
+      <li>сам не открывает сетевых соединений. Единственный сетевой трафик, связанный с Dattal, относится к инфраструктуре App Store компании Apple (см. раздел 4).</li>
+    </ul>
+    <p>Если вы храните файл <code>.datt</code> в iCloud Drive, Dropbox или другой синхронизируемой папке, этот провайдер обрабатывает файл на собственных условиях. Dattal не знает, где находится файл, и для приложения это не имеет значения.</p>
+
+    <h2>3. Документы и экспорт под паролем</h2>
+    <p>Вы можете защитить документ или HTML-экспорт паролем. Тогда содержимое шифруется на вашем Mac стандартными алгоритмами, встроенными в macOS (ChaCha20-Poly1305 или AES-GCM, ключи выводятся с помощью PBKDF2-SHA256). Пароль никогда не сохраняется и никогда не покидает ваш Mac. <strong>Если вы его забудете, ни вы, ни мы не сможем восстановить содержимое.</strong></p>
+    <p>Экспорт (HTML, PDF, DOCX, JSON) создаётся локально. Вы решаете, публиковать ли его и где. В экспорт входят значки из открытого набора Lucide; лицензия прилагается к экспортированным файлам.</p>
+
+    <h2>4. Покупки: Dattal Pro</h2>
+    <p>Dattal можно загрузить бесплатно. Разовую встроенную покупку «Dattal Pro» полностью обрабатывает Apple через App Store (StoreKit). Мы никогда не получаем ваше имя, адрес электронной почты, платёжные данные или Apple ID. Dattal проверяет статус покупки на вашем устройстве по подписанным Apple записям о транзакциях и может восстановить её на других ваших Mac, где выполнен вход с той же учётной записью Apple. Как Apple обращается с вашими данными, описано в <a href="https://www.apple.com/legal/privacy/">Политике конфиденциальности Apple</a>.</p>
+
+    <h2>5. Пробный период</h2>
+    <p>Перед покупкой вы можете пользоваться полной версией приложения ограниченное число <em>активных дней</em>. Чтобы их считать, Dattal хранит небольшой список дат в своих настройках и в своей папке Application Support на вашем Mac. Список имеет подпись целостности, вычисленную из аппаратного идентификатора вашего Mac, чтобы его нельзя было скопировать на другой компьютер. Сам идентификатор используется только локально для этого вычисления; он не хранится в читаемом виде и никуда не передаётся.</p>
+
+    <h2>6. Диагностика (сбои и зависания)</h2>
+    <p>Если Dattal зависает или неожиданно завершает работу, приложение записывает диагностический отчёт в локальную папку (<code>~/Library/Logs/Dattal</code>, внутри контейнера песочницы приложения). Отчёт содержит версию приложения, версию macOS, модель Mac и технические трассировки стека. Он никогда не содержит содержимого ваших документов, имён файлов или чего-либо, что вы вводили.</p>
+    <p><strong>Ничего не отправляется автоматически.</strong> При следующем запуске Dattal сообщает, что отчёт существует, и предлагает открыть заранее заполненное письмо для нас, которое вы можете просмотреть перед отправкой. Вы также можете в любой момент просмотреть или удалить отчёты в разделе Настройки › Основные › Диагностика и отключить это уведомление.</p>
+    <p>Отдельно от этого сама macOS может передавать обезличенные журналы сбоев компании Apple и, через App Store Connect, нам, но только если вы включили параметр «Делиться с разработчиками приложений» в настройках аналитики вашего Mac. Это сервис Apple, и он регулируется политикой Apple.</p>
+
+    <h2>7. Если вы свяжетесь с нами</h2>
+    <p>Когда вы пишете нам по электронной почте (вопросы поддержки, диагностический отчёт), мы получаем ваш адрес электронной почты и всё, что вы приложите. Мы используем это только для того, чтобы ответить вам и устранить проблему. Правовое основание: наш законный интерес в поддержке приложения, а для диагностических отчётов ваше согласие, данное их отправкой. Мы храним такие письма не более 24 месяцев и не передаём их никому, кроме поставщиков услуг, у которых размещён наш почтовый ящик.</p>
+
+    <h2>8. Ваши права</h2>
+    <p>Поскольку мы не храним данных о пользователях приложения, обычно нам не к чему предоставлять доступ, нечего исправлять, экспортировать или удалять. В отношении данных в письмах, которые вы нам отправили, у вас есть все права по GDPR: доступ, исправление, удаление, ограничение обработки, переносимость и возражение. Напишите на <a href="mailto:support@dattal.app">support@dattal.app</a>. Вы также можете подать жалобу в словацкий надзорный орган, <a href="https://dataprotection.gov.sk/">Úrad na ochranu osobných údajov Slovenskej republiky</a>, или в орган вашей страны.</p>
+    <p>Чтобы удалить всё, что Dattal хранит на вашем Mac, удалите свои файлы <code>.datt</code> и само приложение. При удалении приложения удаляется и его контейнер песочницы с настройками и диагностическими отчётами.</p>
+
+    <h2>9. Дети</h2>
+    <p>Dattal могут использовать и дети. В приложении нет неприемлемого содержимого, рекламы, чатов или функций обмена, а также ссылок на внешние сервисы. Как описано выше, оно не собирает персональных данных ни у кого, включая детей. Единственную покупку обрабатывает Apple, где родители могут требовать одобрения через «Попросить купить» и «Экранное время».</p>
+
+    <h2>10. Изменения этой политики</h2>
+    <p>Если в будущей версии Dattal появится функция, предполагающая обработку персональных данных (например, необязательный сервис синхронизации), мы обновим эту политику <em>до</em> выхода функции, укажем изменение в примечаниях к выпуску приложения и запросим ваше согласие в приложении там, где этого требует закон.</p>
+
+    <dl>
+      <dt>Издатель</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Словакия · IČO 36490253</dd>
+      <dt>Контакт</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Версия</dt><dd>1.0, 18 октября 2026 г.</dd>
+    </dl>
+  </article>
+
   <footer>© 2026 CHARON, spol. s r.o. · Dattal</footer>
 </main>
 <script>
 (function () {
   var root = document.documentElement;
+  var LANGS = ['en', 'sk', 'de', 'es', 'ru'];
+  var TITLES = {
+    en: 'Dattal Privacy Policy',
+    sk: 'Zásady ochrany súkromia – Dattal',
+    de: 'Datenschutzerklärung – Dattal',
+    es: 'Política de privacidad – Dattal',
+    ru: 'Политика конфиденциальности – Dattal'
+  };
   function setLang(l) {
+    if (LANGS.indexOf(l) < 0) l = 'en';
     root.setAttribute('data-lang', l);
     root.setAttribute('lang', l);
-    document.title = l === 'sk' ? 'Zásady ochrany súkromia – Dattal' : 'Dattal Privacy Policy';
+    document.title = TITLES[l] || TITLES.en;
     document.querySelectorAll('[data-set-lang]').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === l));
     });
@@ -206,10 +397,16 @@
   });
   var initial = 'en';
   var hash = location.hash.replace('#', '');
-  if (hash === 'sk' || hash === 'en') initial = hash;
+  if (LANGS.indexOf(hash) >= 0) initial = hash;
   else {
-    try { initial = localStorage.getItem('dattal-privacy-lang') || initial; } catch (e) {}
-    if (initial === 'en' && /^sk/i.test(navigator.language || '')) initial = 'sk';
+    var stored = null;
+    try { stored = localStorage.getItem('dattal-privacy-lang'); } catch (e) {}
+    if (stored) initial = stored;
+    else {
+      // Bez uloženej voľby: jazyk prehliadača, ak ho zásady majú (inak angličtina).
+      var nav = (navigator.language || '').slice(0, 2).toLowerCase();
+      if (LANGS.indexOf(nav) >= 0) initial = nav;
+    }
   }
   setLang(initial);
 })();
