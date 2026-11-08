@@ -107,9 +107,14 @@
   .win-bar i:nth-child(2) { background: #febc2e; }
   .win-bar i:nth-child(3) { background: #28c840; }
   .win-bar span { position: absolute; left: 0; right: 0; text-align: center; font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.55); pointer-events: none; }
-  .win-rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
-  .win-rail::-webkit-scrollbar { display: none; }
-  .win-rail img { flex: 0 0 100%; width: 100%; height: auto; display: block; scroll-snap-align: start; }
+  /* Pás záberov posúva transformácia (nie posuvník so zarážkami — ten pri prepínaní
+     trhal, user 2026-11-08); ťahanie prstom či myšou rieši skript. */
+  .win-rail { overflow: hidden; touch-action: pan-y; cursor: grab; -webkit-user-select: none; user-select: none; }
+  .win-rail:active { cursor: grabbing; }
+  .win-track { display: flex; will-change: transform; transition: transform .55s cubic-bezier(.22,.8,.24,1); }
+  .win-track.dragging { transition: none; }
+  .win-rail img { flex: 0 0 100%; width: 100%; height: auto; display: block; -webkit-user-drag: none; }
+  @media (prefers-reduced-motion: reduce) { .win-track { transition: none; } }
   .tour-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: #fff; background: rgba(7,11,20,0.72); border: 1px solid rgba(255,255,255,0.2); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: opacity .15s, background .15s; }
   .tour-arrow svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .tour-arrow.prev { left: 14px; } .tour-arrow.next { right: 14px; }
@@ -141,7 +146,9 @@
   /* Features */
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
   .aud { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .feat { background: var(--night-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 20px; }
+  /* Každá karta vyzerá ako karta Dattal Pro v cenníku (user 2026-11-08): modrý prechod
+     priamo nad oblohou a svetlý ľadový okraj. */
+  .feat { background: linear-gradient(180deg, rgba(82,122,230,0.18), rgba(82,122,230,0.04)); border: 1px solid rgba(188,212,255,0.35); border-radius: var(--radius); padding: 20px; }
   .feat .ic { width: 36px; height: 36px; border-radius: 9px; background: rgba(82,122,230,0.18); display: grid; place-items: center; margin-bottom: 12px; }
   .feat .ic svg { width: 20px; height: 20px; stroke: var(--ice); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
   .feat p { color: var(--muted); font-size: 0.93rem; margin: 6px 0 0; }
@@ -152,8 +159,17 @@
   .grid.arc-on:active { cursor: grabbing; }
   .grid.arc-on:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
   .arc-on > .feat { position: absolute; top: 14px; left: 50%; width: var(--cw, 300px); margin-left: calc(var(--cw, 300px) / -2); -webkit-backface-visibility: hidden; backface-visibility: hidden;
-    transition: transform .6s cubic-bezier(.22,.8,.24,1), opacity .45s ease, border-color .3s, box-shadow .3s; will-change: transform, opacity; }
-  .arc-on > .feat.front { border-color: rgba(188,212,255,0.45); box-shadow: 0 26px 60px rgba(0,0,0,0.5), 0 0 70px rgba(82,122,230,0.22); }
+    transition: transform .6s cubic-bezier(.22,.8,.24,1), opacity .45s ease; will-change: transform, opacity; }
+  /* Žiara prednej karty je samostatná vrstva s prechodom priehľadnosti — prechod
+     tieňa na otáčanej karte sekal (user 2026-11-08). */
+  .arc-on > .feat::after { content: ""; position: absolute; inset: -1px; border-radius: var(--radius); pointer-events: none;
+    box-shadow: 0 26px 60px rgba(0,0,0,0.5), 0 0 70px rgba(82,122,230,0.22); opacity: 0; transition: opacity .35s ease; }
+  /* Bočné karty sú NEPRIEHĽADNÉ (user 2026-11-08: cez priesvitné presvitali hviezdy);
+     do úzadia ich tlmí tmavý závoj ::before, nie priehľadnosť karty. */
+  .arc-on > .feat::before { content: ""; position: absolute; inset: 0; border-radius: var(--radius); pointer-events: none; z-index: 1;
+    background: var(--night); opacity: var(--dim, 0); transition: opacity .45s ease; }
+  .arc-on > .feat.front { border-color: rgba(188,212,255,0.45); }
+  .arc-on > .feat.front::after { opacity: 1; }
   .arc-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 6px; }
   .arc-nav button.arrow { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--rule); background: var(--night-2); color: var(--text); cursor: pointer; display: grid; place-items: center; }
   .arc-nav button.arrow svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -180,8 +196,7 @@
 
   /* Pricing */
   .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 760px; }
-  .plan { border: 1px solid var(--rule); border-radius: var(--radius); padding: 26px; background: var(--night-2); }
-  .plan.pro { border-color: rgba(188,212,255,0.35); background: linear-gradient(180deg, rgba(82,122,230,0.18), rgba(82,122,230,0.04)); }
+  .plan { border: 1px solid rgba(188,212,255,0.35); border-radius: var(--radius); padding: 26px; background: linear-gradient(180deg, rgba(82,122,230,0.18), rgba(82,122,230,0.04)); }
   .plan .price { font-family: var(--display); font-size: 1.9rem; margin: 6px 0 2px; }
   .plan .note { color: var(--muted); font-size: 0.92rem; }
   .plan ul { padding-left: 1.1em; margin: 14px 0 0; color: var(--text); font-size: 0.95rem; }
@@ -302,12 +317,14 @@
       </div>
       <div class="win">
         <div class="win-rail" id="tour-rail" tabindex="0" role="region" aria-label="Screens of the app">
-          <img src="/assets/tour/writers.jpg" width="1800" height="927" alt="A place page in a fantasy world with a landscape picture and a preview card shown over a linked name in the text">
-          <img src="/assets/tour/gamemasters.jpg" width="1800" height="927" loading="lazy" alt="A table of campaign locations with pictures, a danger scale, linked factions and descriptions">
-          <img src="/assets/tour/students.jpg" width="1800" height="927" loading="lazy" alt="An organelle page next to an annotated diagram of an animal cell with labelled pins and a preview card">
-          <img src="/assets/tour/researchers.jpg" width="1800" height="927" loading="lazy" alt="A study site page next to a relationship map connecting team members and experiments">
-          <img src="/assets/tour/family.jpg" width="1800" height="927" loading="lazy" alt="A family tree window with portraits over a person's page with a portrait and a life story">
-          <img src="/assets/tour/collections.jpg" width="1800" height="927" loading="lazy" alt="A book page with a cover and a rating next to a vertical timeline of authors' lives">
+          <div class="win-track" id="tour-track">
+          <img src="/assets/tour/writers.jpg" width="1800" height="927" decoding="async" alt="A place page in a fantasy world with a landscape picture and a preview card shown over a linked name in the text">
+          <img src="/assets/tour/gamemasters.jpg" width="1800" height="927" decoding="async" alt="A table of campaign locations with pictures, a danger scale, linked factions and descriptions">
+          <img src="/assets/tour/students.jpg" width="1800" height="927" decoding="async" alt="An organelle page next to an annotated diagram of an animal cell with labelled pins and a preview card">
+          <img src="/assets/tour/researchers.jpg" width="1800" height="927" decoding="async" alt="A study site page next to a relationship map connecting team members and experiments">
+          <img src="/assets/tour/family.jpg" width="1800" height="927" decoding="async" alt="A family tree window with portraits over a person's page with a portrait and a life story">
+          <img src="/assets/tour/collections.jpg" width="1800" height="927" decoding="async" alt="A book page with a cover and a rating next to a vertical timeline of authors' lives">
+          </div>
         </div>
         <button type="button" class="tour-arrow prev" id="tour-prev" aria-label="Previous screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         <button type="button" class="tour-arrow next" id="tour-next" aria-label="Next screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
@@ -471,25 +488,31 @@
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var stars = [], w = 0, h = 0, dpr = 1;
+  var w = 0, h = 0, dpr = 1, shown = 0;
+  // Stála zásoba hviezd zo semienka (súradnice 0–1): pri zmene veľkosti okna — na
+  // mobile ju spôsobí už schovanie adresného riadka — sa obloha nepremieša, len sa
+  // roztiahne a ukáže o pár hviezd viac či menej (user 2026-11-08: trhalo to).
+  var seed = 0x4441545441;
+  function rnd() { seed = (seed + 0x6D2B79F5) | 0; var z = seed; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; }
+  var stars = [];
+  for (var si = 0; si < 900; si++) {
+    var big = rnd() < 0.08;
+    stars.push({
+      x: rnd(), y: rnd(),
+      r: big ? 1.2 + rnd() * 1.1 : 0.4 + rnd() * 0.8,
+      a: 0.25 + rnd() * 0.6,
+      p: rnd() * Math.PI * 2,
+      s: 0.4 + rnd() * 1.2,
+      tint: rnd() < 0.3
+    });
+  }
   function layout() {
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 1,5× stačí na hviezdy do 2 px a plátno cez celé okno sa prekresľuje 16× za sekundu.
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     w = window.innerWidth; h = window.innerHeight;
     canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var n = Math.round((w * h) / 9000);
-    stars = [];
-    for (var i = 0; i < n; i++) {
-      var big = Math.random() < 0.08;
-      stars.push({
-        x: Math.random() * w, y: Math.random() * h,
-        r: big ? 1.2 + Math.random() * 1.1 : 0.4 + Math.random() * 0.8,
-        a: 0.25 + Math.random() * 0.6,
-        p: Math.random() * Math.PI * 2,
-        s: 0.4 + Math.random() * 1.2,
-        tint: Math.random() < 0.3
-      });
-    }
+    shown = Math.min(stars.length, Math.round((w * h) / 9000));
   }
   // Konštelácia Dattal: sedem hviezd v tvare loga (súradnice 0–1 z WelcomeLogo),
   // tri úsečky trojuholníka. Kotví sa k hlavičke v súradniciach dokumentu a posúva sa
@@ -516,11 +539,13 @@
       return { x: left + wrapW - bw - 10, y: 112, w: bw, h: bw * 1.12, dim: 1 };
     }
     // Úzke okno (user 2026-11-06): súhvezdie má nad textom vlastné voľné miesto a je
-    // v plnom jase; hlavička si to miesto vyhradí cez --const-space. Pri posúvaní
-    // stránky ostáva na mieste ako obloha a stlmí sa, aby nerušilo text pred ním.
+    // v plnom jase; hlavička si to miesto vyhradí cez --const-space. Z pozície sa
+    // NEHÝBE ani na mobile (user 2026-11-08) — stojí ako obloha a obsah ide cezeň;
+    // aby text pred ním ostal čitateľný, pri posune sa plynulo stlmí na 45 %
+    // (prekresľuje sa pri každom posune, hviezdy sú stále, takže to neškube).
     var mw = narrowWidth();
-    var fade = Math.min(1, (window.pageYOffset || 0) / (mw * 0.9));
-    return { x: (w - mw) / 2, y: NARROW_TOP, w: mw, h: mw * 1.12, dim: 1 - 0.65 * fade };
+    var fade = Math.min(1, (window.pageYOffset || 0) / 320);
+    return { x: (w - mw) / 2, y: NARROW_TOP, w: mw, h: mw * 1.12, dim: 1 - 0.55 * fade };
   }
   var NARROW_TOP = 84;
   function narrowWidth() { return Math.max(110, Math.min(w * 0.52, 240, h * 0.34)); }
@@ -616,16 +641,16 @@
   }
   function draw(t) {
     ctx.clearRect(0, 0, w, h);
-    for (var i = 0; i < stars.length; i++) {
-      var st = stars[i];
+    for (var i = 0; i < shown; i++) {
+      var st = stars[i], sx = st.x * w, sy = st.y * h;
       var tw = reduce ? 1 : 0.7 + 0.3 * Math.sin(st.p + t * 0.001 * st.s);
       ctx.globalAlpha = st.a * tw;
       ctx.fillStyle = st.tint ? '#bcd4ff' : '#ffffff';
-      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(sx, sy, st.r, 0, Math.PI * 2); ctx.fill();
       if (st.r > 1.6) {
         ctx.globalAlpha = st.a * tw * 0.35;
-        ctx.fillRect(st.x - st.r * 3, st.y - 0.4, st.r * 6, 0.8);
-        ctx.fillRect(st.x - 0.4, st.y - st.r * 3, 0.8, st.r * 6);
+        ctx.fillRect(sx - st.r * 3, sy - 0.4, st.r * 6, 0.8);
+        ctx.fillRect(sx - 0.4, sy - st.r * 3, 0.8, st.r * 6);
       }
     }
     ctx.globalAlpha = 1;
@@ -638,27 +663,31 @@
   });
   layout();
   reserveSpace();
-  if (reduce) {
-    draw(0);
-    window.addEventListener('scroll', function () { if (w <= 900) draw(0); }, { passive: true });
-    return;
-  }
+  // Na úzkom okne sa súhvezdie pri posune stlmuje — prekresliť hneď v ďalšej
+  // snímke (nie až o 60 ms), aby bol prechod plynulý.
+  var lastT = 0, scrollRaf = 0;
+  window.addEventListener('scroll', function () {
+    if (w > 900 || scrollRaf) return;
+    scrollRaf = requestAnimationFrame(function () { scrollRaf = 0; draw(reduce ? 0 : lastT); });
+  }, { passive: true });
+  if (reduce) { draw(0); return; }
   var last = 0;
   function frame(t) {
+    lastT = t;
     if (t - last > 60) { draw(t); last = t; }   // ~16 fps stačí na pomalé blikanie a posun
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 })();
 
-// Scéna pohľadov: karty, šípky, klávesy a ťahanie posúvajú ten istý pás (scroll-snap).
+// Scéna pohľadov: karty, šípky, klávesy a ťahanie posúvajú ten istý pás; pás
+// sa hýbe transformáciou (priechod cez GPU, bez posuvníka).
 (function () {
-  var rail = document.getElementById('tour-rail');
-  if (!rail) return;
+  var rail = document.getElementById('tour-rail'), track = document.getElementById('tour-track');
+  if (!rail || !track) return;
   var tabs = Array.prototype.slice.call(document.querySelectorAll('.tour-tabs button'));
   var caps = Array.prototype.slice.call(document.querySelectorAll('.tour-caps p'));
   var prev = document.getElementById('tour-prev'), next = document.getElementById('tour-next');
-  var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var n = tabs.length, cur = -1;
   function show(i) {
     if (i === cur) return;
@@ -667,23 +696,45 @@
     caps.forEach(function (c, k) { c.classList.toggle('on', k === i); });
     prev.disabled = i === 0; next.disabled = i === n - 1;
   }
-  function go(i, smooth) {
+  function go(i) {
     i = Math.max(0, Math.min(n - 1, i));
-    rail.scrollTo({ left: i * rail.clientWidth, behavior: smooth && !calm ? 'smooth' : 'auto' });
+    track.classList.remove('dragging');
+    track.style.transform = 'translateX(' + (-i * 100) + '%)';
     show(i);
   }
-  rail.addEventListener('scroll', function () {
-    show(Math.max(0, Math.min(n - 1, Math.round(rail.scrollLeft / rail.clientWidth))));
-  }, { passive: true });
-  tabs.forEach(function (t, k) { t.addEventListener('click', function () { go(k, true); }); });
-  prev.addEventListener('click', function () { go(cur - 1, true); });
-  next.addEventListener('click', function () { go(cur + 1, true); });
+  tabs.forEach(function (t, k) { t.addEventListener('click', function () { go(k); }); });
+  prev.addEventListener('click', function () { go(cur - 1); });
+  next.addEventListener('click', function () { go(cur + 1); });
   rail.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowRight') { go(cur + 1, true); e.preventDefault(); }
-    if (e.key === 'ArrowLeft') { go(cur - 1, true); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { go(cur + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { go(cur - 1); e.preventDefault(); }
   });
-  window.addEventListener('resize', function () { go(Math.max(0, cur), false); });
-  show(0);
+  // Ťahanie: pás ide s prstom, po pustení doskočí na najbližší záber.
+  var startX = null, dx = 0;
+  rail.addEventListener('pointerdown', function (e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    startX = e.clientX; dx = 0;
+    track.classList.add('dragging');
+    if (rail.setPointerCapture) { try { rail.setPointerCapture(e.pointerId); } catch (err) {} }
+  });
+  rail.addEventListener('pointermove', function (e) {
+    if (startX === null) return;
+    dx = e.clientX - startX;
+    var edge = (cur === 0 && dx > 0) || (cur === n - 1 && dx < 0);
+    track.style.transform = 'translateX(calc(' + (-cur * 100) + '% + ' + (edge ? dx * 0.3 : dx) + 'px))';
+  });
+  function end() {
+    if (startX === null) return;
+    startX = null;
+    var limit = Math.max(40, rail.clientWidth * 0.15);
+    var target = cur;
+    if (Math.abs(dx) > limit) target = cur + (dx < 0 ? 1 : -1);
+    cur = -1;   // show() má znova nastaviť karty aj popis
+    go(target);
+  }
+  rail.addEventListener('pointerup', end);
+  rail.addEventListener('pointercancel', end);
+  go(0);
 })();
 
 // Oblúk funkcií: karty na valci (translateZ(-R) rotateY(uhol) translateZ(R)), predná v strede.
@@ -721,7 +772,8 @@
     cards.forEach(function (c, i) {
       var d = offset(i), ad = Math.abs(d), vis = ad <= 2;
       c.style.transform = 'translateZ(' + (-R) + 'px) rotateY(' + (d * STEP) + 'deg) translateZ(' + R + 'px)';
-      c.style.opacity = vis ? String(1 - ad * 0.3) : '0';
+      c.style.opacity = vis ? '1' : '0';
+      c.style.setProperty('--dim', vis ? String(Math.min(0.72, ad * 0.36)) : '0.72');
       c.style.zIndex = String(10 - ad);
       c.style.pointerEvents = vis ? 'auto' : 'none';
       c.classList.toggle('front', d === 0);
