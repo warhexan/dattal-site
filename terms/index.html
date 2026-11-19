@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dattal Terms of Use</title>
+<meta name="description" content="Terms of use for the Dattal worldbuilding app for macOS.">
+<link rel="icon" href="/assets/favicon-64.png" sizes="64x64" type="image/png">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #070b14;
+    --paper: #0d1322;
+    --ink: #e9edf6;
+    --muted: #8f99b3;
+    --rule: rgba(255,255,255,0.09);
+    --accent: #bcd4ff;
+    --accent-soft: rgba(82,122,230,0.16);
+  }
+  * { box-sizing: border-box; }
+  #sky { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  main { position: relative; z-index: 1; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-image: radial-gradient(900px 500px at 70% -10%, rgba(82,122,230,0.18), transparent 60%); background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 44rem; margin: 0 auto; padding: 48px 16px 80px;
+  }
+  header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: baseline; justify-content: space-between; margin-bottom: 8px; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .brand img { width: 28px; height: 28px; border-radius: 6px; }
+  nav.lang { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+  nav.lang button {
+    font: inherit; font-size: 14px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--rule); background: var(--paper); color: var(--muted);
+  }
+  nav.lang button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); border-color: transparent; font-weight: 600; }
+  nav.lang button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  article { background: var(--paper); border: 1px solid var(--rule); border-radius: 14px; padding: 32px 28px; margin-top: 16px; }
+  h1 { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; font-weight: 600; font-size: 2rem; line-height: 1.2; margin: 0 0 4px; text-wrap: balance; }
+  h2 { font-size: 1.15rem; margin: 2em 0 0.5em; padding-top: 1.2em; border-top: 1px solid var(--rule); }
+  h2:first-of-type { border-top: 0; padding-top: 0; }
+  p, li { max-width: 65ch; }
+  .meta { color: var(--muted); font-size: 0.95rem; margin: 0 0 1.5em; }
+  .summary { background: var(--accent-soft); border-radius: 10px; padding: 14px 18px; margin: 1.2em 0; }
+  .summary p { margin: 0; }
+  ul { padding-left: 1.2em; }
+  li + li { margin-top: 0.35em; }
+  dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; }
+  dt { color: var(--muted); }
+  dd { margin: 0; }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 0.92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+  footer { color: var(--muted); font-size: 0.9rem; margin-top: 24px; text-align: center; }
+  html[data-lang="en"] article:not([lang="en"]), html[data-lang="sk"] article:not([lang="sk"]),
+  html[data-lang="de"] article:not([lang="de"]), html[data-lang="es"] article:not([lang="es"]),
+  html[data-lang="ru"] article:not([lang="ru"]) { display: none; }
+  @media (max-width: 520px) { article { padding: 24px 18px; } dl { grid-template-columns: 1fr; gap: 2px; } dt { margin-top: 10px; } }
+  @media (prefers-reduced-motion: no-preference) { nav.lang button { transition: background 0.15s; } }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main>
+  <header>
+    <a class="brand" href="/"><img src="/assets/icon-512.png" alt="" width="28" height="28">Dattal</a>
+    <nav class="lang" aria-label="Language">
+      <button type="button" data-set-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-set-lang="sk" aria-pressed="false">Slovensky</button>
+      <button type="button" data-set-lang="de" aria-pressed="false">Deutsch</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">Español</button>
+      <button type="button" data-set-lang="ru" aria-pressed="false">Русский</button>
+    </nav>
+  </header>
+
+  <!-- ===================== ENGLISH ===================== -->
+  <article lang="en" id="en">
+    <h1>Dattal Terms of Use</h1>
+    <p class="meta">Effective date: 14 November 2026 · Applies to Dattal for macOS, version 1.0 and later</p>
+
+    <div class="summary">
+      <p><strong>In short:</strong> you may use Dattal on your own Macs. What you create is yours and stays with you. Keep your own backups and keep your passwords safe. The app is provided as it is, within what the law allows.</p>
+    </div>
+
+    <h2>1. These terms</h2>
+    <p>Dattal is published by <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slovakia, company ID (IČO) 36490253 (“we”). By downloading or using Dattal you agree to these terms.</p>
+    <p>Dattal is distributed through the Mac App Store, so your licence is governed by Apple's standard <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a> (the “Standard EULA”). These terms explain it in plain words and add a few points specific to Dattal. Where they differ from the Standard EULA, the Standard EULA applies. Nothing here limits rights that consumer law in your country gives you and that cannot be waived.</p>
+
+    <h2>2. Licence</h2>
+    <p>We grant you a personal, non-exclusive, non-transferable licence to use Dattal on Apple devices that you own or control, as allowed by the App Store usage rules, including Family Sharing. You may not sell, rent, or redistribute the app, remove its notices, or reverse engineer it, except where the law explicitly allows it.</p>
+
+    <h2>3. Trial and Dattal Pro</h2>
+    <p>Dattal is free to download. You can try all features for a limited number of active days, shown in the app. After the trial, databases open for reading only: you can still view, print, and export everything you have created.</p>
+    <p>The one-time purchase “Dattal Pro” unlocks editing permanently for your Apple Account. Purchases, payments, and refunds are handled by Apple under Apple's terms. If you are a consumer, your statutory rights are not affected.</p>
+
+    <h2>4. Your data and backups</h2>
+    <p>Everything you create is saved in <code>.datt</code> files in places you choose. We have no access to your files and cannot restore them for you.</p>
+    <p>Dattal keeps a backup copy of each database as a convenience, but you are responsible for keeping your own backups of anything important. If you protect a database or an export with a password and lose both the password and the master key, <strong>the content cannot be recovered by anyone, including us</strong>.</p>
+
+    <h2>5. Your content</h2>
+    <p>What you create with Dattal belongs to you. You are responsible for the content you store, export, and share, and for having the rights to any text, images, and fonts you put into your databases.</p>
+
+    <h2>6. Updates and support</h2>
+    <p>We may release updates that add, change, or remove features. We try to keep files from older versions readable, but we do not promise that a particular feature will stay available, or that updates or support will be provided for any particular period. You can reach support at <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <h2>7. No warranty</h2>
+    <p>To the extent the law allows, Dattal is provided “as is” and “as available”, without warranties of any kind, including fitness for a particular purpose and uninterrupted or error-free operation.</p>
+
+    <h2>8. Limitation of liability</h2>
+    <p>To the extent the law allows, we are not liable for lost data, lost profits, or indirect or consequential damage arising from the use of Dattal or from the inability to use it, and our total liability is limited to the amount you paid for Dattal Pro.</p>
+    <p>This does not limit liability for damage caused intentionally or by gross negligence, for injury to life or health, or any other liability that cannot be limited by law.</p>
+
+    <h2>9. Intellectual property</h2>
+    <p>Dattal, its name, logo, design, and code are protected by copyright, © Alexander Tilňák, and are published under licence by CHARON, spol. s r.o. Exports include icons from the open-source Lucide set under the ISC licence. Apple, Mac, macOS, App Store, and iCloud are trademarks of Apple Inc.</p>
+
+    <h2>10. Governing law</h2>
+    <p>These terms are governed by the law of the Slovak Republic. If you are a consumer, you also keep the protection of the mandatory rules of the country where you live, and you may bring a dispute before the courts of that country. Consumers in the EU may also use alternative dispute resolution; in Slovakia this is the Slovak Trade Inspection (<a href="https://www.soi.sk">www.soi.sk</a>).</p>
+
+    <h2>11. Changes and contact</h2>
+    <p>We may update these terms. The current version is always available in the app. Questions: <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <dl>
+      <dt>Publisher</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovakia · IČO 36490253</dd>
+      <dt>Contact</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Version</dt><dd>1.0, 14 November 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== SLOVENSKY ===================== -->
+  <article lang="sk" id="sk">
+    <h1>Podmienky používania aplikácie Dattal</h1>
+    <p class="meta">Účinné od: 14. novembra 2026 · Platí pre Dattal pre macOS, verziu 1.0 a novšie</p>
+
+    <div class="summary">
+      <p><strong>V skratke:</strong> Dattal môžete používať na svojich Macoch. Čo vytvoríte, je vaše a ostáva u vás. Majte vlastné zálohy a strážte si heslá. Aplikácia sa poskytuje taká, aká je, v rozsahu, ktorý dovoľuje zákon.</p>
+    </div>
+
+    <h2>1. Tieto podmienky</h2>
+    <p>Dattal vydáva <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slovenská republika, IČO 36490253 (ďalej „my“). Stiahnutím alebo používaním aplikácie Dattal s týmito podmienkami súhlasíte.</p>
+    <p>Dattal sa šíri cez Mac App Store, preto sa vaša licencia riadi štandardnou licenčnou zmluvou spoločnosti Apple pre aplikácie, <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a> (ďalej „štandardná zmluva“). Tieto podmienky ju vysvetľujú bežnou rečou a dopĺňajú niekoľko bodov, ktoré sa týkajú priamo Dattalu. Ak sa od štandardnej zmluvy líšia, platí štandardná zmluva. Nič v týchto podmienkach neobmedzuje práva, ktoré vám dáva zákon na ochranu spotrebiteľa vo vašej krajine a ktorých sa nemožno vzdať.</p>
+
+    <h2>2. Licencia</h2>
+    <p>Udeľujeme vám osobnú, nevýhradnú a neprenosnú licenciu používať Dattal na zariadeniach Apple, ktoré vlastníte alebo ovládate, v rozsahu pravidiel používania App Store vrátane Rodinného zdieľania. Aplikáciu nesmiete predávať, prenajímať ani ďalej šíriť, odstraňovať z nej označenia ani ju spätne analyzovať, okrem prípadov, keď to zákon výslovne dovoľuje.</p>
+
+    <h2>3. Skúšobná doba a Dattal Pro</h2>
+    <p>Dattal je zadarmo na stiahnutie. Všetky funkcie si môžete vyskúšať počas obmedzeného počtu aktívnych dní, ktorý vidíte v aplikácii. Po skončení skúšobnej doby sa databázy otvárajú len na čítanie: všetko, čo ste vytvorili, si naďalej môžete prezerať, tlačiť a exportovať.</p>
+    <p>Jednorazový nákup „Dattal Pro“ natrvalo odomkne úpravy pre váš účet Apple. Nákupy, platby a vrátenie peňazí vybavuje Apple podľa vlastných podmienok. Ak ste spotrebiteľ, vaše zákonné práva tým nie sú dotknuté.</p>
+
+    <h2>4. Vaše údaje a zálohy</h2>
+    <p>Všetko, čo vytvoríte, sa ukladá do súborov <code>.datt</code> na miestach, ktoré si zvolíte. K vašim súborom nemáme prístup a nevieme ich za vás obnoviť.</p>
+    <p>Dattal pre pohodlie uchováva záložnú kópiu každej databázy, za vlastné zálohy všetkého dôležitého však zodpovedáte vy. Ak databázu alebo export ochránite heslom a stratíte heslo aj hlavný kľúč, <strong>obsah nedokáže obnoviť nikto, ani my</strong>.</p>
+
+    <h2>5. Váš obsah</h2>
+    <p>Čo v Dattale vytvoríte, patrí vám. Zodpovedáte za obsah, ktorý ukladáte, exportujete a zdieľate, a za to, že máte práva k textom, obrázkom a písmam, ktoré do svojich databáz vkladáte.</p>
+
+    <h2>6. Aktualizácie a podpora</h2>
+    <p>Môžeme vydávať aktualizácie, ktoré funkcie pridávajú, menia alebo odstraňujú. Snažíme sa, aby súbory zo starších verzií ostali čitateľné, nesľubujeme však, že konkrétna funkcia ostane dostupná ani že aktualizácie či podporu budeme poskytovať počas určitej doby. Podporu zastihnete na adrese <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <h2>7. Bez záruky</h2>
+    <p>V rozsahu, ktorý dovoľuje zákon, sa Dattal poskytuje „tak, ako je“ a „tak, ako je dostupný“, bez akýchkoľvek záruk vrátane vhodnosti na konkrétny účel a nepretržitej či bezchybnej prevádzky.</p>
+
+    <h2>8. Obmedzenie zodpovednosti</h2>
+    <p>V rozsahu, ktorý dovoľuje zákon, nezodpovedáme za stratu údajov, ušlý zisk ani za nepriame či následné škody, ktoré vzniknú používaním Dattalu alebo nemožnosťou ho používať, a naša celková zodpovednosť je obmedzená sumou, ktorú ste zaplatili za Dattal Pro.</p>
+    <p>Toto neobmedzuje zodpovednosť za škodu spôsobenú úmyselne alebo z hrubej nedbanlivosti, za ujmu na živote a zdraví ani inú zodpovednosť, ktorú zákon obmedziť nedovoľuje.</p>
+
+    <h2>9. Duševné vlastníctvo</h2>
+    <p>Dattal, jeho názov, logo, vzhľad a kód sú chránené autorským právom, © Alexander Tilňák, a vydáva ich na základe licencie CHARON, spol. s r.o. Exporty obsahujú ikony z otvorenej sady Lucide pod licenciou ISC. Apple, Mac, macOS, App Store a iCloud sú ochranné známky spoločnosti Apple Inc.</p>
+
+    <h2>10. Rozhodné právo</h2>
+    <p>Tieto podmienky sa riadia právom Slovenskej republiky. Ak ste spotrebiteľ, ostáva vám aj ochrana, ktorú vám dávajú kogentné predpisy krajiny, v ktorej žijete, a spor môžete predložiť súdom tejto krajiny. Spotrebitelia v EÚ môžu využiť aj alternatívne riešenie sporov; na Slovensku je ním Slovenská obchodná inšpekcia (<a href="https://www.soi.sk">www.soi.sk</a>).</p>
+
+    <h2>11. Zmeny a kontakt</h2>
+    <p>Tieto podmienky môžeme aktualizovať. Aktuálne znenie je vždy dostupné v aplikácii. Otázky: <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <dl>
+      <dt>Vydavateľ</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovenská republika · IČO 36490253</dd>
+      <dt>Kontakt</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Verzia</dt><dd>1.0, 14. novembra 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== DEUTSCH ===================== -->
+  <article lang="de" id="de">
+    <h1>Nutzungsbedingungen für Dattal</h1>
+    <p class="meta">Gültig ab: 14. November 2026 · Gilt für Dattal für macOS, Version 1.0 und neuer</p>
+    <p class="meta">Diese Übersetzung dient zur Information. Maßgeblich sind die englische und die slowakische Fassung.</p>
+
+    <div class="summary">
+      <p><strong>Kurz gesagt:</strong> Sie dürfen Dattal auf Ihren eigenen Macs verwenden. Was Sie erstellen, gehört Ihnen und bleibt bei Ihnen. Legen Sie eigene Sicherungen an und bewahren Sie Ihre Passwörter sicher auf. Die App wird so bereitgestellt, wie sie ist, soweit das Gesetz es zulässt.</p>
+    </div>
+
+    <h2>1. Diese Bedingungen</h2>
+    <p>Dattal wird von <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Slowakei, Firmen-ID (IČO) 36490253 („wir“) herausgegeben. Mit dem Laden oder Verwenden von Dattal stimmen Sie diesen Bedingungen zu.</p>
+    <p>Dattal wird über den Mac App Store vertrieben; Ihre Lizenz richtet sich daher nach Apples standardmäßigem <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a> („Standard-EULA“). Diese Bedingungen erklären ihn in einfachen Worten und ergänzen einige Punkte, die Dattal betreffen. Wo sie vom Standard-EULA abweichen, gilt der Standard-EULA. Nichts hierin beschränkt Rechte, die Ihnen das Verbraucherrecht Ihres Landes gibt und auf die nicht verzichtet werden kann.</p>
+
+    <h2>2. Lizenz</h2>
+    <p>Wir gewähren Ihnen eine persönliche, nicht ausschließliche, nicht übertragbare Lizenz, Dattal auf Apple-Geräten zu verwenden, die Ihnen gehören oder die Sie kontrollieren, im Rahmen der Nutzungsregeln des App Store einschließlich der Familienfreigabe. Sie dürfen die App nicht verkaufen, vermieten oder weiterverbreiten, ihre Hinweise nicht entfernen und sie nicht zurückentwickeln, außer soweit das Gesetz es ausdrücklich erlaubt.</p>
+
+    <h2>3. Testphase und Dattal Pro</h2>
+    <p>Dattal kann kostenlos geladen werden. Sie können alle Funktionen für eine begrenzte Zahl aktiver Tage testen, die in der App angezeigt wird. Nach der Testphase werden Datenbanken nur zum Lesen geöffnet: Alles, was Sie erstellt haben, können Sie weiterhin ansehen, drucken und exportieren.</p>
+    <p>Der einmalige Kauf „Dattal Pro“ schaltet das Bearbeiten dauerhaft für Ihren Apple Account frei. Käufe, Zahlungen und Erstattungen wickelt Apple nach seinen eigenen Bedingungen ab. Wenn Sie Verbraucher sind, bleiben Ihre gesetzlichen Rechte unberührt.</p>
+
+    <h2>4. Ihre Daten und Sicherungen</h2>
+    <p>Alles, was Sie erstellen, wird in <code>.datt</code>-Dateien an Orten gespeichert, die Sie wählen. Wir haben keinen Zugriff auf Ihre Dateien und können sie nicht für Sie wiederherstellen.</p>
+    <p>Dattal bewahrt zu Ihrer Bequemlichkeit eine Sicherungskopie jeder Datenbank auf; für eigene Sicherungen alles Wichtigen sind jedoch Sie verantwortlich. Wenn Sie eine Datenbank oder einen Export mit einem Passwort schützen und sowohl das Passwort als auch den Hauptschlüssel verlieren, <strong>kann niemand den Inhalt wiederherstellen, auch wir nicht</strong>.</p>
+
+    <h2>5. Ihre Inhalte</h2>
+    <p>Was Sie mit Dattal erstellen, gehört Ihnen. Sie sind für die Inhalte verantwortlich, die Sie speichern, exportieren und teilen, und dafür, dass Sie die Rechte an Texten, Bildern und Schriften besitzen, die Sie in Ihre Datenbanken einfügen.</p>
+
+    <h2>6. Updates und Support</h2>
+    <p>Wir können Updates veröffentlichen, die Funktionen hinzufügen, ändern oder entfernen. Wir bemühen uns, Dateien älterer Versionen lesbar zu halten, versprechen aber nicht, dass eine bestimmte Funktion verfügbar bleibt oder dass Updates oder Support für einen bestimmten Zeitraum bereitgestellt werden. Den Support erreichen Sie unter <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <h2>7. Keine Gewährleistung</h2>
+    <p>Soweit das Gesetz es zulässt, wird Dattal „wie besehen“ und „wie verfügbar“ bereitgestellt, ohne Gewährleistungen jeglicher Art, einschließlich der Eignung für einen bestimmten Zweck und eines unterbrechungs- oder fehlerfreien Betriebs.</p>
+
+    <h2>8. Haftungsbeschränkung</h2>
+    <p>Soweit das Gesetz es zulässt, haften wir nicht für Datenverlust, entgangenen Gewinn oder mittelbare Schäden und Folgeschäden, die aus der Nutzung von Dattal oder der Unmöglichkeit der Nutzung entstehen, und unsere Gesamthaftung ist auf den Betrag begrenzt, den Sie für Dattal Pro gezahlt haben.</p>
+    <p>Dies beschränkt nicht die Haftung für vorsätzlich oder grob fahrlässig verursachte Schäden, für Verletzungen von Leben und Gesundheit oder jede andere Haftung, die gesetzlich nicht beschränkt werden kann.</p>
+
+    <h2>9. Geistiges Eigentum</h2>
+    <p>Dattal, sein Name, Logo, Design und Code sind urheberrechtlich geschützt, © Alexander Tilňák, und werden unter Lizenz von CHARON, spol. s r.o. herausgegeben. Exporte enthalten Symbole aus dem Open-Source-Satz Lucide unter der ISC-Lizenz. Apple, Mac, macOS, App Store und iCloud sind Marken von Apple Inc.</p>
+
+    <h2>10. Anwendbares Recht</h2>
+    <p>Diese Bedingungen unterliegen dem Recht der Slowakischen Republik. Wenn Sie Verbraucher sind, behalten Sie zusätzlich den Schutz der zwingenden Vorschriften des Landes, in dem Sie leben, und können einen Streit vor die Gerichte dieses Landes bringen. Verbraucher in der EU können auch die alternative Streitbeilegung nutzen; in der Slowakei ist dies die Slowakische Handelsinspektion (<a href="https://www.soi.sk">www.soi.sk</a>).</p>
+
+    <h2>11. Änderungen und Kontakt</h2>
+    <p>Wir können diese Bedingungen aktualisieren. Die aktuelle Fassung ist stets in der App verfügbar. Fragen: <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <dl>
+      <dt>Herausgeber</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slowakei · IČO 36490253</dd>
+      <dt>Kontakt</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Version</dt><dd>1.0, 14. November 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== ESPAÑOL ===================== -->
+  <article lang="es" id="es">
+    <h1>Condiciones de uso de Dattal</h1>
+    <p class="meta">Fecha de entrada en vigor: 14 de noviembre de 2026 · Se aplica a Dattal para macOS, versión 1.0 y posteriores</p>
+    <p class="meta">Esta traducción se ofrece a título informativo. Las versiones que prevalecen son la inglesa y la eslovaca.</p>
+
+    <div class="summary">
+      <p><strong>En resumen:</strong> puede usar Dattal en sus propios Mac. Lo que crea es suyo y se queda con usted. Haga sus propias copias de seguridad y guarde bien sus contraseñas. La app se ofrece tal cual, dentro de lo que permite la ley.</p>
+    </div>
+
+    <h2>1. Estas condiciones</h2>
+    <p>Dattal es publicado por <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Eslovaquia, número de empresa (IČO) 36490253 («nosotros»). Al descargar o usar Dattal acepta estas condiciones.</p>
+    <p>Dattal se distribuye a través del Mac App Store, por lo que su licencia se rige por el contrato estándar de Apple, <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a> (el «contrato estándar»). Estas condiciones lo explican con palabras sencillas y añaden algunos puntos propios de Dattal. Cuando difieran del contrato estándar, se aplica el contrato estándar. Nada de lo aquí dispuesto limita los derechos que le otorga la legislación de consumo de su país y a los que no se puede renunciar.</p>
+
+    <h2>2. Licencia</h2>
+    <p>Le concedemos una licencia personal, no exclusiva e intransferible para usar Dattal en dispositivos Apple de su propiedad o bajo su control, conforme a las normas de uso del App Store, incluido En Familia. No puede vender, alquilar ni redistribuir la app, eliminar sus avisos ni someterla a ingeniería inversa, salvo cuando la ley lo permita expresamente.</p>
+
+    <h2>3. Prueba y Dattal Pro</h2>
+    <p>Dattal se descarga gratis. Puede probar todas las funciones durante un número limitado de días activos, que se muestra en la app. Tras la prueba, las bases de datos se abren solo para lectura: puede seguir viendo, imprimiendo y exportando todo lo que haya creado.</p>
+    <p>La compra única «Dattal Pro» desbloquea la edición de forma permanente para su cuenta de Apple. Las compras, los pagos y los reembolsos los gestiona Apple conforme a sus propias condiciones. Si es consumidor, sus derechos legales no se ven afectados.</p>
+
+    <h2>4. Sus datos y copias de seguridad</h2>
+    <p>Todo lo que crea se guarda en archivos <code>.datt</code> en los lugares que usted elija. No tenemos acceso a sus archivos y no podemos restaurarlos por usted.</p>
+    <p>Dattal conserva una copia de seguridad de cada base de datos para su comodidad, pero usted es responsable de mantener sus propias copias de todo lo importante. Si protege una base de datos o una exportación con contraseña y pierde tanto la contraseña como la clave maestra, <strong>nadie puede recuperar el contenido, tampoco nosotros</strong>.</p>
+
+    <h2>5. Su contenido</h2>
+    <p>Lo que crea con Dattal le pertenece. Usted es responsable del contenido que guarda, exporta y comparte, y de disponer de los derechos sobre los textos, imágenes y tipos de letra que incluya en sus bases de datos.</p>
+
+    <h2>6. Actualizaciones y soporte</h2>
+    <p>Podemos publicar actualizaciones que añadan, cambien o eliminen funciones. Procuramos que los archivos de versiones anteriores sigan siendo legibles, pero no prometemos que una función concreta siga disponible ni que se ofrezcan actualizaciones o soporte durante un periodo determinado. Puede contactar con soporte en <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <h2>7. Sin garantía</h2>
+    <p>En la medida en que la ley lo permita, Dattal se ofrece «tal cual» y «según disponibilidad», sin garantías de ningún tipo, incluidas la idoneidad para un fin determinado y el funcionamiento ininterrumpido o sin errores.</p>
+
+    <h2>8. Limitación de responsabilidad</h2>
+    <p>En la medida en que la ley lo permita, no respondemos de la pérdida de datos, el lucro cesante ni los daños indirectos o consecuentes derivados del uso de Dattal o de la imposibilidad de usarlo, y nuestra responsabilidad total se limita al importe que haya pagado por Dattal Pro.</p>
+    <p>Esto no limita la responsabilidad por daños causados de forma intencionada o por negligencia grave, por lesiones a la vida o la salud, ni ninguna otra responsabilidad que la ley no permita limitar.</p>
+
+    <h2>9. Propiedad intelectual</h2>
+    <p>Dattal, su nombre, logotipo, diseño y código están protegidos por derechos de autor, © Alexander Tilňák, y los publica bajo licencia CHARON, spol. s r.o. Las exportaciones incluyen iconos del conjunto de código abierto Lucide con licencia ISC. Apple, Mac, macOS, App Store e iCloud son marcas comerciales de Apple Inc.</p>
+
+    <h2>10. Legislación aplicable</h2>
+    <p>Estas condiciones se rigen por la legislación de la República Eslovaca. Si es consumidor, conserva además la protección de las normas imperativas del país en el que reside y puede plantear un litigio ante los tribunales de ese país. Los consumidores de la UE también pueden recurrir a la resolución alternativa de litigios; en Eslovaquia es la Inspección de Comercio Eslovaca (<a href="https://www.soi.sk">www.soi.sk</a>).</p>
+
+    <h2>11. Cambios y contacto</h2>
+    <p>Podemos actualizar estas condiciones. La versión vigente está siempre disponible en la app. Preguntas: <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <dl>
+      <dt>Editor</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Eslovaquia · IČO 36490253</dd>
+      <dt>Contacto</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Versión</dt><dd>1.0, 14 de noviembre de 2026</dd>
+    </dl>
+  </article>
+
+  <!-- ===================== РУССКИЙ ===================== -->
+  <article lang="ru" id="ru">
+    <h1>Условия использования Dattal</h1>
+    <p class="meta">Дата вступления в силу: 14 ноября 2026 г. · Относится к Dattal для macOS версии 1.0 и новее</p>
+    <p class="meta">Этот перевод приведён для удобства. Определяющими являются английская и словацкая версии.</p>
+
+    <div class="summary">
+      <p><strong>Коротко:</strong> вы можете пользоваться Dattal на своих компьютерах Mac. Всё, что вы создаёте, принадлежит вам и остаётся у вас. Делайте собственные резервные копии и берегите пароли. Приложение предоставляется как есть, в пределах, допускаемых законом.</p>
+    </div>
+
+    <h2>1. Настоящие условия</h2>
+    <p>Dattal издаёт <strong>CHARON, spol. s r.o.</strong>, Jabloň 49, 067 13 Jabloň, Словакия, регистрационный номер (IČO) 36490253 («мы»). Загружая или используя Dattal, вы соглашаетесь с этими условиями.</p>
+    <p>Dattal распространяется через Mac App Store, поэтому ваша лицензия регулируется стандартным соглашением Apple, <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Licensed Application End User License Agreement</a> («стандартное соглашение»). Эти условия объясняют его простыми словами и добавляют несколько пунктов, относящихся к Dattal. Если они расходятся со стандартным соглашением, применяется стандартное соглашение. Ничто в этих условиях не ограничивает права, которые даёт вам законодательство о защите потребителей вашей страны и от которых нельзя отказаться.</p>
+
+    <h2>2. Лицензия</h2>
+    <p>Мы предоставляем вам личную, неисключительную, непередаваемую лицензию на использование Dattal на устройствах Apple, которые принадлежат вам или находятся под вашим контролем, в рамках правил использования App Store, включая Семейный доступ. Вы не вправе продавать, сдавать в аренду или распространять приложение, удалять из него уведомления или подвергать его обратной разработке, кроме случаев, когда это прямо разрешено законом.</p>
+
+    <h2>3. Пробный период и Dattal Pro</h2>
+    <p>Dattal можно загрузить бесплатно. Все функции можно опробовать в течение ограниченного числа активных дней, которое показано в приложении. После пробного периода базы данных открываются только для чтения: всё, что вы создали, по-прежнему можно просматривать, печатать и экспортировать.</p>
+    <p>Разовая покупка «Dattal Pro» навсегда открывает редактирование для вашей учётной записи Apple. Покупки, платежи и возвраты обрабатывает Apple на собственных условиях. Если вы потребитель, ваши законные права не затрагиваются.</p>
+
+    <h2>4. Ваши данные и резервные копии</h2>
+    <p>Всё, что вы создаёте, сохраняется в файлах <code>.datt</code> там, где вы выберете. У нас нет доступа к вашим файлам, и мы не можем восстановить их за вас.</p>
+    <p>Для удобства Dattal хранит резервную копию каждой базы данных, однако за собственные резервные копии всего важного отвечаете вы. Если вы защитите базу данных или экспорт паролем и потеряете и пароль, и главный ключ, <strong>содержимое не сможет восстановить никто, включая нас</strong>.</p>
+
+    <h2>5. Ваше содержимое</h2>
+    <p>То, что вы создаёте в Dattal, принадлежит вам. Вы отвечаете за содержимое, которое храните, экспортируете и которым делитесь, а также за наличие прав на тексты, изображения и шрифты, которые добавляете в свои базы данных.</p>
+
+    <h2>6. Обновления и поддержка</h2>
+    <p>Мы можем выпускать обновления, которые добавляют, изменяют или удаляют функции. Мы стараемся, чтобы файлы прежних версий оставались читаемыми, но не обещаем, что конкретная функция останется доступной или что обновления и поддержка будут предоставляться в течение определённого срока. Связаться с поддержкой можно по адресу <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <h2>7. Отсутствие гарантий</h2>
+    <p>В пределах, допускаемых законом, Dattal предоставляется «как есть» и «по мере доступности», без каких-либо гарантий, включая пригодность для определённой цели и бесперебойную или безошибочную работу.</p>
+
+    <h2>8. Ограничение ответственности</h2>
+    <p>В пределах, допускаемых законом, мы не отвечаем за потерю данных, упущенную выгоду, косвенный или последующий ущерб, возникшие из-за использования Dattal или невозможности его использовать, а наша общая ответственность ограничена суммой, которую вы заплатили за Dattal Pro.</p>
+    <p>Это не ограничивает ответственность за ущерб, причинённый умышленно или по грубой неосторожности, за вред жизни и здоровью и любую иную ответственность, которую закон не позволяет ограничить.</p>
+
+    <h2>9. Интеллектуальная собственность</h2>
+    <p>Dattal, его название, логотип, оформление и код охраняются авторским правом, © Alexander Tilňák, и издаются по лицензии компанией CHARON, spol. s r.o. Экспортируемые файлы содержат значки из открытого набора Lucide по лицензии ISC. Apple, Mac, macOS, App Store и iCloud являются товарными знаками Apple Inc.</p>
+
+    <h2>10. Применимое право</h2>
+    <p>Эти условия регулируются правом Словацкой Республики. Если вы потребитель, за вами также сохраняется защита, которую дают императивные нормы страны вашего проживания, и вы можете обратиться в суды этой страны. Потребители в ЕС могут также воспользоваться альтернативным разрешением споров; в Словакии это Словацкая торговая инспекция (<a href="https://www.soi.sk">www.soi.sk</a>).</p>
+
+    <h2>11. Изменения и контакты</h2>
+    <p>Мы можем обновлять эти условия. Актуальная версия всегда доступна в приложении. Вопросы: <a href="mailto:support@dattal.app">support@dattal.app</a>.</p>
+
+    <dl>
+      <dt>Издатель</dt><dd>CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Словакия · IČO 36490253</dd>
+      <dt>Контакт</dt><dd><a href="mailto:support@dattal.app">support@dattal.app</a></dd>
+      <dt>Версия</dt><dd>1.0, 14 ноября 2026 г.</dd>
+    </dl>
+  </article>
+
+  <footer>© 2026 CHARON, spol. s r.o. · Dattal</footer>
+</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  var LANGS = ['en', 'sk', 'de', 'es', 'ru'];
+  var TITLES = {
+    en: 'Dattal Terms of Use',
+    sk: 'Podmienky používania – Dattal',
+    de: 'Nutzungsbedingungen – Dattal',
+    es: 'Condiciones de uso – Dattal',
+    ru: 'Условия использования – Dattal'
+  };
+  function setLang(l) {
+    if (LANGS.indexOf(l) < 0) l = 'en';
+    root.setAttribute('data-lang', l);
+    root.setAttribute('lang', l);
+    document.title = TITLES[l] || TITLES.en;
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === l));
+    });
+    try { localStorage.setItem('dattal-terms-lang', l); } catch (e) {}
+  }
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+  });
+  var initial = 'en';
+  var hash = location.hash.replace('#', '');
+  if (LANGS.indexOf(hash) >= 0) initial = hash;
+  else {
+    var stored = null;
+    try { stored = localStorage.getItem('dattal-terms-lang'); } catch (e) {}
+    if (stored) initial = stored;
+    else {
+      // Bez uloženej voľby: jazyk prehliadača, ak ho zásady majú (inak angličtina).
+      var nav = (navigator.language || '').slice(0, 2).toLowerCase();
+      if (LANGS.indexOf(nav) >= 0) initial = nav;
+    }
+  }
+  setLang(initial);
+})();
+</script>
+<script>
+// Nočná obloha: hviezdy rozmiestnené raz podľa veľkosti okna, jemné blikanie
+// (vypnuté pri prefers-reduced-motion). Hustota ~1 hviezda na 9000 px².
+(function () {
+  var canvas = document.getElementById('sky');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stars = [], w = 0, h = 0, dpr = 1;
+  function layout() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth; h = window.innerHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var n = Math.round((w * h) / 9000);
+    stars = [];
+    for (var i = 0; i < n; i++) {
+      var big = Math.random() < 0.08;
+      stars.push({
+        x: Math.random() * w, y: Math.random() * h,
+        r: big ? 1.2 + Math.random() * 1.1 : 0.4 + Math.random() * 0.8,
+        a: 0.25 + Math.random() * 0.6,
+        p: Math.random() * Math.PI * 2,
+        s: 0.4 + Math.random() * 1.2,
+        tint: Math.random() < 0.3
+      });
+    }
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < stars.length; i++) {
+      var st = stars[i];
+      var tw = reduce ? 1 : 0.7 + 0.3 * Math.sin(st.p + t * 0.001 * st.s);
+      ctx.globalAlpha = st.a * tw;
+      ctx.fillStyle = st.tint ? '#bcd4ff' : '#ffffff';
+      ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2); ctx.fill();
+      if (st.r > 1.6) {
+        ctx.globalAlpha = st.a * tw * 0.35;
+        ctx.fillRect(st.x - st.r * 3, st.y - 0.4, st.r * 6, 0.8);
+        ctx.fillRect(st.x - 0.4, st.y - st.r * 3, 0.8, st.r * 6);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { layout(); if (reduce) draw(0); }, 150);
+  });
+  layout();
+  if (reduce) { draw(0); return; }
+  var last = 0;
+  function frame(t) {
+    if (t - last > 90) { draw(t); last = t; }   // ~11 fps stačí na pomalé blikanie
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

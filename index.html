@@ -69,8 +69,11 @@
   nav.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
   .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 1.05rem; }
   .brand img { width: 30px; height: 30px; border-radius: 7px; }
-  nav.top ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
-  nav.top ul a { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
+  /* Odkazy držia jeden riadok: keď sa všetky nezmestia (užšie okno, dlhší jazyk),
+     posledné sa zalomia do druhého riadka, ktorý je orezaný, takže ponuka nikdy
+     nepretečie do boku (user 2026-11-18: pribudli Návody). */
+  nav.top ul { display: flex; flex-wrap: wrap; gap: 0 22px; min-width: 0; height: 1.6em; overflow: hidden; overflow: clip; list-style: none; margin: 0; padding: 0; }
+  nav.top ul a { color: var(--muted); text-decoration: none; font-size: 0.95rem; white-space: nowrap; }
   nav.top ul a:hover { color: var(--text); }
   .lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; }
   .lang button { font: inherit; font-size: 0.82rem; padding: 4px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
@@ -236,6 +239,7 @@
       <li><a href="#who"><span lang="en">Who it's for</span><span lang="sk">Pre koho</span><span lang="de">Für wen</span><span lang="es">Para quién</span><span lang="ru">Для кого</span></a></li>
       <li><a href="#views"><span lang="en">Views</span><span lang="sk">Pohľady</span><span lang="de">Ansichten</span><span lang="es">Vistas</span><span lang="ru">Виды</span></a></li>
       <li><a href="#features"><span lang="en">Features</span><span lang="sk">Funkcie</span><span lang="de">Funktionen</span><span lang="es">Funciones</span><span lang="ru">Возможности</span></a></li>
+      <li><a href="/tutorials/"><span lang="en">Tutorials</span><span lang="sk">Návody</span><span lang="de">Anleitungen</span><span lang="es">Tutoriales</span><span lang="ru">Уроки</span></a></li>
       <li><a href="#privacy"><span lang="en">Privacy</span><span lang="sk">Súkromie</span><span lang="de">Datenschutz</span><span lang="es">Privacidad</span><span lang="ru">Приватность</span></a></li>
       <li><a href="#pricing"><span lang="en">Pricing</span><span lang="sk">Cena</span><span lang="de">Preis</span><span lang="es">Precio</span><span lang="ru">Цена</span></a></li>
     </ul>
@@ -441,7 +445,9 @@
         © 2026 Dattal
       </div>
       <ul>
+        <li><a href="/tutorials/"><span lang="en">Tutorials</span><span lang="sk">Návody</span><span lang="de">Anleitungen</span><span lang="es">Tutoriales</span><span lang="ru">Уроки</span></a></li>
         <li><a href="/privacy/"><span lang="en">Privacy policy</span><span lang="sk">Zásady súkromia</span><span lang="de">Datenschutzerklärung</span><span lang="es">Política de privacidad</span><span lang="ru">Политика конфиденциальности</span></a></li>
+        <li><a href="/terms/"><span lang="en">Terms of use</span><span lang="sk">Podmienky používania</span><span lang="de">Nutzungsbedingungen</span><span lang="es">Condiciones de uso</span><span lang="ru">Условия использования</span></a></li>
         <li><a href="mailto:support@dattal.app"><span lang="en">Support</span><span lang="sk">Podpora</span><span lang="de">Support</span><span lang="es">Soporte</span><span lang="ru">Поддержка</span>: support@dattal.app</a></li>
       </ul>
     </div>

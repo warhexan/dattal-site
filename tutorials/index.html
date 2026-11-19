@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dattal tutorials — the app in a few steps</title>
+<meta name="description" content="Short step-by-step tutorials for Dattal, the modular offline database for macOS: your first document, units and branches, attributes, the form layout, custom calendars, relationship maps and annotated maps.">
+<meta property="og:title" content="Dattal tutorials">
+<meta property="og:description" content="Short step-by-step tutorials shown on real windows of the app.">
+<meta property="og:image" content="https://dattal.app/assets/icon-512.png">
+<link rel="icon" href="../assets/favicon-64.png" sizes="64x64" type="image/png">
+<link rel="apple-touch-icon" href="../assets/icon-512.png">
+<style>
+  /* Farby, písma a karty sú tie isté ako na úvodnej stránke (index.html). */
+  :root {
+    color-scheme: dark;
+    --night: #070b14;
+    --night-2: #0d1322;
+    --ice: #bcd4ff;
+    --accent: #527ae6;
+    --text: #e9edf6;
+    --muted: #8f99b3;
+    --rule: rgba(255,255,255,0.09);
+    --radius: 14px;
+    --display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --ease: cubic-bezier(.22,.8,.24,1);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--night); color: var(--text);
+    font: 17px/1.6 var(--body); -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(900px 500px at 70% -10%, rgba(82,122,230,0.22), transparent 60%),
+      radial-gradient(600px 400px at 10% 20%, rgba(188,212,255,0.08), transparent 60%);
+    background-repeat: no-repeat;
+  }
+  #sky { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh; z-index: 0; pointer-events: none; }
+  .wrap { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  a { color: var(--ice); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--ice); outline-offset: 3px; }
+  h1, h2 { font-family: var(--display); font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.1rem, 4.4vw, 3.2rem); line-height: 1.08; }
+  h2 { font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.15; }
+  p { max-width: 62ch; }
+  .lead { font-size: 1.2rem; color: var(--muted); }
+  .eyebrow { font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ice); font-weight: 600; }
+
+  html[data-lang="en"] [lang]:not([lang="en"]), html[data-lang="sk"] [lang]:not([lang="sk"]),
+  html[data-lang="de"] [lang]:not([lang="de"]), html[data-lang="es"] [lang]:not([lang="es"]),
+  html[data-lang="ru"] [lang]:not([lang="ru"]) { display: none !important; }
+
+  /* Nav */
+  nav.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; }
+  .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 600; font-size: 1.05rem; }
+  .brand img { width: 30px; height: 30px; border-radius: 7px; }
+  /* Odkazy držia jeden riadok: keď sa všetky nezmestia (užšie okno, dlhší jazyk),
+     posledné sa zalomia do druhého riadka, ktorý je orezaný, takže ponuka nikdy
+     nepretečie do boku (user 2026-11-18: pribudli Návody). */
+  nav.top ul { display: flex; flex-wrap: wrap; gap: 0 22px; min-width: 0; height: 1.6em; overflow: hidden; overflow: clip; list-style: none; margin: 0; padding: 0; }
+  nav.top ul a { color: var(--muted); text-decoration: none; font-size: 0.95rem; white-space: nowrap; }
+  nav.top ul a:hover, nav.top ul a[aria-current="page"] { color: var(--text); }
+  .lang { display: inline-flex; border: 1px solid var(--rule); border-radius: 999px; padding: 2px; }
+  .lang button { font: inherit; font-size: 0.82rem; padding: 4px 12px; border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; }
+  .lang button[aria-pressed="true"] { background: rgba(188,212,255,0.14); color: var(--text); }
+  @media (max-width: 560px) { .lang button { padding: 4px 8px; font-size: 0.78rem; } }
+
+  /* Hlavička stránky */
+  .head { padding: 48px 0 44px; }
+  .head h1 { margin-top: 8px; }
+  .head .lead { margin: 18px 0 0; }
+  .head .shots-note { color: var(--muted); font-size: 0.9rem; margin: 0; }
+  .head .shots-note span { display: block; margin-top: 10px; }
+  .jump { margin-top: 22px; }
+  .jump-label { margin: 16px 0 8px; font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--muted); }
+  .jump-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .jump a { font-size: 0.9rem; color: var(--muted); text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 7px 14px; transition: color .15s, border-color .15s; }
+  .jump a:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+  /* Návod */
+  section.tut { padding: 56px 0; border-top: 1px solid var(--rule); scroll-margin-top: 8px; }
+  .tut-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+  .sec-head { max-width: 62ch; }
+  .sec-head h2 { margin-top: 6px; }
+
+  /* Okno programu. Zvýraznenie kreslí stránka nad čistým záberom: `.spot` je výrez
+     a jeho obrovský tieň stlmí okolie. Na úzkom okne sa `.stage` k výrezu priblíži
+     (skript), aby sa dal text v programe prečítať aj na mobile. */
+  .win { position: relative; border-radius: 12px; overflow: hidden; background: #17110c; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 40px 90px rgba(0,0,0,0.55), 0 0 110px rgba(82,122,230,0.16); }
+  .tut-win { aspect-ratio: 1440 / 900; }
+  .stage { position: absolute; inset: 0; transform-origin: 0 0; transition: transform .7s var(--ease); }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .45s ease; -webkit-user-drag: none; }
+  .stage img.on { opacity: 1; }
+  .spot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; border-radius: 9px; pointer-events: none; opacity: 0;
+    box-shadow: 0 0 0 calc(2px / var(--k, 1)) var(--ice), 0 0 calc(28px / var(--k, 1)) calc(2px / var(--k, 1)) rgba(188,212,255,0.5), 0 0 0 200vmax rgba(7,11,20,0.6);
+    transition: left .7s var(--ease), top .7s var(--ease), width .7s var(--ease), height .7s var(--ease), opacity .3s ease; }
+  .tut.live .spot { opacity: 1; }
+  .tut-play { flex: none; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--text); background: var(--night-2); border: 1px solid var(--rule); transition: background .15s, border-color .15s; }
+  .tut-play:hover { border-color: var(--accent); background: rgba(82,122,230,0.18); }
+  .tut-play svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .tut-play .i-play { fill: currentColor; stroke-width: 1.5; }
+  .tut-play[aria-pressed="true"] .i-play, .tut-play[aria-pressed="false"] .i-pause { display: none; }
+  .tut:not(.live) .tut-play { display: none; }
+
+  /* Kroky: aktívny vyzerá ako karta na úvodnej stránke (modrý prechod, ľadový okraj). */
+  .steps { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 4), 1fr); gap: 12px; }
+  .steps li { display: flex; }
+  .step { position: relative; overflow: hidden; display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; font: inherit; font-size: 0.93rem; line-height: 1.45; color: var(--muted); padding: 14px 14px 17px; border-radius: var(--radius); border: 1px solid var(--rule); background: transparent; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .step:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+  .step b { flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: 0.82rem; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--ice); border: 1px solid rgba(188,212,255,0.35); transition: background .2s, color .2s; }
+  /* Päť krokov v rade: o niečo drobnejšie, aby sa zmestili vedľa seba. */
+  .tut[style*="--n:5"] .step { font-size: 0.88rem; gap: 10px; padding: 12px 12px 15px; }
+  .step[aria-current="step"] { color: var(--text); border-color: rgba(188,212,255,0.4); background: linear-gradient(180deg, rgba(82,122,230,0.18), rgba(82,122,230,0.04)); }
+  .step[aria-current="step"] b { background: var(--ice); color: var(--night); border-color: var(--ice); }
+  /* Odpočet kroku pri prehrávaní; jeho koniec posunie návod ďalej (skript). */
+  .step::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--ice); transform: scaleX(0); transform-origin: 0 50%; }
+  .tut.playing .step[aria-current="step"]::after { animation: tut-fill 5.5s linear forwards; }
+  .tut.playing.hold .step[aria-current="step"]::after { animation-play-state: paused; }
+  @keyframes tut-fill { to { transform: scaleX(1); } }
+
+  footer { border-top: 1px solid var(--rule); padding: 32px 0 48px; color: var(--muted); font-size: 0.9rem; }
+  footer .cols { display: flex; flex-wrap: wrap; gap: 12px 36px; justify-content: space-between; align-items: flex-start; }
+  footer ul { list-style: none; padding: 0; margin: 0; display: flex; gap: 20px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--text); }
+
+  @media (max-width: 900px) {
+    .steps { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) { nav.top ul { display: none; } }
+  @media (max-width: 640px) {
+    .head { padding: 28px 0 32px; }
+    section.tut { padding: 40px 0; }
+    .steps { grid-template-columns: 1fr; gap: 8px; }
+    /* Okno ostáva pri čítaní krokov na očiach. */
+    .tut-win { position: sticky; top: 8px; z-index: 2; box-shadow: 0 18px 40px rgba(0,0,0,0.6); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stage, .stage img, .spot { transition: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<div class="wrap">
+  <nav class="top" aria-label="Main">
+    <a class="brand" href="../"><img src="../assets/icon-512.png" alt="" width="30" height="30">Dattal</a>
+    <ul>
+      <li><a href="../#who"><span lang="en">Who it's for</span><span lang="sk">Pre koho</span><span lang="de">Für wen</span><span lang="es">Para quién</span><span lang="ru">Для кого</span></a></li>
+      <li><a href="../#views"><span lang="en">Views</span><span lang="sk">Pohľady</span><span lang="de">Ansichten</span><span lang="es">Vistas</span><span lang="ru">Виды</span></a></li>
+      <li><a href="../#features"><span lang="en">Features</span><span lang="sk">Funkcie</span><span lang="de">Funktionen</span><span lang="es">Funciones</span><span lang="ru">Возможности</span></a></li>
+      <li><a href="./" aria-current="page"><span lang="en">Tutorials</span><span lang="sk">Návody</span><span lang="de">Anleitungen</span><span lang="es">Tutoriales</span><span lang="ru">Уроки</span></a></li>
+      <li><a href="../#privacy"><span lang="en">Privacy</span><span lang="sk">Súkromie</span><span lang="de">Datenschutz</span><span lang="es">Privacidad</span><span lang="ru">Приватность</span></a></li>
+      <li><a href="../#pricing"><span lang="en">Pricing</span><span lang="sk">Cena</span><span lang="de">Preis</span><span lang="es">Precio</span><span lang="ru">Цена</span></a></li>
+    </ul>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-set-lang="sk" aria-pressed="false">SK</button>
+      <button type="button" data-set-lang="de" aria-pressed="false">DE</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">ES</button>
+      <button type="button" data-set-lang="ru" aria-pressed="false">RU</button>
+    </div>
+  </nav>
+
+  <header class="head">
+    <p class="eyebrow"><span lang="en">Tutorials</span><span lang="sk">Návody</span><span lang="de">Anleitungen</span><span lang="es">Tutoriales</span><span lang="ru">Уроки</span></p>
+    <h1><span lang="en">Dattal in a few steps</span><span lang="sk">Dattal v pár krokoch</span><span lang="de">Dattal in wenigen Schritten</span><span lang="es">Dattal en pocos pasos</span><span lang="ru">Dattal за несколько шагов</span></h1>
+    <p class="lead"><span lang="en">Short tutorials shown on real windows of the app. Each one plays by itself; click a step to stay on it.</span><span lang="sk">Krátke návody na skutočných oknách programu. Každý sa prehráva sám; klikni na krok a ostane na ňom stáť.</span><span lang="de">Kurze Anleitungen an echten Fenstern der App. Jede läuft von selbst ab; klicke auf einen Schritt, um dort zu bleiben.</span><span lang="es">Tutoriales breves sobre ventanas reales de la app. Cada uno se reproduce solo; haz clic en un paso para quedarte en él.</span><span lang="ru">Короткие уроки на настоящих окнах приложения. Каждый воспроизводится сам; щёлкни по шагу, чтобы остановиться на нём.</span></p>
+    <p class="shots-note"><span lang="de">Die Aufnahmen zeigen die englische Oberfläche. Die App selbst gibt es auch auf Deutsch.</span><span lang="es">Las capturas muestran la interfaz en inglés. La app también está en español.</span><span lang="ru">На снимках показан английский интерфейс. Само приложение есть и на русском.</span></p>
+    <nav class="jump" aria-label="Tutorials on this page">
+<!-- JUMP:BEGIN -->
+      <p class="jump-label"><span lang="en">Basics</span><span lang="sk">Základy</span><span lang="de">Grundlagen</span><span lang="es">Lo básico</span><span lang="ru">Основы</span></p>
+      <div class="jump-row">
+        <a href="#first-document"><span lang="en">Your first document</span><span lang="sk">Prvý dokument</span><span lang="de">Dein erstes Dokument</span><span lang="es">Tu primer documento</span><span lang="ru">Первый документ</span></a>
+        <a href="#units-and-branches"><span lang="en">Units and branches</span><span lang="sk">Jednotky a vetvy</span><span lang="de">Einheiten und Zweige</span><span lang="es">Unidades y ramas</span><span lang="ru">Единицы и ветки</span></a>
+        <a href="#attributes"><span lang="en">Attributes</span><span lang="sk">Atribúty</span><span lang="de">Attribute</span><span lang="es">Atributos</span><span lang="ru">Атрибуты</span></a>
+        <a href="#three-views"><span lang="en">Three views of your data</span><span lang="sk">Tri pohľady na údaje</span><span lang="de">Drei Ansichten deiner Daten</span><span lang="es">Tres vistas de tus datos</span><span lang="ru">Три вида твоих данных</span></a>
+        <a href="#filling-in"><span lang="en">Filling in values</span><span lang="sk">Vypĺňanie údajov</span><span lang="de">Werte ausfüllen</span><span lang="es">Rellenar valores</span><span lang="ru">Заполнение значений</span></a>
+        <a href="#form-layout"><span lang="en">Laying out the form</span><span lang="sk">Rozloženie formulára</span><span lang="de">Das Formular gestalten</span><span lang="es">Diseñar el formulario</span><span lang="ru">Компоновка формы</span></a>
+      </div>
+      <p class="jump-label"><span lang="en">Going further</span><span lang="sk">Ďalej</span><span lang="de">Weiter</span><span lang="es">Más allá</span><span lang="ru">Дальше</span></p>
+      <div class="jump-row">
+        <a href="#custom-calendar"><span lang="en">A calendar of your own</span><span lang="sk">Vlastný kalendár</span><span lang="de">Ein eigener Kalender</span><span lang="es">Un calendario propio</span><span lang="ru">Собственный календарь</span></a>
+        <a href="#text-links"><span lang="en">Links in text</span><span lang="sk">Odkazy v texte</span><span lang="de">Links im Text</span><span lang="es">Enlaces en el texto</span><span lang="ru">Ссылки в тексте</span></a>
+        <a href="#link-previews"><span lang="en">Preview cards</span><span lang="sk">Karty náhľadu</span><span lang="de">Vorschaukarten</span><span lang="es">Tarjetas de vista previa</span><span lang="ru">Карточки предпросмотра</span></a>
+        <a href="#annotated-map"><span lang="en">A map with pins and zones</span><span lang="sk">Mapa so špendlíkmi a zónami</span><span lang="de">Eine Karte mit Pins und Zonen</span><span lang="es">Un mapa con chinchetas y zonas</span><span lang="ru">Карта с булавками и зонами</span></a>
+        <a href="#relationship-map"><span lang="en">A relationship map</span><span lang="sk">Mapa vzťahov</span><span lang="de">Eine Beziehungskarte</span><span lang="es">Un mapa de relaciones</span><span lang="ru">Карта связей</span></a>
+        <a href="#family-tree"><span lang="en">A family tree</span><span lang="sk">Rodokmeň</span><span lang="de">Ein Stammbaum</span><span lang="es">Un árbol genealógico</span><span lang="ru">Родословная</span></a>
+        <a href="#timeline"><span lang="en">A timeline</span><span lang="sk">Časová os</span><span lang="de">Eine Zeitleiste</span><span lang="es">Una línea de tiempo</span><span lang="ru">Временная шкала</span></a>
+      </div>
+<!-- JUMP:END -->
+    </nav>
+  </header>
+
+<!-- TUTORIALS:BEGIN -->
+  <section class="tut" id="first-document" style="--n:3">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">3 steps</span><span lang="sk">3 kroky</span><span lang="de">3 Schritte</span><span lang="es">3 pasos</span><span lang="ru">3 шага</span></p>
+        <h2><span lang="en">Your first document</span><span lang="sk">Prvý dokument</span><span lang="de">Dein erstes Dokument</span><span lang="es">Tu primer documento</span><span lang="ru">Первый документ</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="16-launcher" width="2160" height="1350" loading="lazy" decoding="async" alt="The start screen of Dattal with cards for a new database, opening a file and templates">
+        <img data-shot="01-form" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/16-launcher.jpg" width="2160" height="1350" alt="The start screen of Dattal with cards for a new database, opening a file and templates"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="16-launcher" data-spot="478,384,468,194"><b>1</b><span class="t"><span lang="en">New Database (⌘N) creates an empty .datt document where you save it. Open… (⌘O) loads an existing one.</span><span lang="sk">Nová databáza (⌘N) vytvorí prázdny dokument .datt tam, kam ho uložíš. Otvoriť… (⌘O) načíta existujúci.</span><span lang="de">Neue Datenbank (⌘N) legt ein leeres .datt-Dokument dort an, wo du es sicherst. Öffnen… (⌘O) lädt ein vorhandenes.</span><span lang="es">Nueva base de datos (⌘N) crea un documento .datt vacío donde lo guardes. Abrir… (⌘O) carga uno existente.</span><span lang="ru">Новая база данных (⌘N) создаёт пустой документ .datt там, где ты его сохранишь. Открыть… (⌘O) загружает существующий.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="16-launcher" data-spot="344,596,734,214"><b>2</b><span class="t"><span lang="en">Templates come with branches and attributes ready for a world, a book, studies or research. You can change everything in them.</span><span lang="sk">Šablóny majú pripravené vetvy a atribúty pre svet, knihu, štúdium či výskum. Všetko v nich si môžeš zmeniť.</span><span lang="de">Vorlagen bringen fertige Zweige und Attribute für eine Welt, ein Buch, das Studium oder die Forschung mit. Alles darin kannst du ändern.</span><span lang="es">Las plantillas traen ramas y atributos listos para un mundo, un libro, los estudios o la investigación. Puedes cambiarlo todo.</span><span lang="ru">В шаблонах уже есть ветки и атрибуты для мира, книги, учёбы или исследования. Всё в них можно изменить.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="4,36,1432,34"><b>3</b><span class="t"><span lang="en">Every open document is a tab in the top bar. The + button on the right shows the start screen again. Dattal saves as you work.</span><span lang="sk">Každý otvorený dokument je tab v hornej lište. Tlačidlo + vpravo ukáže úvodnú obrazovku znova. Dattal ukladá priebežne.</span><span lang="de">Jedes geöffnete Dokument ist ein Tab in der oberen Leiste. Die Taste + rechts zeigt den Startbildschirm wieder. Dattal sichert laufend.</span><span lang="es">Cada documento abierto es una pestaña en la barra superior. El botón + de la derecha vuelve a mostrar la pantalla de inicio. Dattal guarda sobre la marcha.</span><span lang="ru">Каждый открытый документ занимает вкладку в верхней панели. Кнопка + справа снова показывает начальный экран. Dattal сохраняет по ходу работы.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="units-and-branches" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">Units and branches</span><span lang="sk">Jednotky a vetvy</span><span lang="de">Einheiten und Zweige</span><span lang="es">Unidades y ramas</span><span lang="ru">Единицы и ветки</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="01-form" width="2160" height="1350" loading="lazy" decoding="async" alt="The main window of Dattal with the tree of branches and units on the left and a character page on the right">
+        <img data-shot="05-nested-places" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/01-form.jpg" width="2160" height="1350" alt="The main window of Dattal with the tree of branches and units on the left and a character page on the right"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="01-form" data-spot="10,190,316,696"><b>1</b><span class="t"><span lang="en">The tree is on the left. A branch (Characters) holds units (Aldren Valmir). Click a unit to open it.</span><span lang="sk">Vľavo je strom. Vetva (Postavy) obsahuje jednotky (Aldren Valmir). Klikom jednotku otvoríš.</span><span lang="de">Links steht der Baum. Ein Zweig (Characters) enthält Einheiten (Aldren Valmir). Ein Klick öffnet die Einheit.</span><span lang="es">A la izquierda está el árbol. Una rama (Characters) contiene unidades (Aldren Valmir). Haz clic en una unidad para abrirla.</span><span lang="ru">Слева находится дерево. Ветка (Characters) содержит единицы (Aldren Valmir). Щёлкни по единице, чтобы открыть её.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="98,84,70,34"><b>2</b><span class="t"><span lang="en">The green + adds a unit to the selected branch (⌘U). The red − removes the selected units.</span><span lang="sk">Zelené + pridá jednotku do vybranej vetvy (⌘U). Červené − odstráni vybrané jednotky.</span><span lang="de">Das grüne + fügt dem gewählten Zweig eine Einheit hinzu (⌘U). Das rote − entfernt die ausgewählten Einheiten.</span><span lang="es">El + verde añade una unidad a la rama seleccionada (⌘U). El − rojo elimina las unidades seleccionadas.</span><span lang="ru">Зелёный + добавляет единицу в выбранную ветку (⌘U). Красный − удаляет выбранные единицы.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="12,342,306,36"><b>3</b><span class="t"><span lang="en">Right-click a unit to rename it, change its icon or duplicate it.</span><span lang="sk">Pravým klikom jednotku premenuješ, zmeníš jej ikonu alebo ju duplikuješ.</span><span lang="de">Mit einem Rechtsklick benennst du eine Einheit um, änderst ihr Symbol oder duplizierst sie.</span><span lang="es">Con el botón derecho puedes renombrar una unidad, cambiar su icono o duplicarla.</span><span lang="ru">Правым щелчком единицу можно переименовать, сменить ей значок или дублировать.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="05-nested-places" data-spot="12,430,310,348"><b>4</b><span class="t"><span lang="en">Drag a unit onto another unit and it becomes its sub-branch. The tree nests as deep as you need.</span><span lang="sk">Potiahni jednotku na inú jednotku a vznikne pod ňou podvetva. Strom sa vnára tak hlboko, ako potrebuješ.</span><span lang="de">Ziehe eine Einheit auf eine andere, und sie wird zu deren Unterzweig. Der Baum verschachtelt sich so tief, wie du es brauchst.</span><span lang="es">Arrastra una unidad sobre otra y pasará a ser su subrama. El árbol se anida tanto como necesites.</span><span lang="ru">Перетащи единицу на другую, и она станет её подветкой. Дерево вкладывается так глубоко, как тебе нужно.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="14,120,206,32"><b>5</b><span class="t"><span lang="en">Search looks through the whole document.</span><span lang="sk">Hľadanie prejde celý dokument.</span><span lang="de">Die Suche durchsucht das ganze Dokument.</span><span lang="es">La búsqueda recorre todo el documento.</span><span lang="ru">Поиск проходит по всему документу.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="attributes" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">Attributes</span><span lang="sk">Atribúty</span><span lang="de">Attribute</span><span lang="es">Atributos</span><span lang="ru">Атрибуты</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="12-attribute-library" width="2160" height="1350" loading="lazy" decoding="async" alt="The attribute library window with a list of attributes and their types">
+        <img data-shot="13-attribute-properties" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <img data-shot="14-library-panel" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/12-attribute-library.jpg" width="2160" height="1350" alt="The attribute library window with a list of attributes and their types"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="12-attribute-library" data-spot="286,74,562,44"><b>1</b><span class="t"><span lang="en">Libraries ▸ Attributes… (⌘⇧L). An attribute is a field you fill in for units. Type a name, pick a type and click Add.</span><span lang="sk">Knižnice ▸ Atribúty… (⌘⇧L). Atribút je pole, ktoré vypĺňaš pri jednotkách. Napíš meno, vyber typ a klikni Pridať.</span><span lang="de">Bibliotheken ▸ Attribute… (⌘⇧L). Ein Attribut ist ein Feld, das du bei Einheiten ausfüllst. Gib einen Namen ein, wähle einen Typ und klicke auf Hinzufügen.</span><span lang="es">Bibliotecas ▸ Atributos… (⌘⇧L). Un atributo es un campo que rellenas en las unidades. Escribe un nombre, elige un tipo y pulsa Añadir.</span><span lang="ru">Библиотеки ▸ Атрибуты… (⌘⇧L). Атрибут представляет собой поле, которое ты заполняешь у единиц. Введи название, выбери тип и нажми Добавить.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="13-attribute-properties" data-spot="864,74,564,112"><b>2</b><span class="t"><span lang="en">Each type has its own properties. A scale has a range, a number has a unit, a selection has a list of options.</span><span lang="sk">Každý typ má svoje vlastnosti. Škála má rozsah, číslo jednotku, výber zoznam možností.</span><span lang="de">Jeder Typ hat eigene Eigenschaften. Eine Skala hat einen Bereich, eine Zahl eine Einheit, eine Auswahl eine Liste von Optionen.</span><span lang="es">Cada tipo tiene sus propiedades. Una escala tiene un rango, un número una unidad y una selección una lista de opciones.</span><span lang="ru">У каждого типа свои свойства. У шкалы есть диапазон, у числа единица измерения, у выбора список вариантов.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="14-library-panel" data-spot="1150,80,284,814"><b>3</b><span class="t"><span lang="en">The Attributes button opens the library panel. Drag an attribute from it onto a branch in the tree or straight onto the form.</span><span lang="sk">Tlačidlo Atribúty otvorí panel Knižnica. Atribút z neho potiahni na vetvu v strome alebo priamo na formulár.</span><span lang="de">Die Taste Attribute öffnet das Bibliotheksfeld. Ziehe ein Attribut daraus auf einen Zweig im Baum oder direkt auf das Formular.</span><span lang="es">El botón Atributos abre el panel de la biblioteca. Arrastra un atributo desde él a una rama del árbol o directamente al formulario.</span><span lang="ru">Кнопка Атрибуты открывает панель библиотеки. Перетащи атрибут из неё на ветку в дереве или прямо на форму.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="14-library-panel" data-spot="1158,260,252,40" data-spot-sk="1158,344,252,42"><b>4</b><span class="t"><span lang="en">A check mark means the branch already has the attribute. The eye hides it on the form; it stays in the table.</span><span lang="sk">Fajka znamená, že vetva atribút už má. Okom ho vo formulári skryješ, v tabuľke ostáva.</span><span lang="de">Ein Häkchen bedeutet, dass der Zweig das Attribut schon hat. Das Auge blendet es im Formular aus, in der Tabelle bleibt es.</span><span lang="es">La marca indica que la rama ya tiene el atributo. El ojo lo oculta en el formulario; en la tabla se mantiene.</span><span lang="ru">Галочка означает, что у ветки этот атрибут уже есть. Глаз скрывает его на форме, в таблице он остаётся.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="12-attribute-library" data-spot="8,44,264,158"><b>5</b><span class="t"><span lang="en">Bundles collect attributes into groups. Add a whole group to a branch at once.</span><span lang="sk">Balíčky spájajú atribúty do skupín. Celú skupinu pridáš do vetvy naraz.</span><span lang="de">Bundles fassen Attribute zu Gruppen zusammen. Eine ganze Gruppe fügst du einem Zweig auf einmal hinzu.</span><span lang="es">Los paquetes reúnen atributos en grupos. Puedes añadir un grupo entero a una rama de una vez.</span><span lang="ru">Наборы объединяют атрибуты в группы. Целую группу можно добавить в ветку за один раз.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="three-views" style="--n:4">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">4 steps</span><span lang="sk">4 kroky</span><span lang="de">4 Schritte</span><span lang="es">4 pasos</span><span lang="ru">4 шага</span></p>
+        <h2><span lang="en">Three views of your data</span><span lang="sk">Tri pohľady na údaje</span><span lang="de">Drei Ansichten deiner Daten</span><span lang="es">Tres vistas de tus datos</span><span lang="ru">Три вида твоих данных</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="02-table" width="2160" height="1350" loading="lazy" decoding="async" alt="The main window of Dattal with a table, a form and a print layout of the same branch">
+        <img data-shot="01-form" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <img data-shot="06-print" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/02-table.jpg" width="2160" height="1350" alt="The main window of Dattal with a table, a form and a print layout of the same branch"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="02-table" data-spot="352,82,310,38" data-spot-sk="352,82,340,38"><b>1</b><span class="t"><span lang="en">Table, Form View and Print View show the same data. Switch here or with ⌘1, ⌘2 and ⌘3.</span><span lang="sk">Tabuľka, Formulár a Tlačená verzia ukazujú tie isté údaje. Prepínaš ich tu alebo cez ⌘1, ⌘2 a ⌘3.</span><span lang="de">Tabelle, Formularansicht und Druckansicht zeigen dieselben Daten. Wechsle hier oder mit ⌘1, ⌘2 und ⌘3.</span><span lang="es">Tabla, Formulario y Vista de impresión muestran los mismos datos. Cambia aquí o con ⌘1, ⌘2 y ⌘3.</span><span lang="ru">Таблица, Форма и Версия для печати показывают одни и те же данные. Переключай их здесь или клавишами ⌘1, ⌘2 и ⌘3.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="02-table" data-spot="350,186,1082,706"><b>2</b><span class="t"><span lang="en">Table: every unit of the branch is a row. Click a cell to edit it.</span><span lang="sk">Tabuľka: každá jednotka vetvy je riadok. Klikom do bunky ju upravíš.</span><span lang="de">Tabelle: Jede Einheit des Zweigs ist eine Zeile. Klicke in eine Zelle, um sie zu bearbeiten.</span><span lang="es">Tabla: cada unidad de la rama es una fila. Haz clic en una celda para editarla.</span><span lang="ru">Таблица: каждая единица ветки занимает строку. Щёлкни по ячейке, чтобы изменить её.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="372,224,1036,668"><b>3</b><span class="t"><span lang="en">Form View: one unit on a page that you lay out yourself.</span><span lang="sk">Formulár: jedna jednotka na strane, ktorú si rozložíš sám.</span><span lang="de">Formularansicht: eine Einheit auf einer Seite, die du selbst gestaltest.</span><span lang="es">Formulario: una unidad en una página que diseñas tú.</span><span lang="ru">Форма: одна единица на странице, которую ты компонуешь сам.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="06-print" data-spot="1190,128,242,436"><b>4</b><span class="t"><span lang="en">Print View: set the margins, then print the page or save it as PDF or DOCX.</span><span lang="sk">Tlačená verzia: nastavíš okraje a stranu vytlačíš alebo uložíš ako PDF či DOCX.</span><span lang="de">Druckansicht: Lege die Ränder fest und drucke die Seite oder sichere sie als PDF oder DOCX.</span><span lang="es">Vista de impresión: ajusta los márgenes e imprime la página o guárdala como PDF o DOCX.</span><span lang="ru">Версия для печати: задай поля, затем распечатай страницу или сохрани её в PDF или DOCX.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="filling-in" style="--n:4">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">4 steps</span><span lang="sk">4 kroky</span><span lang="de">4 Schritte</span><span lang="es">4 pasos</span><span lang="ru">4 шага</span></p>
+        <h2><span lang="en">Filling in values</span><span lang="sk">Vypĺňanie údajov</span><span lang="de">Werte ausfüllen</span><span lang="es">Rellenar valores</span><span lang="ru">Заполнение значений</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="01-form" width="2160" height="1350" loading="lazy" decoding="async" alt="A character page in the form view with text fields, scales, a switch and selections">
+        <img data-shot="02-table" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/01-form.jpg" width="2160" height="1350" alt="A character page in the form view with text fields, scales, a switch and selections"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="01-form" data-spot="1002,326,334,44"><b>1</b><span class="t"><span lang="en">Click a field and type. The value is saved when you click away.</span><span lang="sk">Klikni do poľa a píš. Hodnota sa uloží, keď klikneš mimo.</span><span lang="de">Klicke in ein Feld und schreibe. Der Wert wird gesichert, sobald du daneben klickst.</span><span lang="es">Haz clic en un campo y escribe. El valor se guarda cuando haces clic fuera.</span><span lang="ru">Щёлкни по полю и пиши. Значение сохранится, когда ты щёлкнешь вне поля.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="436,584,896,106"><b>2</b><span class="t"><span lang="en">Set a scale by dragging its knob. A Yes / No switch flips with a click.</span><span lang="sk">Škálu nastavíš ťahaním jazdca. Prepínač Áno / Nie prepneš klikom.</span><span lang="de">Eine Skala stellst du durch Ziehen des Reglers ein. Ein Ja-/Nein-Schalter wechselt mit einem Klick.</span><span lang="es">Una escala se ajusta arrastrando el control. Un interruptor Sí / No cambia con un clic.</span><span lang="ru">Шкалу задаёшь, перетаскивая ползунок. Переключатель Да / Нет меняется щелчком.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="440,702,900,180"><b>3</b><span class="t"><span lang="en">A selection can point to units of another branch. Click the name to open that unit.</span><span lang="sk">Výber môže ukazovať na jednotky inej vetvy. Klik na meno tú jednotku otvorí.</span><span lang="de">Eine Auswahl kann auf Einheiten eines anderen Zweigs zeigen. Ein Klick auf den Namen öffnet diese Einheit.</span><span lang="es">Una selección puede apuntar a unidades de otra rama. Haz clic en el nombre para abrir esa unidad.</span><span lang="ru">Выбор может указывать на единицы другой ветки. Щелчок по имени открывает эту единицу.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="02-table" data-spot="350,186,1082,706"><b>4</b><span class="t"><span lang="en">In the table you fill in the same branch row by row. Handy when you enter many units at once.</span><span lang="sk">V tabuľke vypĺňaš tú istú vetvu po riadkoch. Hodí sa, keď zapisuješ veľa jednotiek naraz.</span><span lang="de">In der Tabelle füllst du denselben Zweig Zeile für Zeile aus. Praktisch, wenn du viele Einheiten auf einmal einträgst.</span><span lang="es">En la tabla rellenas la misma rama fila a fila. Resulta práctico cuando introduces muchas unidades a la vez.</span><span lang="ru">В таблице ты заполняешь ту же ветку строка за строкой. Удобно, когда вносишь много единиц сразу.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="form-layout" style="--n:4">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">4 steps</span><span lang="sk">4 kroky</span><span lang="de">4 Schritte</span><span lang="es">4 pasos</span><span lang="ru">4 шага</span></p>
+        <h2><span lang="en">Laying out the form</span><span lang="sk">Rozloženie formulára</span><span lang="de">Das Formular gestalten</span><span lang="es">Diseñar el formulario</span><span lang="ru">Компоновка формы</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="15-form-layout" width="2160" height="1350" loading="lazy" decoding="async" alt="A character page in layout editing with a grid on the paper and outlined fields">
+        <noscript><img class="on" src="../assets/tutorials/en/15-form-layout.jpg" width="2160" height="1350" alt="A character page in layout editing with a grid on the paper and outlined fields"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="15-form-layout" data-spot="360,130,38,36"><b>1</b><span class="t"><span lang="en">The button above the page turns on layout editing. A grid appears on the paper.</span><span lang="sk">Tlačidlo nad stranou zapne úpravu rozloženia. Na papieri sa ukáže mriežka.</span><span lang="de">Die Taste über der Seite schaltet die Layoutbearbeitung ein. Auf dem Papier erscheint ein Raster.</span><span lang="es">El botón sobre la página activa la edición del diseño. En el papel aparece una cuadrícula.</span><span lang="ru">Кнопка над страницей включает правку компоновки. На бумаге появляется сетка.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="15-form-layout" data-spot="660,324,338,62"><b>2</b><span class="t"><span lang="en">Drag a field to move it and drag its edge to resize it. Fields snap to the grid.</span><span lang="sk">Pole presunieš ťahaním, veľkosť zmeníš ťahaním za okraj. Polia sa chytajú mriežky.</span><span lang="de">Ziehe ein Feld, um es zu verschieben, und ziehe an seinem Rand, um die Größe zu ändern. Felder rasten im Raster ein.</span><span lang="es">Arrastra un campo para moverlo y arrastra su borde para cambiar el tamaño. Los campos se ajustan a la cuadrícula.</span><span lang="ru">Перетащи поле, чтобы переместить его, и потяни за край, чтобы изменить размер. Поля привязываются к сетке.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="15-form-layout" data-spot="440,702,900,184"><b>3</b><span class="t"><span lang="en">Drop an attribute onto another field and they form a window with tabs.</span><span lang="sk">Keď atribút pustíš na iné pole, vznikne okno s tabmi.</span><span lang="de">Lässt du ein Attribut auf ein anderes Feld fallen, entsteht ein Fenster mit Tabs.</span><span lang="es">Si sueltas un atributo sobre otro campo, forman una ventana con pestañas.</span><span lang="ru">Если отпустить атрибут на другое поле, получится окно с вкладками.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="15-form-layout" data-spot="372,224,1036,664"><b>4</b><span class="t"><span lang="en">The layout belongs to the branch. Every unit in it uses the same page.</span><span lang="sk">Rozloženie patrí vetve. Používa ho každá jej jednotka.</span><span lang="de">Das Layout gehört zum Zweig. Jede Einheit darin nutzt dieselbe Seite.</span><span lang="es">El diseño pertenece a la rama. Todas sus unidades usan la misma página.</span><span lang="ru">Компоновка принадлежит ветке. Ею пользуется каждая её единица.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="custom-calendar" style="--n:4">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">4 steps</span><span lang="sk">4 kroky</span><span lang="de">4 Schritte</span><span lang="es">4 pasos</span><span lang="ru">4 шага</span></p>
+        <h2><span lang="en">A calendar of your own</span><span lang="sk">Vlastný kalendár</span><span lang="de">Ein eigener Kalender</span><span lang="es">Un calendario propio</span><span lang="ru">Собственный календарь</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="11-calendar" width="2160" height="1350" loading="lazy" decoding="async" alt="The calendar library window with the units of a custom calendar and their names">
+        <noscript><img class="on" src="../assets/tutorials/en/11-calendar.jpg" width="2160" height="1350" alt="The calendar library window with the units of a custom calendar and their names"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="11-calendar" data-spot="243,270,263,622"><b>1</b><span class="t"><span lang="en">Libraries ▸ Calendars… Build a calendar from units: days in months, months in a year, cycles and ages above them.</span><span lang="sk">Knižnice ▸ Kalendáre… Kalendár skladáš z jednotiek: dni v mesiacoch, mesiace v roku, nad nimi cykly a veky.</span><span lang="de">Bibliotheken ▸ Kalender… Einen Kalender baust du aus Einheiten: Tage in Monaten, Monate im Jahr, darüber Zyklen und Zeitalter.</span><span lang="es">Bibliotecas ▸ Calendarios… Un calendario se construye con unidades: días en meses, meses en un año y, por encima, ciclos y eras.</span><span lang="ru">Библиотеки ▸ Календари… Календарь собирается из единиц: дни в месяцах, месяцы в году, над ними циклы и эпохи.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="11-calendar" data-spot="520,394,896,498"><b>2</b><span class="t"><span lang="en">Each unit has its instances. Name them here: months, days of the week, years of a cycle.</span><span lang="sk">Každá jednotka má svoje položky. Tu im dáš mená: mesiace, dni v týždni, roky v cykle.</span><span lang="de">Jede Einheit hat ihre Einträge. Hier gibst du ihnen Namen: Monate, Wochentage, Jahre eines Zyklus.</span><span lang="es">Cada unidad tiene sus elementos. Aquí les pones nombre: meses, días de la semana, años de un ciclo.</span><span lang="ru">У каждой единицы есть свои элементы. Здесь ты даёшь им имена: месяцы, дни недели, годы цикла.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="11-calendar" data-spot="243,140,1186,86"><b>3</b><span class="t"><span lang="en">Build the date format from bubbles. Drag to reorder; Custom text adds words and separators.</span><span lang="sk">Zápis dátumu poskladáš z bublín. Ťahaním meníš poradie, Vlastný text pridá slová a oddeľovače.</span><span lang="de">Das Datumsformat setzt du aus Blasen zusammen. Ziehe sie, um die Reihenfolge zu ändern; „Eigener Text“ fügt Wörter und Trennzeichen hinzu.</span><span lang="es">El formato de fecha se compone de burbujas. Arrástralas para cambiar el orden; «Texto propio» añade palabras y separadores.</span><span lang="ru">Формат даты складывается из пузырьков. Перетаскивай их, чтобы менять порядок; «Свой текст» добавляет слова и разделители.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="11-calendar" data-spot="243,110,440,34"><b>4</b><span class="t"><span lang="en">Current date is “today” in your world. Ages and durations are counted against it.</span><span lang="sk">Aktuálny dátum je „dnes“ tvojho sveta. Počítajú sa k nemu veky a trvania.</span><span lang="de">Das aktuelle Datum ist das „Heute“ deiner Welt. Alter und Zeitspannen werden daran gemessen.</span><span lang="es">La fecha actual es el «hoy» de tu mundo. Las edades y duraciones se calculan respecto a ella.</span><span lang="ru">Текущая дата означает «сегодня» твоего мира. От неё считаются возрасты и длительности.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="text-links" style="--n:3">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">6 steps</span><span lang="sk">6 krokov</span><span lang="de">6 Schritte</span><span lang="es">6 pasos</span><span lang="ru">6 шагов</span></p>
+        <h2><span lang="en">Links in text</span><span lang="sk">Odkazy v texte</span><span lang="de">Links im Text</span><span lang="es">Enlaces en el texto</span><span lang="ru">Ссылки в тексте</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="07-guide" width="2160" height="1350" loading="lazy" decoding="async" alt="A text field whose unit names are links, and the window that scans a text for unit names">
+        <img data-shot="17-text-links" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <img data-shot="18-link-library" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <img data-shot="01-form" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/07-guide.jpg" width="2160" height="1350" alt="A text field whose unit names are links, and the window that scans a text for unit names"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="07-guide" data-spot="440,432,900,34"><b>1</b><span class="t"><span lang="en">Names of units in a text can be links. Click a link and its unit opens.</span><span lang="sk">Mená jednotiek v texte môžu byť odkazy. Klik na odkaz otvorí jeho jednotku.</span><span lang="de">Namen von Einheiten in einem Text können Links sein. Ein Klick auf den Link öffnet die Einheit.</span><span lang="es">Los nombres de unidades en un texto pueden ser enlaces. Haz clic en un enlace y se abre su unidad.</span><span lang="ru">Имена единиц в тексте могут быть ссылками. Щелчок по ссылке открывает её единицу.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="17-text-links" data-spot="448,230,544,66"><b>2</b><span class="t"><span lang="en">Click into a text and choose Manage Hyperlinks (the chain icon) in its toolbar. Scan finds unit names in the text, declined forms included.</span><span lang="sk">Klikni do textu a v jeho lište zvoľ Spravovať hyperlinky (ikona reťaze). Skenovať nájde v texte mená jednotiek, aj vyskloňované.</span><span lang="de">Klicke in einen Text und wähle in seiner Leiste Hyperlinks verwalten (das Kettensymbol). Scannen findet Namen von Einheiten im Text, auch gebeugte Formen.</span><span lang="es">Haz clic en un texto y elige Gestionar hipervínculos (el icono de cadena) en su barra. Escanear encuentra nombres de unidades en el texto, también declinados.</span><span lang="ru">Щёлкни по тексту и в его панели выбери Управлять гиперссылками (значок цепи). Сканировать находит в тексте имена единиц, в том числе в косвенных падежах.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="17-text-links" data-spot="448,306,544,200"><b>3</b><span class="t"><span lang="en">Each suggestion shows the unit it will lead to. Change the target in the menu on the right or drop the suggestion with the bin, then Save.</span><span lang="sk">Pri každom návrhu vidíš, na ktorú jednotku povedie. Cieľ zmeníš v ponuke vpravo, návrh zahodíš košom a potom dáš Uložiť.</span><span lang="de">Jeder Vorschlag zeigt, zu welcher Einheit er führt. Ändere das Ziel im Menü rechts oder verwirf den Vorschlag mit dem Papierkorb, dann Speichern.</span><span lang="es">Cada sugerencia muestra a qué unidad llevará. Cambia el destino en el menú de la derecha o descarta la sugerencia con la papelera y pulsa Guardar.</span><span lang="ru">У каждого предложения видно, на какую единицу оно поведёт. Цель меняется в меню справа, предложение убирается корзиной, затем нажми Сохранить.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="17-text-links" data-spot="448,512,544,70"><b>4</b><span class="t"><span lang="en">Saved links are listed below. Dattal remembers a suggestion you dropped and will not offer it again.</span><span lang="sk">Uložené odkazy sú dole. Zahodený návrh si Dattal zapamätá a nabudúce ho neponúkne.</span><span lang="de">Gesicherte Links stehen unten. Einen verworfenen Vorschlag merkt sich Dattal und bietet ihn nicht wieder an.</span><span lang="es">Los enlaces guardados aparecen abajo. Dattal recuerda una sugerencia descartada y no volverá a ofrecerla.</span><span lang="ru">Сохранённые ссылки показаны ниже. Отклонённое предложение Dattal запоминает и больше его не предлагает.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="18-link-library" data-spot="306,222,828,354"><b>5</b><span class="t"><span lang="en">Libraries ▸ Hyperlink library… (⌘⇧H) lists every link in the document. Edit a link's text here or remove the link.</span><span lang="sk">Knižnice ▸ Knižnica hyperlinkov… (⌘⇧H) ukáže všetky odkazy v dokumente. Text odkazu tu upravíš alebo odkaz odstrániš.</span><span lang="de">Bibliotheken ▸ Hyperlink-Bibliothek… (⌘⇧H) zeigt alle Links im Dokument. Hier bearbeitest du den Text eines Links oder entfernst den Link.</span><span lang="es">Bibliotecas ▸ Biblioteca de hipervínculos… (⌘⇧H) muestra todos los enlaces del documento. Aquí editas el texto de un enlace o lo eliminas.</span><span lang="ru">Библиотеки ▸ Библиотека гиперссылок… (⌘⇧H) показывает все ссылки документа. Здесь можно изменить текст ссылки или удалить её.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="01-form" data-spot="12,342,306,36"><b>6</b><span class="t"><span lang="en">A unit with an everyday name would be suggested all the time. Right-click it and choose Don't Suggest Links to This Unit.</span><span lang="sk">Jednotka s bežným menom by sa navrhovala stále. Pravý klik na ňu a Nenavrhovať odkazy na túto jednotku ju z návrhov vyradí.</span><span lang="de">Eine Einheit mit einem Alltagsnamen würde ständig vorgeschlagen. Rechtsklick darauf und Keine Links auf diese Einheit vorschlagen.</span><span lang="es">Una unidad con un nombre corriente se sugeriría continuamente. Haz clic derecho en ella y elige No sugerir enlaces a esta unidad.</span><span lang="ru">Единица с обычным словом в названии предлагалась бы постоянно. Щёлкни по ней правой кнопкой и выбери Не предлагать ссылки на эту единицу.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="link-previews" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">Preview cards</span><span lang="sk">Karty náhľadu</span><span lang="de">Vorschaukarten</span><span lang="es">Tarjetas de vista previa</span><span lang="ru">Карточки предпросмотра</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="20-link-preview" width="2160" height="1350" loading="lazy" decoding="async" alt="A preview card with a unit's attributes shown next to a link in a text">
+        <img data-shot="19-preview-settings" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/20-link-preview.jpg" width="2160" height="1350" alt="A preview card with a unit's attributes shown next to a link in a text"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="20-link-preview" data-spot="482,442,236,144"><b>1</b><span class="t"><span lang="en">Hover a link and a card of that unit appears with the attributes you chose.</span><span lang="sk">Prejdi myšou nad odkaz a ukáže sa karta jednotky s atribútmi, ktoré si vyberieš.</span><span lang="de">Fahre mit der Maus über einen Link, und es erscheint eine Karte der Einheit mit den Attributen, die du auswählst.</span><span lang="es">Pasa el cursor sobre un enlace y aparece una tarjeta de esa unidad con los atributos que elijas.</span><span lang="ru">Наведи курсор на ссылку, и появится карточка единицы с атрибутами, которые ты выберешь.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="19-preview-settings" data-spot="578,112,284,38"><b>2</b><span class="t"><span lang="en">What the card shows is set in Settings (⌘,) on the Previews tab. The setting is saved with the file.</span><span lang="sk">Čo karta ukáže, nastavíš v Nastaveniach (⌘,) na záložke Náhľady. Nastavenie sa ukladá so súborom.</span><span lang="de">Was die Karte zeigt, legst du in den Einstellungen (⌘,) im Tab Vorschauen fest. Die Einstellung wird mit der Datei gesichert.</span><span lang="es">Lo que muestra la tarjeta se define en Ajustes (⌘,), en la pestaña Vistas previas. El ajuste se guarda con el archivo.</span><span lang="ru">Что показывает карточка, задаётся в Настройках (⌘,) на вкладке Предпросмотры. Настройка сохраняется вместе с файлом.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="19-preview-settings" data-spot="356,172,648,34"><b>3</b><span class="t"><span lang="en">Each place has a card of its own: a link in a text, an annotation, a timeline, a relationship map and a family tree.</span><span lang="sk">Každé miesto má vlastnú kartu: odkaz v texte, anotácia, časová os, vzťahová mapa a rodokmeň.</span><span lang="de">Jeder Ort hat eine eigene Karte: Link im Text, Annotation, Zeitleiste, Beziehungskarte und Stammbaum.</span><span lang="es">Cada lugar tiene su propia tarjeta: enlace en un texto, anotación, línea de tiempo, mapa de relaciones y árbol genealógico.</span><span lang="ru">У каждого места своя карточка: ссылка в тексте, аннотация, временная шкала, карта связей и родословная.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="19-preview-settings" data-spot="356,208,308,196"><b>4</b><span class="t"><span lang="en">On the left, pick the attributes the card shows. The unit's name and icon are always on it.</span><span lang="sk">Vľavo vyber atribúty, ktoré karta ukáže. Meno a ikona jednotky sú na nej vždy.</span><span lang="de">Links wählst du die Attribute, die die Karte zeigt. Name und Symbol der Einheit stehen immer darauf.</span><span lang="es">A la izquierda eliges los atributos que muestra la tarjeta. El nombre y el icono de la unidad siempre aparecen.</span><span lang="ru">Слева выбери атрибуты, которые покажет карточка. Имя и значок единицы есть на ней всегда.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="19-preview-settings" data-spot="686,206,400,302"><b>5</b><span class="t"><span lang="en">On the right, split the card into areas with lines and drag attributes into them. An image fills its whole area.</span><span lang="sk">Vpravo kartu rozdelíš čiarami na oblasti a atribúty do nich potiahneš. Obrázok zaberie celú oblasť.</span><span lang="de">Rechts teilst du die Karte mit Linien in Bereiche und ziehst Attribute hinein. Ein Bild füllt seinen ganzen Bereich.</span><span lang="es">A la derecha divides la tarjeta en áreas con líneas y arrastras atributos a ellas. Una imagen ocupa toda su área.</span><span lang="ru">Справа карточка делится линиями на области, в которые перетаскиваются атрибуты. Изображение занимает всю свою область.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="annotated-map" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">A map with pins and zones</span><span lang="sk">Mapa so špendlíkmi a zónami</span><span lang="de">Eine Karte mit Pins und Zonen</span><span lang="es">Un mapa con chinchetas y zonas</span><span lang="ru">Карта с булавками и зонами</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="04-annotated-map" width="2160" height="1350" loading="lazy" decoding="async" alt="The annotated image editor with a map of a kingdom, pins on towns and zones over regions">
+        <img data-shot="21-annotation-link" width="2160" height="1350" loading="lazy" decoding="async" alt="">
+        <noscript><img class="on" src="../assets/tutorials/en/04-annotated-map.jpg" width="2160" height="1350" alt="The annotated image editor with a map of a kingdom, pins on towns and zones over regions"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="04-annotated-map" data-spot="852,38,166,34"><b>1</b><span class="t"><span lang="en">In the annotated image editor, turn on Pin and click the image, or turn on Zone and outline an area in one drag.</span><span lang="sk">V editore anotovaného obrázka zapni Pin a klikni do obrázka, alebo zapni Zónu a obtiahni plochu jedným ťahom.</span><span lang="de">Schalte im Editor des annotierten Bildes Pin ein und klicke ins Bild, oder schalte Zone ein und umfahre eine Fläche in einem Zug.</span><span lang="es">En el editor de la imagen anotada, activa Pin y haz clic en la imagen, o activa Zona y rodea un área de un solo trazo.</span><span lang="ru">В редакторе аннотированного изображения включи Пин и щёлкни по изображению либо включи Зону и обведи область одним движением.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="04-annotated-map" data-spot="1182,120,254,264"><b>2</b><span class="t"><span lang="en">Every annotation is listed on the right. Click its name to rename it.</span><span lang="sk">Každá anotácia je v zozname vpravo. Klikom na meno ju premenuješ.</span><span lang="de">Jede Annotation steht in der Liste rechts. Ein Klick auf den Namen benennt sie um.</span><span lang="es">Cada anotación aparece en la lista de la derecha. Haz clic en su nombre para renombrarla.</span><span lang="ru">Каждая аннотация есть в списке справа. Щёлкни по названию, чтобы переименовать её.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="21-annotation-link" data-spot="458,132,524,596"><b>3</b><span class="t"><span lang="en">To link an annotation to a unit, hover its row in the list, choose Link Unit… and pick the unit.</span><span lang="sk">Anotáciu prepojíš s jednotkou takto: prejdi myšou nad jej riadok v zozname, zvoľ Linkovať jednotku… a vyber jednotku.</span><span lang="de">So verknüpfst du eine Annotation mit einer Einheit: Fahre über ihre Zeile in der Liste, wähle Einheit verknüpfen… und suche die Einheit aus.</span><span lang="es">Para enlazar una anotación con una unidad, pasa el cursor por su fila en la lista, elige Enlazar unidad… y selecciona la unidad.</span><span lang="ru">Чтобы связать аннотацию с единицей, наведи курсор на её строку в списке, выбери Связать единицу… и укажи единицу.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="04-annotated-map" data-spot="770,420,346,290"><b>4</b><span class="t"><span lang="en">A linked annotation takes the unit's name and icon. Click it to open that unit; hover it to see the unit's preview card.</span><span lang="sk">Prepojená anotácia preberie meno a ikonu jednotky. Klik na ňu tú jednotku otvorí, prejdenie myšou ukáže jej kartu náhľadu.</span><span lang="de">Eine verknüpfte Annotation übernimmt Namen und Symbol der Einheit. Ein Klick öffnet die Einheit, beim Überfahren erscheint ihre Vorschaukarte.</span><span lang="es">Una anotación enlazada toma el nombre y el icono de la unidad. Haz clic para abrir la unidad; al pasar el cursor aparece su tarjeta de vista previa.</span><span lang="ru">Связанная аннотация берёт имя и значок единицы. Щелчок открывает эту единицу, наведение показывает её карточку предпросмотра.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="04-annotated-map" data-spot="1182,120,254,264"><b>5</b><span class="t"><span lang="en">Sort annotations into groups, lock them and hide them with the icons on each row.</span><span lang="sk">Anotácie triediš do skupín, zamykáš a skrývaš ikonami v každom riadku.</span><span lang="de">Annotationen ordnest du in Gruppen, sperrst sie und blendest sie mit den Symbolen in jeder Zeile aus.</span><span lang="es">Ordena las anotaciones en grupos, bloquéalas y ocúltalas con los iconos de cada fila.</span><span lang="ru">Аннотации раскладываются по группам, блокируются и скрываются значками в каждой строке.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="relationship-map" style="--n:4">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">4 steps</span><span lang="sk">4 kroky</span><span lang="de">4 Schritte</span><span lang="es">4 pasos</span><span lang="ru">4 шага</span></p>
+        <h2><span lang="en">A relationship map</span><span lang="sk">Mapa vzťahov</span><span lang="de">Eine Beziehungskarte</span><span lang="es">Un mapa de relaciones</span><span lang="ru">Карта связей</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="08-relationship-map" width="2160" height="1350" loading="lazy" decoding="async" alt="The relationship map window with portraits of characters connected by coloured bonds">
+        <noscript><img class="on" src="../assets/tutorials/en/08-relationship-map.jpg" width="2160" height="1350" alt="The relationship map window with portraits of characters connected by coloured bonds"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="08-relationship-map" data-spot="6,96,206,112"><b>1</b><span class="t"><span lang="en">Libraries ▸ Relationship Maps… (⌘⇧M). The maps of the document are listed on the left.</span><span lang="sk">Knižnice ▸ Vzťahové mapy… (⌘⇧M). Vľavo je zoznam máp dokumentu.</span><span lang="de">Bibliotheken ▸ Beziehungskarten… (⌘⇧M). Links stehen die Karten des Dokuments.</span><span lang="es">Bibliotecas ▸ Mapas de relaciones… (⌘⇧M). A la izquierda está la lista de mapas del documento.</span><span lang="ru">Библиотеки ▸ Карты связей… (⌘⇧M). Слева находится список карт документа.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="08-relationship-map" data-spot="222,96,196,460"><b>2</b><span class="t"><span lang="en">Add units from any branch to the map: characters, factions, places.</span><span lang="sk">Do mapy pridaj jednotky z ľubovoľných vetiev: postavy, frakcie, miesta.</span><span lang="de">Füge der Karte Einheiten aus beliebigen Zweigen hinzu: Figuren, Fraktionen, Orte.</span><span lang="es">Añade al mapa unidades de cualquier rama: personajes, facciones, lugares.</span><span lang="ru">Добавляй на карту единицы из любых веток: персонажей, фракции, места.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="08-relationship-map" data-spot="1173,96,262,250"><b>3</b><span class="t"><span lang="en">Define bond types. Each has a name, a colour, a line style and a direction.</span><span lang="sk">Nastav typy väzieb. Každý má meno, farbu, štýl čiary a smer.</span><span lang="de">Lege Bindungstypen fest. Jeder hat einen Namen, eine Farbe, einen Linienstil und eine Richtung.</span><span lang="es">Define los tipos de vínculo. Cada uno tiene nombre, color, estilo de línea y dirección.</span><span lang="ru">Задай типы уз. У каждого есть название, цвет, стиль линии и направление.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="08-relationship-map" data-spot="430,190,736,680"><b>4</b><span class="t"><span lang="en">Click a bond type and drag between two units. Nodes show the portrait and the role.</span><span lang="sk">Klikni na typ väzby a ťahaj medzi dvoma jednotkami. Uzly ukazujú portrét a rolu.</span><span lang="de">Klicke auf einen Bindungstyp und ziehe zwischen zwei Einheiten. Knoten zeigen Porträt und Rolle.</span><span lang="es">Haz clic en un tipo de vínculo y arrastra entre dos unidades. Los nodos muestran el retrato y el rol.</span><span lang="ru">Щёлкни по типу уз и протяни линию между двумя единицами. Узлы показывают портрет и роль.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="family-tree" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">A family tree</span><span lang="sk">Rodokmeň</span><span lang="de">Ein Stammbaum</span><span lang="es">Un árbol genealógico</span><span lang="ru">Родословная</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="09-family-tree" width="2160" height="1350" loading="lazy" decoding="async" alt="The family tree window with three generations of a royal house drawn with portraits">
+        <noscript><img class="on" src="../assets/tutorials/en/09-family-tree.jpg" width="2160" height="1350" alt="The family tree window with three generations of a royal house drawn with portraits"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="09-family-tree" data-spot="6,90,206,112"><b>1</b><span class="t"><span lang="en">Libraries ▸ Family Trees… (⌘⇧R). The trees of the document are listed on the left; the + button adds a new one.</span><span lang="sk">Knižnice ▸ Rodokmene… (⌘⇧R). Vľavo je zoznam rodokmeňov dokumentu, tlačidlo + pridá nový.</span><span lang="de">Bibliotheken ▸ Stammbäume… (⌘⇧R). Links stehen die Stammbäume des Dokuments, die Taste + legt einen neuen an.</span><span lang="es">Bibliotecas ▸ Árboles genealógicos… (⌘⇧R). A la izquierda están los árboles del documento; el botón + añade uno nuevo.</span><span lang="ru">Библиотеки ▸ Родословные… (⌘⇧R). Слева находится список родословных документа, кнопка + добавляет новую.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="09-family-tree" data-spot="222,90,224,238"><b>2</b><span class="t"><span lang="en">With Add / Manage Units… choose who belongs to the tree.</span><span lang="sk">Cez Pridať / spravovať jednotky… vyberieš, kto do rodokmeňa patrí.</span><span lang="de">Mit Einheiten hinzufügen / verwalten… wählst du, wer zum Stammbaum gehört.</span><span lang="es">Con Añadir / gestionar unidades… eliges quién pertenece al árbol.</span><span lang="ru">Через Добавить / управлять единицами… выбираешь, кто входит в родословную.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="09-family-tree" data-spot="1328,88,108,54"><b>3</b><span class="t"><span lang="en">The green button (Q) turns on the parent bond: drag from a parent to a child. The red one (D) removes a bond when you drag between two units.</span><span lang="sk">Zelené tlačidlo (Q) zapne rodičovskú väzbu: ťahaj z rodiča na dieťa. Červené (D) väzbu zmaže, keď potiahneš medzi dvoma jednotkami.</span><span lang="de">Die grüne Taste (Q) schaltet die Elternbindung ein: Ziehe von einem Elternteil zum Kind. Die rote (D) löscht eine Bindung, wenn du zwischen zwei Einheiten ziehst.</span><span lang="es">El botón verde (Q) activa el vínculo de progenitor: arrastra del progenitor al hijo. El rojo (D) borra un vínculo al arrastrar entre dos unidades.</span><span lang="ru">Зелёная кнопка (Q) включает родительскую связь: тяни от родителя к ребёнку. Красная (D) удаляет связь, когда протягиваешь между двумя единицами.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="09-family-tree" data-spot="590,200,512,424"><b>4</b><span class="t"><span lang="en">Two parents of the same child are drawn as a couple. Each unit shows its portrait.</span><span lang="sk">Dvaja rodičia spoločného dieťaťa sa nakreslia ako pár. Každá jednotka ukazuje svoj portrét.</span><span lang="de">Zwei Eltern desselben Kindes werden als Paar gezeichnet. Jede Einheit zeigt ihr Porträt.</span><span lang="es">Los dos progenitores de un mismo hijo se dibujan como pareja. Cada unidad muestra su retrato.</span><span lang="ru">Два родителя общего ребёнка рисуются как пара. Каждая единица показывает свой портрет.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="09-family-tree" data-spot="282,42,30,30"><b>5</b><span class="t"><span lang="en">The export button saves the tree as a PDF or prints it.</span><span lang="sk">Tlačidlo exportu rodokmeň uloží ako PDF alebo vytlačí.</span><span lang="de">Die Exporttaste sichert den Stammbaum als PDF oder druckt ihn.</span><span lang="es">El botón de exportación guarda el árbol como PDF o lo imprime.</span><span lang="ru">Кнопка экспорта сохраняет родословную в PDF или печатает её.</span></span></button></li>
+    </ol>
+  </section>
+
+  <section class="tut" id="timeline" style="--n:5">
+    <div class="tut-top">
+      <div class="sec-head">
+        <p class="eyebrow"><span lang="en">5 steps</span><span lang="sk">5 krokov</span><span lang="de">5 Schritte</span><span lang="es">5 pasos</span><span lang="ru">5 шагов</span></p>
+        <h2><span lang="en">A timeline</span><span lang="sk">Časová os</span><span lang="de">Eine Zeitleiste</span><span lang="es">Una línea de tiempo</span><span lang="ru">Временная шкала</span></h2>
+      </div>
+      <button type="button" class="tut-play" aria-label="Pause" aria-pressed="true"><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l9 6-9 6z"/></svg></button>
+    </div>
+    <div class="win tut-win">
+      <div class="stage">
+        <img data-shot="10-timeline" width="2160" height="1350" loading="lazy" decoding="async" alt="The timeline window with events and lifespans drawn along an axis in a custom calendar">
+        <noscript><img class="on" src="../assets/tutorials/en/10-timeline.jpg" width="2160" height="1350" alt="The timeline window with events and lifespans drawn along an axis in a custom calendar"></noscript>
+        <i class="spot" aria-hidden="true"></i>
+      </div>
+    </div>
+    <ol class="steps">
+      <li><button type="button" class="step" data-shot="10-timeline" data-spot="6,92,206,128"><b>1</b><span class="t"><span lang="en">Libraries ▸ Timelines… (⌘⇧O). A document can have several timelines; the + button adds one.</span><span lang="sk">Knižnice ▸ Časové osi… (⌘⇧O). Dokument môže mať viac osí, tlačidlo + pridá ďalšiu.</span><span lang="de">Bibliotheken ▸ Zeitleisten… (⌘⇧O). Ein Dokument kann mehrere Zeitleisten haben, die Taste + legt eine weitere an.</span><span lang="es">Bibliotecas ▸ Líneas de tiempo… (⌘⇧O). Un documento puede tener varias líneas de tiempo; el botón + añade otra.</span><span lang="ru">Библиотеки ▸ Временные шкалы… (⌘⇧O). В документе может быть несколько шкал, кнопка + добавляет ещё одну.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="10-timeline" data-spot="222,92,244,500"><b>2</b><span class="t"><span lang="en">Add the units that belong on the axis: events, characters, anything with a date.</span><span lang="sk">Pridaj jednotky, ktoré majú na osi byť: udalosti, postavy, čokoľvek s dátumom.</span><span lang="de">Füge die Einheiten hinzu, die auf die Achse gehören: Ereignisse, Figuren, alles mit einem Datum.</span><span lang="es">Añade las unidades que deben estar en el eje: eventos, personajes, cualquier cosa con fecha.</span><span lang="ru">Добавь единицы, которые должны быть на оси: события, персонажей, всё, у чего есть дата.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="10-timeline" data-spot="1190,92,244,332"><b>3</b><span class="t"><span lang="en">On the right, tick the date attributes that are drawn on the axis and give each a colour.</span><span lang="sk">Vpravo zaškrtni dátumové atribúty, ktoré sa na osi kreslia, a každému daj farbu.</span><span lang="de">Rechts hakst du die Datumsattribute an, die auf der Achse gezeichnet werden, und gibst jedem eine Farbe.</span><span lang="es">A la derecha, marca los atributos de fecha que se dibujan en el eje y dale un color a cada uno.</span><span lang="ru">Справа отметь атрибуты даты, которые рисуются на оси, и задай каждому цвет.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="10-timeline" data-spot="484,276,692,410"><b>4</b><span class="t"><span lang="en">Events close together merge into a bubble with a count. Click a unit in the list and the axis centres on it.</span><span lang="sk">Blízke udalosti sa zlúčia do bubliny s počtom. Klik na jednotku v zozname na ňu os vycentruje.</span><span lang="de">Nah beieinander liegende Ereignisse verschmelzen zu einer Blase mit Anzahl. Ein Klick auf eine Einheit in der Liste zentriert die Achse darauf.</span><span lang="es">Los eventos cercanos se agrupan en una burbuja con su número. Haz clic en una unidad de la lista y el eje se centra en ella.</span><span lang="ru">Близкие события сливаются в пузырёк с числом. Щелчок по единице в списке центрирует ось на ней.</span></span></button></li>
+      <li><button type="button" class="step" data-shot="10-timeline" data-spot="1104,40,330,38"><b>5</b><span class="t"><span lang="en">At the top you switch the calendar of the axis, its orientation and the zoom.</span><span lang="sk">Hore prepneš kalendár osi, jej orientáciu a priblíženie.</span><span lang="de">Oben wechselst du den Kalender der Achse, ihre Ausrichtung und den Zoom.</span><span lang="es">Arriba cambias el calendario del eje, su orientación y el zoom.</span><span lang="ru">Вверху переключаются календарь оси, её ориентация и масштаб.</span></span></button></li>
+    </ol>
+  </section>
+
+<!-- TUTORIALS:END -->
+  <footer>
+    <div class="cols">
+      <div>
+        <strong style="color:var(--text)">Dattal</strong><br>
+        <span lang="en">Published by</span><span lang="sk">Vydáva</span><span lang="de">Herausgegeben von</span><span lang="es">Publicado por</span><span lang="ru">Издаёт</span> CHARON, spol. s r.o., Jabloň 49, 067 13 Jabloň, Slovakia<br>
+        © 2026 Dattal
+      </div>
+      <ul>
+        <li><a href="../"><span lang="en">Overview</span><span lang="sk">Úvod</span><span lang="de">Überblick</span><span lang="es">Inicio</span><span lang="ru">Обзор</span></a></li>
+        <li><a href="../privacy/"><span lang="en">Privacy policy</span><span lang="sk">Zásady súkromia</span><span lang="de">Datenschutzerklärung</span><span lang="es">Política de privacidad</span><span lang="ru">Политика конфиденциальности</span></a></li>
+        <li><a href="../terms/"><span lang="en">Terms of use</span><span lang="sk">Podmienky používania</span><span lang="de">Nutzungsbedingungen</span><span lang="es">Condiciones de uso</span><span lang="ru">Условия использования</span></a></li>
+        <li><a href="mailto:support@dattal.app"><span lang="en">Support</span><span lang="sk">Podpora</span><span lang="de">Support</span><span lang="es">Soporte</span><span lang="ru">Поддержка</span>: support@dattal.app</a></li>
+      </ul>
+    </div>
+  </footer>
+</div>
+
+<script>
+// Návody: kroky sú tlačidlá s údajmi `data-shot` (záber) a `data-spot` (výrez v bodoch
+// okna 1440 × 900 od ľavého horného rohu). Rovnaké výrezy používa skladač obrázkových
+// návodov (Tests/DattalTests/TutorialBuilderTests.swift), ktorý túto stránku aj stráži.
+(function () {
+  var W = 1440, H = 900;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var shotLang = 'en';
+  var renders = [];
+  // Zábery sú len po anglicky a po slovensky; ostatné jazyky ukazujú anglické okno.
+  // Cesty sú relatívne (../assets), aby sa stránka dala pozrieť aj otvorená priamo zo súboru.
+  function setShots(lang) {
+    shotLang = lang === 'sk' ? 'sk' : 'en';
+    document.querySelectorAll('.stage img[data-shot]').forEach(function (im) {
+      var src = '../assets/tutorials/' + shotLang + '/' + im.getAttribute('data-shot') + '.jpg';
+      if (im.getAttribute('src') !== src) im.setAttribute('src', src);
+    });
+  }
+  document.addEventListener('dattal-lang', function (e) { setShots(e.detail); renders.forEach(function (r) { r(); }); });
+
+  Array.prototype.slice.call(document.querySelectorAll('.tut')).forEach(function (tut) {
+    var win = tut.querySelector('.tut-win'), stage = tut.querySelector('.stage'), spot = tut.querySelector('.spot');
+    var play = tut.querySelector('.tut-play');
+    var steps = Array.prototype.slice.call(tut.querySelectorAll('.step'));
+    var imgs = Array.prototype.slice.call(stage.querySelectorAll('img[data-shot]'));
+    if (!steps.length) return;
+    // `data-spot-sk`: výrez pre slovenský záber, kde sú nápisy dlhšie a časť programu širšia.
+    function rect(s, name) {
+      var v = s.getAttribute(name); if (!v) return null;
+      var p = v.split(',').map(Number); return { x: p[0], y: p[1], w: p[2], h: p[3] };
+    }
+    var data = steps.map(function (s) {
+      var en = rect(s, 'data-spot');
+      return { shot: s.getAttribute('data-shot'), en: en, sk: rect(s, 'data-spot-sk') || en };
+    });
+    var cur = 0, auto = !reduce, visible = false;
+
+    function render() {
+      var shot = data[cur].shot, d = data[cur][shotLang], fw = win.clientWidth || 1040;
+      // Priblíženie: na širokom okne nijaké; na úzkom toľko, aby program vyzeral
+      // približne ako na šírke 1000 px, no vždy tak, aby sa celý výrez zmestil.
+      var kmax = Math.max(1, 1000 / fw);
+      var need = Math.max(d.w + 70, (d.h + 70) * (W / H));
+      var k = Math.max(1, Math.min(kmax, W / need));
+      var vw = W / k, vh = H / k;
+      var vx = Math.min(W - vw, Math.max(0, d.x + d.w / 2 - vw / 2));
+      var vy = Math.min(H - vh, Math.max(0, d.y + d.h / 2 - vh / 2));
+      stage.style.transform = 'scale(' + k.toFixed(4) + ') translate(' + (-vx / W * 100).toFixed(3) + '%,' + (-vy / H * 100).toFixed(3) + '%)';
+      stage.style.setProperty('--k', k.toFixed(3));
+      spot.style.left = (d.x / W * 100) + '%'; spot.style.top = (d.y / H * 100) + '%';
+      spot.style.width = (d.w / W * 100) + '%'; spot.style.height = (d.h / H * 100) + '%';
+      imgs.forEach(function (im) { im.classList.toggle('on', im.getAttribute('data-shot') === shot); });
+      steps.forEach(function (s, i) {
+        if (i === cur) s.setAttribute('aria-current', 'step'); else s.removeAttribute('aria-current');
+      });
+    }
+    function sync() {
+      tut.classList.toggle('playing', auto && visible);
+      play.setAttribute('aria-pressed', String(auto));
+      play.setAttribute('aria-label', auto ? 'Pause' : 'Play');
+    }
+    function go(i) { cur = (i + steps.length) % steps.length; render(); }
+
+    steps.forEach(function (s, i) {
+      s.addEventListener('click', function () { auto = false; go(i); sync(); });
+    });
+    play.addEventListener('click', function () { auto = !auto; sync(); });
+    // Koniec odpočtu aktívneho kroku = ďalší krok (po poslednom znova prvý).
+    tut.addEventListener('animationend', function (e) {
+      if (e.animationName === 'tut-fill' && tut.classList.contains('playing')) go(cur + 1);
+    });
+    // Myš nad oknom prehrávanie podrží, aby sa dal záber v pokoji prezrieť.
+    win.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') tut.classList.add('hold'); });
+    win.addEventListener('pointerleave', function () { tut.classList.remove('hold'); });
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[entries.length - 1].isIntersecting; sync();
+      }, { threshold: 0.45 }).observe(win);
+    } else { visible = true; }
+
+    tut.classList.add('live');
+    render(); sync();
+    renders.push(render);
+  });
+
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t); t = setTimeout(function () { renders.forEach(function (r) { r(); }); }, 120);
+  });
+})();
+
+// Jazyk: rovnaká voľba (a rovnaký kľúč v pamäti prehliadača) ako na úvodnej stránke.
+(function () {
+  var root = document.documentElement;
+  var LANGS = ['en', 'sk', 'de', 'es', 'ru'];
+  var TITLES = {
+    en: 'Dattal tutorials — the app in a few steps',
+    sk: 'Návody k Dattalu — program v pár krokoch',
+    de: 'Dattal-Anleitungen — die App in wenigen Schritten',
+    es: 'Tutoriales de Dattal — la app en pocos pasos',
+    ru: 'Уроки Dattal — приложение за несколько шагов'
+  };
+  function setLang(l) {
+    if (LANGS.indexOf(l) < 0) l = 'en';
+    root.setAttribute('data-lang', l);
+    root.setAttribute('lang', l);
+    document.title = TITLES[l] || TITLES.en;
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-set-lang') === l));
+    });
+    try { localStorage.setItem('dattal-lang', l); } catch (e) {}
+    try { document.dispatchEvent(new CustomEvent('dattal-lang', { detail: l })); } catch (e) {}
+  }
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-set-lang')); });
+  });
+  var initial = 'en';
+  try { initial = localStorage.getItem('dattal-lang') || initial; } catch (e) {}
+  setLang(initial);
+})();
+
+// Nočná obloha ako na úvodnej stránke (tá istá zásoba hviezd zo semienka), bez súhvezdia.
+(function () {
+  var canvas = document.getElementById('sky');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var w = 0, h = 0, dpr = 1, shown = 0;
+  var seed = 0x4441545441;
+  function rnd() { seed = (seed + 0x6D2B79F5) | 0; var z = seed; z = Math.imul(z ^ (z >>> 15), z | 1); z ^= z + Math.imul(z ^ (z >>> 7), z | 61); return ((z ^ (z >>> 14)) >>> 0) / 4294967296; }
+  var stars = [];
+  for (var si = 0; si < 900; si++) {
+    var big = rnd() < 0.08;
+    stars.push({ x: rnd(), y: rnd(), r: big ? 1.2 + rnd() * 1.1 : 0.4 + rnd() * 0.8, a: 0.25 + rnd() * 0.6, p: rnd() * Math.PI * 2, s: 0.4 + rnd() * 1.2, tint: rnd() < 0.3 });
+  }
+  function layout() {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    w = canvas.clientWidth || window.innerWidth; h = canvas.clientHeight || window.innerHeight;
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    shown = Math.min(stars.length, Math.round((w * h) / 9000));
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    for (var i = 0; i < shown; i++) {
+      var st = stars[i], sx = st.x * w, sy = st.y * h;
+      var tw = reduce ? 1 : 0.7 + 0.3 * Math.sin(st.p + t * 0.001 * st.s);
+      ctx.globalAlpha = st.a * tw;
+      ctx.fillStyle = st.tint ? '#bcd4ff' : '#ffffff';
+      ctx.beginPath(); ctx.arc(sx, sy, st.r, 0, Math.PI * 2); ctx.fill();
+      if (st.r > 1.6) {
+        ctx.globalAlpha = st.a * tw * 0.35;
+        ctx.fillRect(sx - st.r * 3, sy - 0.4, st.r * 6, 0.8);
+        ctx.fillRect(sx - 0.4, sy - st.r * 3, 0.8, st.r * 6);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      if (canvas.clientWidth === w && canvas.clientHeight === h) return;
+      layout(); if (reduce) draw(0);
+    }, 150);
+  });
+  layout();
+  if (reduce) { draw(0); return; }
+  var last = 0;
+  function frame(t) {
+    if (t - last > 60) { draw(t); last = t; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
