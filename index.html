@@ -90,6 +90,14 @@
   .badge { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; border-radius: 12px; background: var(--paper); color: var(--ink); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
   .badge small { display: block; font-weight: 400; font-size: 0.75rem; color: var(--ink-muted); line-height: 1.1; }
   .badge svg { width: 22px; height: 22px; flex: none; }
+  /* Odkaz na beta verziu v TestFlighte (user 2026-11-21): jediné klikateľné tlačidlo
+     v hlavičke, v modrej karty Dattal Pro, aby sa odlíšilo od bieleho odznaku App Storu. */
+  a.badge.beta { background: linear-gradient(180deg, #527ae6, #3a5fc4); color: #fff; border: 1px solid rgba(188,212,255,0.45); transition: filter .15s, transform .15s; }
+  a.badge.beta small { color: rgba(255,255,255,0.82); }
+  a.badge.beta svg { stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  a.badge.beta:hover { filter: brightness(1.1); }
+  a.badge.beta:active { transform: translateY(1px); }
+  @media (prefers-reduced-motion: reduce) { a.badge.beta { transition: none; } }
   .req { color: var(--muted); font-size: 0.9rem; }
   .facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; padding: 0; list-style: none; color: var(--muted); font-size: 0.92rem; }
   .facts li::before { content: "✦"; color: var(--ice); margin-right: 8px; font-size: 0.7em; vertical-align: middle; }
@@ -268,6 +276,13 @@
             <small><span lang="en">Free to try · Pro is a one-time purchase</span><span lang="sk">Skúšobná verzia zadarmo · Pro jednorazovo</span><span lang="de">Kostenlos testen · Pro als Einmalkauf</span><span lang="es">Prueba gratis · Pro con un único pago</span><span lang="ru">Бесплатная пробная версия · Pro — разовая покупка</span></small>
           </span>
         </span>
+        <a class="badge beta" href="https://testflight.apple.com/join/ZuXXrZHW" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg>
+          <span>
+            <span lang="en">Join the beta</span><span lang="sk">Vyskúšaj beta verziu</span><span lang="de">Beta testen</span><span lang="es">Prueba la beta</span><span lang="ru">Попробовать бета-версию</span>
+            <small><span lang="en">Free via TestFlight</span><span lang="sk">Zadarmo cez TestFlight</span><span lang="de">Kostenlos über TestFlight</span><span lang="es">Gratis con TestFlight</span><span lang="ru">Бесплатно через TestFlight</span></small>
+          </span>
+        </a>
         <span class="req"><span lang="en">Requires macOS 14 or later</span><span lang="sk">Vyžaduje macOS 14 alebo novší</span><span lang="de">Erfordert macOS 14 oder neuer</span><span lang="es">Requiere macOS 14 o posterior</span><span lang="ru">Требуется macOS 14 или новее</span></span>
       </div>
       <ul class="facts">
